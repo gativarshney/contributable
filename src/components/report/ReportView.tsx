@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { Skyline } from "@/components/three/Skyline";
 import type { FlowAnalysis } from "@/lib/analysis/issues";
 import type { Report } from "@/lib/report/run";
 import { WINDOWS, type WindowDays } from "@/types";
@@ -342,6 +343,10 @@ export function ReportView({ report }: { report: Report }) {
   const [w, setW] = useState<WindowDays>(30);
   const { repository: repo, analysis, findings } = report;
   const { activity, contributors, releases, issues, pulls, maintenance } = analysis;
+  const skyline = useMemo(
+    () => activity.daily.slice(-84).map((d) => d.count),
+    [activity.daily],
+  );
   const act = activity.windows[w];
   const con = contributors.windows[w];
   const stats: [string, string][] = [
@@ -369,37 +374,55 @@ export function ReportView({ report }: { report: Report }) {
       ) : null}
 
       <header id="overview" className="pt-12 pb-12 md:pt-16">
-        <p className="eyebrow">
-          Engineering report · data read {day(report.fetchedAt)},{" "}
-          {report.fetchedAt.slice(11, 16)} UTC
-        </p>
-        <h1 className="display mt-5 text-[clamp(2.4rem,7vw,5rem)] break-words">
-          {repo.owner}/<em>{repo.name}</em>
-        </h1>
-        {repo.description ? (
-          <p className="text-ink-2 mt-5 max-w-2xl text-lg">{repo.description}</p>
-        ) : null}
-        <div className="mt-6 flex flex-wrap gap-2">
-          {repo.archived ? (
-            <span className="chip !border-danger !text-danger">Archived</span>
-          ) : null}
-          {repo.fork ? <span className="chip">Fork</span> : null}
-          {repo.language ? <span className="chip">{repo.language}</span> : null}
-          {repo.license ? <span className="chip">{repo.license}</span> : null}
-          {repo.topics.slice(0, 6).map((topic) => (
-            <span key={topic} className="chip !normal-case">
-              {topic}
-            </span>
-          ))}
-          {!report.sample ? (
-            <a
-              href={repo.url}
-              target="_blank"
-              rel="noreferrer"
-              className="chip hover:text-ink"
-            >
-              View on GitHub ↗
-            </a>
+        <div className="grid items-end gap-x-10 gap-y-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+          <div className="min-w-0">
+            <p className="eyebrow">
+              Engineering report · data read {day(report.fetchedAt)},{" "}
+              {report.fetchedAt.slice(11, 16)} UTC
+            </p>
+            <h1 className="display mt-5 text-[clamp(2.2rem,5.6vw,4.25rem)] break-words">
+              <span className="inline-block max-w-full">{repo.owner}/</span>
+              <wbr />
+              <em>{repo.name}</em>
+            </h1>
+            {repo.description ? (
+              <p className="text-ink-2 mt-5 max-w-2xl text-lg">{repo.description}</p>
+            ) : null}
+            <div className="mt-6 flex flex-wrap gap-2">
+              {repo.archived ? (
+                <span className="chip !border-danger !text-danger">Archived</span>
+              ) : null}
+              {repo.fork ? <span className="chip">Fork</span> : null}
+              {repo.language ? <span className="chip">{repo.language}</span> : null}
+              {repo.license ? <span className="chip">{repo.license}</span> : null}
+              {repo.topics.slice(0, 6).map((topic) => (
+                <span key={topic} className="chip !normal-case">
+                  {topic}
+                </span>
+              ))}
+              {!report.sample ? (
+                <a
+                  href={repo.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="chip hover:text-ink"
+                >
+                  View on GitHub ↗
+                </a>
+              ) : null}
+            </div>
+          </div>
+          {skyline.some((count) => count > 0) ? (
+            <figure>
+              <Skyline
+                values={skyline}
+                label={`Commits per day over the last 12 weeks, drawn as a 3D bar field. Peak ${Math.max(...skyline)} commits in a day.`}
+                className="h-[220px] w-full"
+              />
+              <figcaption className="eyebrow mt-1 text-center">
+                Commits per day · last 12 weeks{activity.complete ? "" : " · partial"}
+              </figcaption>
+            </figure>
           ) : null}
         </div>
         <dl className="border-hair mt-10 grid grid-cols-2 border-t sm:grid-cols-3 lg:grid-cols-6">
