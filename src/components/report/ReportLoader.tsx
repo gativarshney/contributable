@@ -45,7 +45,7 @@ const STAGES: { id: StageId; label: string; icon: string }[] = [
 ];
 
 type State =
-  | { status: "loading"; done: Partial<Record<StageId, string>> }
+  | { status: "loading"; done: Partial<Record<StageId, string>>; direct?: boolean }
   | { status: "ready"; report: Report }
   | { status: "error"; error: ReportError };
 
@@ -59,10 +59,13 @@ function Progress({
   owner,
   name,
   done,
+  direct,
 }: {
   owner: string;
   name: string;
   done: Partial<Record<StageId, string>>;
+  /** True when this browser is reading GitHub itself rather than through our server. */
+  direct: boolean;
 }) {
   const finished = STAGES.filter((stage) => stage.id in done).length;
   const found = "repository" in done;
@@ -103,7 +106,9 @@ function Progress({
         </p>
       </div>
 
-      <p className="eyebrow mt-8">Reading from GitHub</p>
+      <p className="eyebrow mt-8">
+        {direct ? "Reading GitHub from your browser" : "Reading from GitHub"}
+      </p>
       <h1 className="display mt-3 text-[clamp(1.8rem,5vw,3rem)] break-words">
         {owner}/<em>{name}</em>
       </h1>
@@ -225,6 +230,9 @@ export function ReportLoader({ owner, name }: { owner: string; name: string }) {
           } else if (event.type === "result") {
             finished = true;
             setState({ status: "ready", report: event.report });
+          } else if (event.error.code === "rate_limited") {
+            finished = true;
+            await direct();
           } else {
             finished = true;
             fail(event.error);
@@ -232,6 +240,31 @@ export function ReportLoader({ owner, name }: { owner: string; name: string }) {
         }
       }
       if (!finished) fail();
+    }
+
+    // Our server shares one GitHub allowance between all visitors. When it runs out,
+    // this browser asks GitHub itself, which draws on the visitor's own allowance.
+    async function direct() {
+      setState({ status: "loading", done: {}, direct: true });
+      const [{ analyzeRepository, toReportError }, { createGitHubClient }] =
+        await Promise.all([import("@/lib/report/run"), import("@/lib/github/client")]);
+      try {
+        const report = await analyzeRepository(
+          { owner, name },
+          createGitHubClient(),
+          (stage, detail) => {
+            if (controller.signal.aborted) return;
+            setState((prev) =>
+              prev.status === "loading"
+                ? { ...prev, done: { ...prev.done, [stage]: detail } }
+                : prev,
+            );
+          },
+        );
+        if (!controller.signal.aborted) setState({ status: "ready", report });
+      } catch (error) {
+        if (!controller.signal.aborted) fail(toReportError(error));
+      }
     }
 
     run().catch((error) => {
@@ -274,5 +307,12 @@ export function ReportLoader({ owner, name }: { owner: string; name: string }) {
     );
   }
 
-  return <Progress owner={owner} name={name} done={state.done} />;
+  return (
+    <Progress
+      owner={owner}
+      name={name}
+      done={state.done}
+      direct={state.direct === true}
+    />
+  );
 }

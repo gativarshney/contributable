@@ -1,6 +1,6 @@
 import { analyze, type Analysis } from "@/lib/analysis";
 import { DAY_MS } from "@/lib/analysis/time";
-import { createGitHubClient, GitHubError, type GitHubClient } from "@/lib/github/client";
+import { GitHubError, type GitHubClient } from "@/lib/github/client";
 import {
   fetchComments,
   fetchCommits,
@@ -85,23 +85,20 @@ export function toReportError(error: unknown): ReportError {
 const count = (n: number, word: string) =>
   `${n.toLocaleString("en-US")} ${word}${n === 1 ? "" : "s"}`;
 
-const CACHE_TTL_MS = 10 * 60 * 1000;
-const cache = new Map<string, { at: number; report: Report }>();
-
-export async function runAnalysis(
+/**
+ * Reads a repository from GitHub and builds its report. It runs wherever `fetch` does:
+ * on the server with the shared token, or in a visitor's browser on their own GitHub
+ * allowance. Throws a GitHubError when the repository cannot be read at all.
+ */
+export async function analyzeRepository(
   ref: RepoRef,
-  emit: (event: AnalysisEvent) => void,
-  client: GitHubClient = createGitHubClient({ token: process.env.GITHUB_TOKEN }),
+  client: GitHubClient,
+  onStage: (stage: StageId, detail: string) => void = () => {},
   now: Date = new Date(),
-): Promise<void> {
-  const key = `${ref.owner}/${ref.name}`.toLowerCase();
-  const hit = cache.get(key);
-  if (hit && now.getTime() - hit.at < CACHE_TTL_MS) {
-    emit({ type: "result", report: hit.report });
-    return;
-  }
-
-  try {
+): Promise<Report> {
+  const emit = (event: { type: "stage"; stage: StageId; detail: string }) =>
+    onStage(event.stage, event.detail);
+  {
     const repository = await fetchRepository(client, ref);
     emit({ type: "stage", stage: "repository", detail: "found" });
 
@@ -193,10 +190,6 @@ export async function runAnalysis(
       detail: `${report.checklist.favourable} of ${report.checklist.checks.length} signals`,
     });
 
-    if (cache.size >= 100) cache.delete(cache.keys().next().value!);
-    cache.set(key, { at: now.getTime(), report });
-    emit({ type: "result", report });
-  } catch (error) {
-    emit({ type: "error", error: toReportError(error) });
+    return report;
   }
 }

@@ -55,6 +55,9 @@ export function createGitHubClient(
 ): GitHubClient {
   const doFetch = options.fetch ?? fetch;
   const token = options.token?.trim() || undefined;
+  // In a browser, sending only the Accept header keeps the request "simple", so no
+  // preflight is needed, and the HTTP cache may answer repeat requests for free.
+  const inBrowser = typeof window !== "undefined";
 
   return {
     authenticated: Boolean(token),
@@ -68,11 +71,12 @@ export function createGitHubClient(
         res = await doFetch(url, {
           headers: {
             Accept: "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28",
-            "User-Agent": "RepoInsight",
+            ...(inBrowser
+              ? {}
+              : { "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "RepoInsight" }),
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
-          cache: "no-store",
+          cache: inBrowser ? "default" : "no-store",
           signal: AbortSignal.timeout(15_000),
         });
       } catch {

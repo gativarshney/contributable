@@ -116,6 +116,19 @@ N is the page limit: 3 pages (300 items) without a token, 10 pages (1,000 items)
 one. A small repository costs about 12 requests. Independent requests run in parallel and
 finished reports are cached in memory for 10 minutes.
 
+## Cost and scaling
+
+RepoInsight costs nothing to run. There is no database, no paid API and no AI service.
+The only limit is GitHub's free API allowance, and three things stretch it:
+
+1. **A server token.** With `GITHUB_TOKEN` set, the server gets 5,000 requests an hour
+   instead of 60. A report needs 12 to about 45 requests depending on the repository.
+2. **A shared cache.** A finished report is kept for an hour and served to everyone who
+   asks for the same repository, so a popular project costs GitHub requests once.
+3. **The visitor's own allowance.** If the server's allowance runs out, the visitor's
+   browser reads GitHub directly. Every visitor has their own 60 requests an hour, so
+   this path grows with the audience instead of being divided among it.
+
 ## Metric methodology
 
 All windows are trailing periods measured back from the moment the data was fetched.

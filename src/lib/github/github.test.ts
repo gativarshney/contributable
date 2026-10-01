@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { toReportError } from "@/lib/report/run";
+import { analyzeRepository, toReportError } from "@/lib/report/run";
 import { createGitHubClient, GitHubError, parseLinkHeader } from "./client";
 import {
   fetchComments,
@@ -424,5 +424,70 @@ describe("toReportError", () => {
       toReportError(new GitHubError("rate_limited", 403, 1790000000)).message,
     ).toMatch(/resets at \d\d:\d\d UTC/);
     expect(toReportError(new Error("boom")).code).toBe("unavailable");
+  });
+});
+
+describe("analyzeRepository", () => {
+  it("reads every source, reports each stage and returns a report", async () => {
+    const { fetch, calls } = fakeFetch({
+      "/repos/acme/widget": {
+        body: {
+          name: "widget",
+          full_name: "acme/widget",
+          owner: { login: "acme" },
+          created_at: "2020-01-01T00:00:00Z",
+          open_issues_count: 4,
+          license: { spdx_id: "MIT" },
+        },
+      },
+      "/commits": {
+        body: [
+          {
+            sha: "a1",
+            commit: {
+              committer: { date: "2026-03-01T10:00:00Z" },
+              author: { name: "Ana" },
+            },
+            author: { login: "ana", type: "User" },
+          },
+        ],
+      },
+      "/contributors": { body: [{ login: "ana", contributions: 10, type: "User" }] },
+      "/releases": { body: [] },
+      "/issues": { body: [] },
+      "/pulls": { body: [] },
+      "/issues/comments": { body: [] },
+      "/pulls/comments": { body: [] },
+      "/community/profile": {
+        body: { files: { license: { html_url: "https://x.test" } } },
+      },
+      "/languages": { body: { TypeScript: 100 } },
+    });
+    const stages: string[] = [];
+    const report = await analyzeRepository(
+      ref,
+      createGitHubClient({ fetch }),
+      (stage) => stages.push(stage),
+      new Date("2026-03-02T00:00:00Z"),
+    );
+
+    expect(stages[0]).toBe("repository");
+    expect(stages.at(-1)).toBe("report");
+    expect(new Set(stages).size).toBe(7);
+    expect(report.repository.fullName).toBe("acme/widget");
+    expect(report.analysis.activity.windows[7].commits).toBe(1);
+    expect(report.analysis.stack).toEqual([{ name: "TypeScript", share: 100 }]);
+    expect(report.checklist.checks.find((c) => c.id === "license")?.state).toBe("yes");
+    // A small repository costs a dozen requests, which is what makes the free tier viable.
+    expect(calls).toHaveLength(12);
+  });
+
+  it("throws on a rate limit so the caller can fall back to another allowance", async () => {
+    const { fetch } = fakeFetch({
+      "/repos/acme/widget": { status: 403, headers: { "x-ratelimit-remaining": "0" } },
+    });
+    await expect(
+      analyzeRepository(ref, createGitHubClient({ fetch })),
+    ).rejects.toMatchObject({ code: "rate_limited" });
   });
 });
