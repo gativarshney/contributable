@@ -4,10 +4,10 @@ import { buildSampleReport } from "@/lib/sample/dataset";
 export function SamplePreview() {
   const { repository, analysis, findings } = buildSampleReport();
   const activity = analysis.activity.windows[30];
-  const concentration = analysis.contributors.windows[30];
+  const concentration = analysis.contributors.windows[90];
   const figures: [string, string, string][] = [
     ["Commits", String(activity.commits), "Last 30 days"],
-    ["Top contributor share", `${concentration.topShare}%`, "Of human-authored commits"],
+    ["Top contributor share", `${concentration.topShare}%`, "Of commits, last 90 days"],
     [
       "Median release interval",
       `${analysis.releases.medianIntervalDays} d`,

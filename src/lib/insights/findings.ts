@@ -95,9 +95,11 @@ export function buildFindings(repository: Repository, analysis: Analysis): Findi
     findings.push({
       id: "high-volume",
       category: "Activity",
-      title: "Commit volume exceeds the collection limit",
-      statement: `The ${activity.sampleSize.toLocaleString("en-US")} most recent commits do not reach back 30 days, so window totals are not reported.`,
-      rule: "The commit list was truncated before the start of the 30-day window.",
+      title: "High commit volume",
+      statement: activity.windows[7].covered
+        ? `${plural(activity.windows[7].commits, "commit")} were recorded on the default branch in the last 7 days. Longer windows exceed the collection limit and are not reported.`
+        : `The ${activity.sampleSize.toLocaleString("en-US")} most recent commits span less than 7 days, so window totals are not reported.`,
+      rule: "The commit list reached the collection limit before the start of the 30-day window.",
       anchor: "activity",
     });
   }

@@ -16,6 +16,9 @@ export interface FlowWindow {
 export interface FlowAnalysis {
   available: boolean;
   note: string | null;
+  /** False when the list was truncated; windows before coveredSince are not reported. */
+  complete: boolean;
+  coveredSince: string | null;
   openNow: number | null;
   lastResolvedAt: string | null;
   windows: Record<WindowDays, FlowWindow>;
@@ -63,6 +66,8 @@ function calculateFlow(
   return {
     available: ok,
     note: collection.note ?? null,
+    complete: collection.complete,
+    coveredSince: collection.coveredSince,
     openNow,
     lastResolvedAt: items.reduce<string | null>((latest, item) => {
       const at = resolvedAt(item);

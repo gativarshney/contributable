@@ -214,6 +214,14 @@ function Flow({
   const v = (n: number | null) => (data.covered ? n : null);
   return (
     <>
+      {!flow.complete ? (
+        <p className="border-series-2 mb-6 border-l-2 px-4 py-2 text-sm">
+          This repository has more issue and pull request activity than the collection
+          limit allows. Events since{" "}
+          {flow.coveredSince ? day(flow.coveredSince) : "an unknown date"} were read.
+          Windows that reach further back show a dash, and the weekly chart is partial.
+        </p>
+      ) : null}
       <div className={grid}>
         <Metric
           label={`Open ${kind}s`}
@@ -448,7 +456,7 @@ export function ReportView({ report }: { report: Report }) {
           </ul>
         </nav>
         <div
-          role="radiogroup"
+          role="group"
           aria-label="Analysis window"
           className="border-hair-strong flex rounded-full border p-0.5"
         >
@@ -456,8 +464,7 @@ export function ReportView({ report }: { report: Report }) {
             <button
               key={days}
               type="button"
-              role="radio"
-              aria-checked={w === days}
+              aria-pressed={w === days}
               onClick={() => setW(days)}
               className={`cursor-pointer rounded-full px-3 py-1 font-mono text-xs transition-colors ${
                 w === days ? "bg-ink text-bg" : "text-ink-2 hover:text-ink"
