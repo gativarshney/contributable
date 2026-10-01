@@ -71,7 +71,7 @@ export function Start({ report }: { report: Report }) {
 
       {starter.medianAgeDays !== null && starter.medianAgeDays > 180 ? (
         <p className="text-ink-2 mt-5 text-[15px]">
-          Heads up: these have been open for a while (typically{" "}
+          Heads up: these were opened a long time ago (typically{" "}
           {ago(starter.medianAgeDays)}). Ask on the issue whether it is still wanted
           before you start.
         </p>

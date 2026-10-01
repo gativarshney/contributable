@@ -111,7 +111,11 @@ export function Journey({
 
             <div className="border-hair flex gap-12 lg:flex-col lg:border-l lg:pl-12">
               <Stat
-                value={data.medianDaysToMerge}
+                value={
+                  data.medianDaysToMerge !== null && data.medianDaysToMerge >= 10
+                    ? Math.round(data.medianDaysToMerge)
+                    : data.medianDaysToMerge
+                }
                 unit={data.medianDaysToMerge === 1 ? "day" : "days"}
                 label="typical time to merge"
               />
