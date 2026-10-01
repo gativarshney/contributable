@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SamplePreview } from "@/components/home/SamplePreview";
 import { RepoInput } from "@/components/site/RepoInput";
 
 const examples = ["vercel/next.js", "facebook/react", "sindresorhus/ky"];
@@ -160,6 +161,8 @@ export default function HomePage() {
           ))}
         </dl>
       </section>
+
+      <SamplePreview />
 
       <section id="how-it-works" className="border-hair border-t py-20 md:py-28">
         <div className="shell">
