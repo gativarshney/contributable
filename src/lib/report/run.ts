@@ -5,7 +5,6 @@ import {
   fetchComments,
   fetchCommits,
   fetchCommunityFiles,
-  fetchContributors,
   fetchIssuesAndPulls,
   fetchLanguages,
   fetchOpenPullRequestCount,
@@ -32,13 +31,7 @@ export interface ReportError {
 }
 
 export type StageId =
-  | "repository"
-  | "commits"
-  | "contributors"
-  | "releases"
-  | "issues"
-  | "contributing"
-  | "report";
+  "repository" | "commits" | "releases" | "issues" | "contributing" | "report";
 
 export type AnalysisEvent =
   | { type: "stage"; stage: StageId; detail: string }
@@ -113,7 +106,6 @@ export async function analyzeRepository(
 
     const [
       commits,
-      contributors,
       releases,
       issues,
       openPullRequests,
@@ -124,15 +116,6 @@ export async function analyzeRepository(
           type: "stage",
           stage: "commits",
           detail: c.status === "ok" ? count(c.items.length, "commit") : "unavailable",
-        });
-        return c;
-      }),
-      fetchContributors(client, canonical).then((c) => {
-        emit({
-          type: "stage",
-          stage: "contributors",
-          detail:
-            c.status === "ok" ? count(c.items.length, "contributor") : "unavailable",
         });
         return c;
       }),
@@ -174,7 +157,6 @@ export async function analyzeRepository(
     const report = buildReport({
       repository,
       commits,
-      contributors,
       releases,
       issues,
       comments,

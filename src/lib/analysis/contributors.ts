@@ -1,10 +1,4 @@
-import {
-  WINDOWS,
-  type Collection,
-  type Commit,
-  type Contributor,
-  type WindowDays,
-} from "@/types";
+import { WINDOWS, type Collection, type Commit, type WindowDays } from "@/types";
 import { inWindow, isCovered, round } from "./time";
 
 export interface Concentration {
@@ -23,15 +17,6 @@ export interface Concentration {
 export interface ContributorAnalysis {
   available: boolean;
   windows: Record<WindowDays, Concentration & { covered: boolean }>;
-  allTime: {
-    available: boolean;
-    note: string | null;
-    listed: number;
-    complete: boolean;
-    topShare: number | null;
-    /** The most active accounts GitHub lists, by all-time commits. */
-    top: { login: string; contributions: number; share: number }[];
-  };
 }
 
 /**
@@ -82,7 +67,6 @@ export function calculateContributorConcentration(commits: Commit[]): Concentrat
 
 export function calculateContributors(
   commits: Collection<Commit>,
-  contributors: Collection<Contributor>,
   now: Date,
 ): ContributorAnalysis {
   const ok = commits.status === "ok";
@@ -95,25 +79,8 @@ export function calculateContributors(
       ),
     };
   }
-
-  const humans = contributors.items.filter((c) => !c.isBot);
-  const total = humans.reduce((sum, c) => sum + c.contributions, 0);
-  const ranked = [...humans].sort((a, b) => b.contributions - a.contributions);
-  const top = ranked[0]?.contributions ?? 0;
   return {
     available: ok,
     windows,
-    allTime: {
-      available: contributors.status === "ok" && humans.length > 0,
-      note: contributors.note ?? null,
-      listed: humans.length,
-      complete: contributors.complete,
-      topShare: total > 0 ? round((top / total) * 100) : null,
-      top: ranked.slice(0, 8).map((c) => ({
-        login: c.login,
-        contributions: c.contributions,
-        share: total > 0 ? round((c.contributions / total) * 100) : 0,
-      })),
-    },
   };
 }

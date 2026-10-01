@@ -22,7 +22,7 @@ import { analyze, calculateRepositoryAge } from "./index";
 import { calculateIssueSignals, calculatePullRequestSignals } from "./issues";
 import { calculateReleaseCadence } from "./releases";
 import { busiest, toLocalGrid } from "./rhythm";
-import { DAY_MS, median } from "./time";
+import { DAY_MS, median, observedDays, periodLabel } from "./time";
 
 const NOW = new Date("2026-06-30T00:00:00Z");
 const ago = (days: number) => new Date(NOW.getTime() - days * DAY_MS).toISOString();
@@ -511,8 +511,23 @@ describe("issue and pull request signals", () => {
       medianDaysToResolve: 4,
     });
     expect(pulls.lastResolvedAt).toBe(ago(2));
-    expect(pulls.weekly).toHaveLength(13);
-    expect(pulls.weekly.reduce((sum, w) => sum + w.opened, 0)).toBe(3);
+    // The whole 90 days were read, but flow is shown for a month at most.
+    expect(pulls.observed).toMatchObject({ days: 30, opened: 3, resolved: 1 });
+  });
+
+  it("falls back to the period a truncated list does cover", () => {
+    const partial = collection(items, { complete: false, coveredSince: ago(4.6) });
+    const pulls = calculatePullRequestSignals(partial, 3, NOW);
+
+    expect(pulls.windows[7].covered).toBe(false);
+    // 4.6 days are covered, so four whole days are reported: only the pull request
+    // opened three days ago and the one merged two days ago fall inside.
+    expect(pulls.observed).toMatchObject({
+      days: 4,
+      covered: true,
+      opened: 1,
+      resolved: 1,
+    });
   });
 
   it("reports issues as unavailable when they are disabled", () => {
@@ -645,5 +660,90 @@ describe("reply rhythm", () => {
     grid[16 * 7 + 3] = 4; // Wednesday 16:00
     grid[3 * 7 + 6] = 2; // Saturday 03:00
     expect(busiest(grid)).toEqual({ day: "Tuesday", from: 14, to: 17 });
+  });
+});
+
+describe("progressive answers on partly read repositories", () => {
+  const outsider = { author: "newcomer", association: "community" } as const;
+
+  it("picks the longest standard window that is covered, else the span itself", () => {
+    expect(observedDays(ago(120), NOW)).toBe(90);
+    expect(observedDays(ago(45), NOW)).toBe(30);
+    expect(observedDays(ago(8), NOW)).toBe(7);
+    expect(observedDays(ago(3.9), NOW)).toBe(3);
+    expect(observedDays(ago(0.5), NOW)).toBe(0.5);
+    expect(observedDays(ago(0.01), NOW)).toBeNull();
+    expect(observedDays(null, NOW)).toBeNull();
+    expect([90, 3, 1, 0.5].map(periodLabel)).toEqual([
+      "90 days",
+      "3 days",
+      "1 day",
+      "12 hours",
+    ]);
+  });
+
+  /** A repository so busy that only the last two and a half days could be read. */
+  function busy() {
+    const dataset = buildSampleDataset();
+    dataset.fetchedAt = NOW.toISOString();
+    const coveredSince = ago(2.5);
+    dataset.commits = collection(
+      Array.from({ length: 300 }, (_, i) => commit(i / 130, i % 4 ? "ana" : "ben")),
+      { complete: false, coveredSince },
+    );
+    dataset.issues = collection(
+      [
+        ...[1, 2, 3, 4, 5].map((n) => pr(n, 2.2, 1, true, outsider)),
+        pr(6, 2.1, 0.5, false, outsider),
+        item(7, 2.4, 1, outsider),
+      ],
+      { complete: false, coveredSince },
+    );
+    dataset.comments = collection<ThreadComment>([], { complete: false, coveredSince });
+    return dataset;
+  }
+
+  it("proves a yes from a lower bound instead of answering unknown", () => {
+    const dataset = busy();
+    const analysis = analyze(dataset);
+    const checklist = buildChecklist(dataset.repository, analysis);
+    const check = (id: string) => checklist.checks.find((c) => c.id === id)!;
+
+    expect(analysis.contributing.windows[7].covered).toBe(false);
+    expect(analysis.contributing.observed).toMatchObject({ days: 2, communityMerged: 5 });
+
+    expect(check("community-merged").state).toBe("yes");
+    expect(check("community-merged").answer).toBe(
+      "5 community pull requests merged in the last 2 days, out of 6 closed.",
+    );
+    expect(check("commit-rhythm").state).toBe("yes");
+    expect(check("commit-rhythm").answer).toBe(
+      "At least 300 commits in the last 30 days.",
+    );
+    expect(check("contributors").state).toBe("yes");
+    expect(check("issues-closed").state).toBe("yes");
+    expect(check("issues-closed").answer).toBe(
+      "At least 1 issue closed in the last 30 days.",
+    );
+  });
+
+  it("never turns partial data into a no", () => {
+    const dataset = busy();
+    // Three closed, none merged, but only two days of history: that proves nothing.
+    dataset.issues = collection(
+      [1, 2, 3].map((n) => pr(n, 2.2, 1, false, outsider)),
+      { complete: false, coveredSince: ago(2.5) },
+    );
+    dataset.commits = collection([commit(0.5)], {
+      complete: false,
+      coveredSince: ago(2.5),
+    });
+    const checklist = buildChecklist(dataset.repository, analyze(dataset));
+    const state = (id: string) => checklist.checks.find((c) => c.id === id)?.state;
+
+    expect(state("community-merged")).toBe("unknown");
+    expect(state("commit-rhythm")).toBe("unknown");
+    expect(state("contributors")).toBe("unknown");
+    expect(state("issues-closed")).toBe("unknown");
   });
 });

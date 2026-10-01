@@ -7,7 +7,15 @@ import {
   type ThreadComment,
   type WindowDays,
 } from "@/types";
-import { daysBetween, inWindow, isCovered, median, round, wholeDaysSince } from "./time";
+import {
+  daysBetween,
+  inWindow,
+  isCovered,
+  median,
+  observedDays,
+  round,
+  wholeDaysSince,
+} from "./time";
 
 export interface ContributingWindow {
   /** Pull request figures are complete for this window. */
@@ -39,6 +47,9 @@ export interface ContributingWindow {
   matureHandled: number;
 }
 
+/** A window whose length was chosen by what the data covers; `days` can be a fraction. */
+export type ObservedWindow = ContributingWindow & { days: number };
+
 export interface ReplyBuckets {
   withinDay: number;
   withinWeek: number;
@@ -67,6 +78,13 @@ export interface Responder {
 export interface ContributingAnalysis {
   available: boolean;
   windows: Record<WindowDays, ContributingWindow>;
+  /**
+   * Pull request figures for the longest period the data fully covers: 90, 30 or 7 days,
+   * or less on repositories too busy to read a full week of. Null when nothing is covered.
+   */
+  observed: ObservedWindow | null;
+  /** The same for reply figures, which also depend on how far back comments were read. */
+  observedReplies: ObservedWindow | null;
   starter: {
     available: boolean;
     total: number;
@@ -151,7 +169,7 @@ export function calculateContributingSignals(
   const communityThreads = issues.items.filter((i) => i.association === "community");
   const windows = {} as Record<WindowDays, ContributingWindow>;
 
-  for (const days of WINDOWS) {
+  const windowFor = (days: number): ContributingWindow => {
     const opened = pulls.filter((p) => inWindow(p.createdAt, now, days));
     const fromCommunity = pulls.filter((p) => p.association === "community");
     const merged = fromCommunity.filter((p) => inWindow(p.mergedAt, now, days));
@@ -191,7 +209,7 @@ export function calculateContributingSignals(
       }
     });
 
-    windows[days] = {
+    return {
       covered,
       communityOpened: opened.filter((p) => p.association === "community").length,
       humanOpened: opened.filter((p) => p.association !== "bot").length,
@@ -213,7 +231,17 @@ export function calculateContributingSignals(
       matureThreads,
       matureHandled,
     };
-  }
+  };
+  for (const days of WINDOWS) windows[days] = windowFor(days);
+
+  // Very busy repositories exceed the reading limit before a full week is covered.
+  // Rather than report nothing, report the period the data does cover, and say so.
+  const pullDays = ok ? observedDays(issues.coveredSince, now) : null;
+  const replyCoverage =
+    issues.coveredSince && comments.coveredSince && comments.status === "ok"
+      ? [issues.coveredSince, comments.coveredSince].sort()[1]
+      : null;
+  const replyDays = ok ? observedDays(replyCoverage, now) : null;
 
   // Who on the team talks to outside contributors, and when the team is around.
   const communityNumbers = new Set(communityThreads.map((t) => t.number));
@@ -258,6 +286,9 @@ export function calculateContributingSignals(
   return {
     available: ok,
     windows,
+    observed: pullDays === null ? null : { days: pullDays, ...windowFor(pullDays) },
+    observedReplies:
+      replyDays === null ? null : { days: replyDays, ...windowFor(replyDays) },
     starter: {
       available: starterIssues.status === "ok",
       total: starterIssues.items.length,

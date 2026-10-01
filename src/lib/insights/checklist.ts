@@ -1,4 +1,5 @@
 import type { Analysis } from "@/lib/analysis";
+import { periodLabel } from "@/lib/analysis/time";
 import type { Repository } from "@/types";
 
 export type CheckState = "yes" | "no" | "unknown";
@@ -33,7 +34,8 @@ const hours = (h: number) =>
  * Answers the questions a contributor is advised to ask before picking a project
  * (after "A checklist before you contribute", opensource.guide). Every answer has a
  * stated threshold. Where the data cannot decide, the state is "unknown" rather than a
- * guess. Tone and friendliness are deliberately absent: they cannot be measured.
+ * guess: a partial list can prove a yes (a lower bound already meets the rule) but never
+ * a no. Tone and friendliness are deliberately absent: they cannot be measured.
  */
 export function buildChecklist(repository: Repository, analysis: Analysis): Checklist {
   const { activity, contributors, issues, pulls, maintenance, contributing } = analysis;
@@ -77,17 +79,29 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
     anchor: "pulse",
   });
 
-  const weeks = maintenance.activeWeeks;
+  // From here on, lists can be cut short on very busy repositories. A count taken from a
+  // partial list is a lower bound, so it can prove a "yes" but never a "no".
+  const fullYear = activity.windows[90].covered;
+  const weeks =
+    maintenance.activeWeeks ?? activity.weekly.filter((w) => w.count > 0).length;
+  const commits30 = activity.windows[30].commits;
   add({
     id: "commit-rhythm",
     group: "Actively maintained",
     question: "How often do people commit?",
-    state: weeks === null ? "unknown" : weeks >= 7 ? "yes" : "no",
-    answer:
-      weeks === null
-        ? "Commit history for the last 13 weeks is not fully covered."
-        : `Commits landed in ${weeks} of the last 13 weeks.`,
-    rule: "Commits in at least 7 of the last 13 weeks.",
+    state: !activity.available
+      ? "unknown"
+      : weeks >= 7 || commits30 >= 100
+        ? "yes"
+        : fullYear
+          ? "no"
+          : "unknown",
+    answer: fullYear
+      ? `Commits landed in ${weeks} of the last 13 weeks.`
+      : commits30 >= 100
+        ? `At least ${commits30.toLocaleString("en-US")} commits in the last 30 days.`
+        : "Only part of the last 13 weeks could be read.",
+    rule: "Commits in at least 7 of the last 13 weeks, or at least 100 commits in the last 30 days.",
     anchor: "pulse",
   });
 
@@ -96,10 +110,12 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
     id: "contributors",
     group: "Actively maintained",
     question: "How many contributors does the project have?",
-    state: !c90.covered ? "unknown" : c90.contributors >= 2 ? "yes" : "no",
+    state: c90.contributors >= 2 ? "yes" : c90.covered ? "no" : "unknown",
     answer: c90.covered
       ? `${c90.contributors} ${c90.contributors === 1 ? "person" : "people"} authored commits in the last 90 days.`
-      : "Commit authors for the last 90 days are not fully covered.",
+      : c90.contributors >= 2
+        ? `At least ${c90.contributors} people authored commits recently.`
+        : "Commit authors for the last 90 days are not fully covered.",
     rule: "More than one person authored commits in the last 90 days.",
     anchor: "people",
   });
@@ -109,13 +125,20 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
     id: "issues-closed",
     group: "Actively maintained",
     question: "Are issues getting closed?",
-    state:
-      !issues.available || !i30.covered ? "unknown" : i30.resolved > 0 ? "yes" : "no",
+    state: !issues.available
+      ? "unknown"
+      : i30.resolved > 0
+        ? "yes"
+        : i30.covered
+          ? "no"
+          : "unknown",
     answer: !issues.available
       ? "Issues are not available for this repository."
-      : !i30.covered
-        ? "Issue activity for the last 30 days is not fully covered."
-        : `${plural(i30.resolved, "issue")} closed and ${i30.opened} opened in the last 30 days.`,
+      : i30.covered
+        ? `${plural(i30.resolved, "issue")} closed and ${i30.opened} opened in the last 30 days.`
+        : i30.resolved > 0
+          ? `At least ${plural(i30.resolved, "issue")} closed in the last 30 days.`
+          : "Issue activity for the last 30 days is not fully covered.",
     rule: "At least one issue closed in the last 30 days.",
     anchor: "pulse",
   });
@@ -146,36 +169,31 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
     anchor: "journey",
   });
 
-  // Use the widest window the data fully covers, so busy repositories still get an answer.
-  const window = ([90, 30, 7] as const).find((d) => contributing.windows[d].covered);
-  const w = window ? contributing.windows[window] : null;
-  const closed = w ? w.communityMerged + w.communityClosedUnmerged : 0;
+  // The question is whether outside work lands at all. A low share alone does not fail
+  // it: popular projects close many drive-by submissions.
+  const o = contributing.observed;
+  const closed = o ? o.communityMerged + o.communityClosedUnmerged : 0;
   add({
     id: "community-merged",
     group: "Open to contributions",
     question: "Do outside pull requests get merged?",
-    // The question is whether outside work lands at all. A low share alone does not
-    // fail it: popular projects close many drive-by submissions.
-    state: !w
+    state: !o
       ? "unknown"
-      : w.communityMerged >= 3
+      : o.communityMerged >= 3
         ? "yes"
-        : closed >= 3
+        : closed >= 3 && o.days >= 30
           ? "no"
           : "unknown",
-    answer: !w
-      ? "Pull request history is not fully covered."
+    answer: !o
+      ? "Pull request history could not be read."
       : closed === 0
-        ? `No community pull request was merged or closed in the last ${window} days.`
-        : `${plural(w.communityMerged, "community pull request")} merged in the last ${window} days, out of ${closed} closed.`,
-    rule: "At least 3 pull requests from outside the team were merged in the period.",
+        ? `No community pull request was merged or closed in the last ${periodLabel(o.days)}.`
+        : `${plural(o.communityMerged, "community pull request")} merged in the last ${periodLabel(o.days)}, out of ${closed} closed.`,
+    rule: "At least 3 pull requests from outside the team were merged. A no needs at least 30 days of history with 3 or more closed.",
     anchor: "journey",
   });
 
-  const responseWindow = ([90, 30, 7] as const).find(
-    (d) => contributing.windows[d].responseCovered,
-  );
-  const r = responseWindow ? contributing.windows[responseWindow] : null;
+  const r = contributing.observedReplies;
   // Only threads at least two days old are judged: newer ones have not had a fair chance.
   const handledShare =
     r && r.matureThreads > 0 ? r.matureHandled / r.matureThreads : null;
@@ -191,9 +209,9 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
           ? "yes"
           : "no",
     answer: !r
-      ? "Comment history is not fully covered."
+      ? "Comment history could not be read."
       : r.matureThreads < 3
-        ? `Only ${plural(r.matureThreads, "community thread")} old enough to judge in the last ${responseWindow} days.`
+        ? `Only ${plural(r.matureThreads, "community thread")} old enough to judge in the last ${periodLabel(r.days)}.`
         : `${r.matureHandled} of ${r.matureThreads} community threads were answered or closed${
             r.medianHoursToResponse === null
               ? "."

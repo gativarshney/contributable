@@ -3,7 +3,6 @@ import type {
   Collection,
   Commit,
   CommunityFiles,
-  Contributor,
   IssueItem,
   Release,
   Repository,
@@ -186,32 +185,6 @@ export async function fetchCommits(
       };
     }
     return unavailable("GitHub did not return commit history for this repository.");
-  }
-}
-
-export async function fetchContributors(
-  client: GitHubClient,
-  ref: RepoRef,
-): Promise<Collection<Contributor>> {
-  try {
-    const res = await client.get<Raw[]>(`/repos/${ref.owner}/${ref.name}/contributors`, {
-      per_page: 100,
-    });
-    const items = (Array.isArray(res.data) ? res.data : [])
-      .filter((raw) => typeof raw.login === "string")
-      .map((raw) => ({
-        login: raw.login as string,
-        contributions: num(raw.contributions),
-        isBot: isBot(raw),
-      }));
-    return { status: "ok", items, complete: !res.hasNext, coveredSince: null };
-  } catch (error) {
-    rethrowFatal(error);
-    return unavailable(
-      error instanceof GitHubError && error.code === "too_large"
-        ? "GitHub does not list contributors for repositories with very large histories."
-        : "GitHub did not return a contributor list for this repository.",
-    );
   }
 }
 

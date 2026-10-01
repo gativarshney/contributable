@@ -29,9 +29,6 @@ export function ReportView({ report }: { report: Report }) {
     [days],
   );
 
-  // Contributor figures use the longest period the data fully covers.
-  const span = ([90, 30, 7] as const).find((d) => contributing.windows[d].covered) ?? 30;
-
   return (
     <article className="shell pb-16">
       {report.sample ? (
@@ -95,11 +92,7 @@ export function ReportView({ report }: { report: Report }) {
 
       <Verdict checklist={checklist} />
       <Start report={report} />
-      <Journey
-        data={contributing.windows[span]}
-        days={span}
-        available={contributing.available}
-      />
+      <Journey pulls={contributing.observed} replies={contributing.observedReplies} />
       <People report={report} />
 
       {contributing.rhythm.total >= 10 ? (

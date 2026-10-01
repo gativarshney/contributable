@@ -1,3 +1,4 @@
+import { periodLabel } from "@/lib/analysis/time";
 import type { Report } from "@/lib/report/run";
 import { Block, Notes } from "./Block";
 import { Columns } from "./charts";
@@ -42,8 +43,9 @@ export function Pulse({ report }: { report: Report }) {
   const lastCommit = recency("commit")?.days ?? null;
   const covered = activity.windows[90].covered;
   const weeks = maintenance.activeWeeks;
-  const i30 = issues.windows[30];
-  const p30 = pulls.windows[30];
+  // Issue and pull request flow over a month, or less on repositories too busy to read.
+  const issueFlow = issues.available ? issues.observed : null;
+  const pullFlow = pulls.available ? pulls.observed : null;
 
   // Merges and closed issues are only looked for in the last 90 days.
   const seen = (days: number | null) => (days === null ? "none in 90 days" : ago(days));
@@ -125,18 +127,18 @@ export function Pulse({ report }: { report: Report }) {
         )}
 
         <div className="space-y-10">
-          {issues.available && i30.covered ? (
+          {issueFlow ? (
             <Pair
-              title="Issues, last 30 days"
-              a={{ label: "Opened", value: i30.opened }}
-              b={{ label: "Closed", value: i30.resolved }}
+              title={`Issues, last ${periodLabel(issueFlow.days)}`}
+              a={{ label: "Opened", value: issueFlow.opened }}
+              b={{ label: "Closed", value: issueFlow.resolved }}
             />
           ) : null}
-          {pulls.available && p30.covered ? (
+          {pullFlow ? (
             <Pair
-              title="Pull requests, last 30 days"
-              a={{ label: "Opened", value: p30.opened }}
-              b={{ label: "Merged", value: p30.resolved }}
+              title={`Pull requests, last ${periodLabel(pullFlow.days)}`}
+              a={{ label: "Opened", value: pullFlow.opened }}
+              b={{ label: "Merged", value: pullFlow.resolved }}
             />
           ) : null}
           {releases.medianIntervalDays !== null && releases.count >= 4 ? (

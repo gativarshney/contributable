@@ -38,10 +38,20 @@ function Item({ check }: { check: Check }) {
         {mark.symbol}
       </span>
       <a href={`#${check.anchor}`} className="group min-w-0">
-        <span className="group-hover:text-accent block font-medium tracking-tight transition-colors">
+        <span
+          className={`group-hover:text-accent block font-medium tracking-tight transition-colors ${
+            check.state === "unknown" ? "text-ink-2" : ""
+          }`}
+        >
           {check.question}
         </span>
         <span className="text-ink-2 block text-[15px]">{check.answer}</span>
+        {check.state === "unknown" ? (
+          // An unanswered question must never read as a failed one.
+          <span className="border-hair-strong text-ink-3 mt-1.5 inline-block rounded-full border border-dashed px-2 py-0.5 text-xs">
+            Not enough data. This is not a no.
+          </span>
+        ) : null}
       </a>
     </li>
   );
@@ -74,10 +84,30 @@ export function Verdict({ checklist }: { checklist: Checklist }) {
             >
               {summary(checklist)}
             </h2>
-            <p className="text-ink-2 mt-4 text-[15px]">
-              {favourable} of {checks.length} signals are favourable
-              {unknown > 0 ? `, ${unknown} could not be decided` : ""}. Not a score: each
-              one is a yes or no you can check below.
+            <ul className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-[15px]">
+              <li className="flex items-center gap-2">
+                <span aria-hidden="true" className="bg-accent size-2.5 rounded-full" />
+                <strong className="font-medium">{favourable}</strong>
+                <span className="text-ink-2">yes</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <span aria-hidden="true" className="bg-ink-3 size-2.5 rounded-full" />
+                <strong className="font-medium">{decided - favourable}</strong>
+                <span className="text-ink-2">no</span>
+              </li>
+              {unknown > 0 ? (
+                <li className="flex items-center gap-2">
+                  <span
+                    aria-hidden="true"
+                    className="border-ink-3 size-2.5 rounded-full border border-dashed"
+                  />
+                  <strong className="font-medium">{unknown}</strong>
+                  <span className="text-ink-2">not enough data</span>
+                </li>
+              ) : null}
+            </ul>
+            <p className="text-ink-3 mt-3 text-sm">
+              Not a score. Each one is a yes or no you can check below.
             </p>
           </div>
         </div>

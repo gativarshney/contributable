@@ -18,11 +18,6 @@ const STAGES: { id: StageId; label: string; icon: string }[] = [
     icon: "M2 12h6m8 0h6M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z",
   },
   {
-    id: "contributors",
-    label: "Contributors",
-    icon: "M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm11.5 9v-1a4 4 0 0 0-3-3.87M15 4.13a3.5 3.5 0 0 1 0 6.75",
-  },
-  {
     id: "releases",
     label: "Releases",
     icon: "M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8ZM7.5 7.5h.01",
@@ -114,7 +109,7 @@ function Progress({
       </h1>
 
       <ol
-        className="mt-12 grid w-full max-w-4xl grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7"
+        className="mt-12 grid w-full max-w-4xl grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6"
         aria-live="polite"
       >
         {STAGES.map((stage, i) => {

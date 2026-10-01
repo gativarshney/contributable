@@ -92,7 +92,7 @@ export function calculateMaintenanceSignals(
 export function analyze(dataset: Dataset): Analysis {
   const now = new Date(dataset.fetchedAt);
   const activity = calculateActivity(dataset.commits, now);
-  const contributors = calculateContributors(dataset.commits, dataset.contributors, now);
+  const contributors = calculateContributors(dataset.commits, now);
   const releases = calculateReleaseCadence(dataset.releases, now);
   const openPulls = dataset.openPullRequests;
   const openIssues =

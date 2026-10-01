@@ -1,5 +1,5 @@
 import { WINDOWS, type Collection, type IssueItem, type WindowDays } from "@/types";
-import { DAY_MS, daysBetween, inWindow, isCovered, median, round } from "./time";
+import { daysBetween, inWindow, isCovered, median, observedDays, round } from "./time";
 
 export interface FlowWindow {
   covered: boolean;
@@ -22,9 +22,11 @@ export interface FlowAnalysis {
   openNow: number | null;
   lastResolvedAt: string | null;
   windows: Record<WindowDays, FlowWindow>;
-  /** Thirteen 7-day buckets ending now, oldest first. */
-  weekly: { end: string; opened: number; resolved: number }[];
-  recent: IssueItem[];
+  /**
+   * Figures for the longest period the data fully covers, up to 30 days. On very busy
+   * repositories this is shorter than a week. Null when nothing is covered.
+   */
+  observed: (FlowWindow & { days: number }) | null;
 }
 
 function calculateFlow(
@@ -35,14 +37,12 @@ function calculateFlow(
   resolvedAt: (item: IssueItem) => string | null,
 ): FlowAnalysis {
   const ok = collection.status === "ok";
-  const windows = {} as Record<WindowDays, FlowWindow>;
 
-  for (const days of WINDOWS) {
+  const windowFor = (days: number): FlowWindow => {
     const opened = items.filter((i) => inWindow(i.createdAt, now, days));
     const resolved = items.filter((i) => inWindow(resolvedAt(i), now, days));
-    const durations = resolved.map((i) => daysBetween(i.createdAt, resolvedAt(i)!));
-    const med = median(durations);
-    windows[days] = {
+    const med = median(resolved.map((i) => daysBetween(i.createdAt, resolvedAt(i)!)));
+    return {
       covered: ok && isCovered(collection.coveredSince, now, days),
       opened: opened.length,
       resolved: resolved.length,
@@ -52,16 +52,14 @@ function calculateFlow(
       medianDaysToResolve: med === null ? null : round(med),
       authors: new Set(opened.map((i) => i.author).filter(Boolean)).size,
     };
-  }
+  };
 
-  const weekly = Array.from({ length: 13 }, (_, i) => {
-    const end = new Date(now.getTime() - (12 - i) * 7 * DAY_MS);
-    return {
-      end: end.toISOString(),
-      opened: items.filter((item) => inWindow(item.createdAt, end, 7)).length,
-      resolved: items.filter((item) => inWindow(resolvedAt(item), end, 7)).length,
-    };
-  });
+  const windows = {} as Record<WindowDays, FlowWindow>;
+  for (const days of WINDOWS) windows[days] = windowFor(days);
+
+  // A month is the longest period shown for issue and pull request flow.
+  const covered = ok ? observedDays(collection.coveredSince, now) : null;
+  const days = covered === null ? null : Math.min(30, covered);
 
   return {
     available: ok,
@@ -74,8 +72,7 @@ function calculateFlow(
       return at && (latest === null || at > latest) ? at : latest;
     }, null),
     windows,
-    weekly,
-    recent: [...items].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 5),
+    observed: days === null ? null : { days, ...windowFor(days) },
   };
 }
 

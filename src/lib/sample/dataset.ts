@@ -173,21 +173,6 @@ export function buildSampleDataset(): Dataset {
       fork: false,
     },
     commits: { status: "ok", items: commits, complete: true, coveredSince: since },
-    contributors: {
-      status: "ok",
-      complete: true,
-      coveredSince: null,
-      items: [
-        { login: "mira-okafor", contributions: 1284, isBot: false },
-        { login: "jonas-lindqvist", contributions: 611, isBot: false },
-        { login: "priya-raman", contributions: 240, isBot: false },
-        ...Array.from({ length: 44 }, (_, i) => ({
-          login: `contributor-${i + 1}`,
-          contributions: Math.max(1, 60 - i * 2),
-          isBot: false,
-        })),
-      ],
-    },
     releases: { status: "ok", items: releases, complete: true, coveredSince: null },
     issues: { status: "ok", items: issues, complete: true, coveredSince: since },
     comments: { status: "ok", items: comments, complete: true, coveredSince: since },

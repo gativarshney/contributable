@@ -5,7 +5,7 @@ import {
   fetchComments,
   fetchCommits,
   fetchCommunityFiles,
-  fetchContributors,
+  fetchReleases,
   fetchIssuesAndPulls,
   fetchOpenPullRequestCount,
   fetchRepository,
@@ -194,19 +194,19 @@ describe("fetchers", () => {
   });
 
   it("degrades a single section on failure but aborts on rate limits", async () => {
-    const tooLarge = fakeFetch({ "/contributors": { status: 403 } });
-    const contributors = await fetchContributors(
-      createGitHubClient({ fetch: tooLarge.fetch }),
+    const broken = fakeFetch({ "/releases": { status: 502 } });
+    const releases = await fetchReleases(
+      createGitHubClient({ fetch: broken.fetch }),
       ref,
     );
-    expect(contributors.status).toBe("unavailable");
-    expect(contributors.note).toMatch(/very large histories/);
+    expect(releases.status).toBe("unavailable");
+    expect(releases.items).toEqual([]);
 
     const limited = fakeFetch({
-      "/contributors": { status: 403, headers: { "x-ratelimit-remaining": "0" } },
+      "/releases": { status: 403, headers: { "x-ratelimit-remaining": "0" } },
     });
     await expect(
-      fetchContributors(createGitHubClient({ fetch: limited.fetch }), ref),
+      fetchReleases(createGitHubClient({ fetch: limited.fetch }), ref),
     ).rejects.toMatchObject({ code: "rate_limited" });
   });
 
@@ -452,7 +452,6 @@ describe("analyzeRepository", () => {
           },
         ],
       },
-      "/contributors": { body: [{ login: "ana", contributions: 10, type: "User" }] },
       "/releases": { body: [] },
       "/issues": { body: [] },
       "/pulls": { body: [] },
@@ -473,13 +472,13 @@ describe("analyzeRepository", () => {
 
     expect(stages[0]).toBe("repository");
     expect(stages.at(-1)).toBe("report");
-    expect(new Set(stages).size).toBe(7);
+    expect(new Set(stages).size).toBe(6);
     expect(report.repository.fullName).toBe("acme/widget");
     expect(report.analysis.activity.windows[7].commits).toBe(1);
     expect(report.analysis.stack).toEqual([{ name: "TypeScript", share: 100 }]);
     expect(report.checklist.checks.find((c) => c.id === "license")?.state).toBe("yes");
-    // A small repository costs a dozen requests, which is what makes the free tier viable.
-    expect(calls).toHaveLength(12);
+    // A small repository costs eleven requests, which is what makes the free tier viable.
+    expect(calls).toHaveLength(11);
   });
 
   it("throws on a rate limit so the caller can fall back to another allowance", async () => {

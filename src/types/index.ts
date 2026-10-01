@@ -29,12 +29,6 @@ export interface Commit {
   url: string;
 }
 
-export interface Contributor {
-  login: string;
-  contributions: number;
-  isBot: boolean;
-}
-
 export interface Release {
   tag: string;
   publishedAt: string;
@@ -106,7 +100,6 @@ export interface Collection<T> {
 export interface Dataset {
   repository: Repository;
   commits: Collection<Commit>;
-  contributors: Collection<Contributor>;
   releases: Collection<Release>;
   issues: Collection<IssueItem>;
   comments: Collection<ThreadComment>;

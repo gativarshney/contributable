@@ -14,7 +14,7 @@ const steps = [
   ],
   [
     "Calculate",
-    "Pure functions turn that data into metrics over trailing 7, 30 and 90 day windows. The same data always produces the same report.",
+    "Pure functions turn that data into figures over the last 90 days, or the longest recent period that could be read in full. The same data always produces the same report.",
   ],
   [
     "Show the evidence",
@@ -29,15 +29,15 @@ const rules = [
   ],
   [
     "Stated thresholds",
-    "A finding such as “concentrated” appears only when a documented threshold is crossed, and the report prints that rule.",
+    "Every yes or no on the checklist comes from one fixed rule, and the report prints that rule.",
   ],
   [
     "Deterministic",
-    "No language model writes any part of a report. Findings come from fixed rules over calculated metrics.",
+    "No language model writes any part of a report. Answers come from fixed rules over calculated figures.",
   ],
   [
     "Honest coverage",
-    "Lists are read up to a page limit. When a repository exceeds it, affected windows show a dash rather than a partial number.",
+    "Very busy repositories cannot be read in full. A partial count can prove a yes, because it is a lower bound, but never a no. Anything else is marked not enough data.",
   ],
 ];
 
