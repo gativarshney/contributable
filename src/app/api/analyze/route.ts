@@ -1,7 +1,8 @@
 import { unstable_cache } from "next/cache";
-import { createGitHubClient } from "@/lib/github/client";
+import { createGitHubClient, GitHubError } from "@/lib/github/client";
 import { parseErrorMessage, parseRepoInput } from "@/lib/github/parse";
 import { analyzeRepository, toReportError, type AnalysisEvent } from "@/lib/report/run";
+import { createThrottle } from "@/lib/report/throttle";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +11,8 @@ export const dynamic = "force-dynamic";
 const REPORT_TTL_SECONDS = 60 * 60;
 // Each deployment keeps its own entries: a new version never reads an old report shape.
 const CACHE_VERSION = process.env.VERCEL_GIT_COMMIT_SHA ?? "local";
+// Fresh analyses one address may start. Cached reports are free and never counted.
+const allowFresh = createThrottle(20, 10 * 60 * 1000);
 
 /** Streams newline-delimited JSON events: one per completed stage, then the report. */
 export async function GET(request: Request) {
@@ -28,6 +31,8 @@ export async function GET(request: Request) {
     );
   }
   const { ref } = parsed;
+  const address =
+    request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
 
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
@@ -38,12 +43,15 @@ export async function GET(request: Request) {
       // On a cache miss the function below runs and reports its progress; on a hit it
       // is skipped and the stored report is returned at once. Failures are not stored.
       const load = unstable_cache(
-        () =>
-          analyzeRepository(
+        () => {
+          // Over the limit, the browser is told to use its own GitHub allowance instead.
+          if (!allowFresh(address)) throw new GitHubError("rate_limited", 429);
+          return analyzeRepository(
             ref,
             createGitHubClient({ token: process.env.GITHUB_TOKEN }),
             (stage, detail) => emit({ type: "stage", stage, detail }),
-          ),
+          );
+        },
         ["report", CACHE_VERSION, `${ref.owner}/${ref.name}`.toLowerCase()],
         { revalidate: REPORT_TTL_SECONDS },
       );
