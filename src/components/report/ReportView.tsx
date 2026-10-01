@@ -328,6 +328,19 @@ function Flow({
   );
 }
 
+/**
+ * Column spans that leave no empty cell in the findings grid: rows of three on wide
+ * screens, with a short last row stretched (4 becomes 2 + 2, 5 becomes 3 + 2).
+ */
+function findingSpan(index: number, count: number): string {
+  const md = count % 2 === 1 && index === count - 1 ? "md:col-span-2" : "md:col-span-1";
+  const remainder = count % 3;
+  let lg = "lg:col-span-2";
+  if (count === 4 || (remainder === 2 && index >= count - 2)) lg = "lg:col-span-3";
+  else if (remainder === 1 && index === count - 1) lg = "lg:col-span-6";
+  return `${md} ${lg}`;
+}
+
 const NAV = [
   ["overview", "Overview"],
   ["activity", "Activity"],
@@ -445,9 +458,12 @@ export function ReportView({ report }: { report: Report }) {
             No finding rule was triggered. The individual measurements below still apply.
           </p>
         ) : (
-          <ul className="bg-hair border-hair mt-10 grid gap-px border md:grid-cols-2 lg:grid-cols-3">
-            {findings.map((f) => (
-              <li key={f.id} className="bg-bg flex flex-col p-6">
+          <ul className="bg-hair border-hair mt-10 grid gap-px border md:grid-cols-2 lg:grid-cols-6">
+            {findings.map((f, i) => (
+              <li
+                key={f.id}
+                className={`bg-bg flex flex-col p-6 ${findingSpan(i, findings.length)}`}
+              >
                 <p className="eyebrow !text-accent">{f.category}</p>
                 <h3 className="font-display mt-3 text-2xl leading-tight">{f.title}</h3>
                 <p className="mt-3 text-[15px]">{f.statement}</p>
