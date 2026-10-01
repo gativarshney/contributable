@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "RepoInsight — Understand a GitHub repository before you depend on it";
+export const alt = "RepoInsight";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

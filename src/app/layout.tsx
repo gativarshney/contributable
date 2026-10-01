@@ -20,7 +20,7 @@ const description =
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "RepoInsight — Understand a GitHub repository before you depend on it",
+    default: "RepoInsight",
     template: "%s — RepoInsight",
   },
   description,
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "RepoInsight",
-    title: "RepoInsight — Understand a GitHub repository before you depend on it",
+    title: "RepoInsight",
     description,
     url: "/",
   },
