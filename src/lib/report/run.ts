@@ -145,7 +145,7 @@ export async function runAnalysis(
             stage: "issues",
             detail:
               i.status === "ok"
-                ? `${count(i.items.length, "issue and pull request")} collected`
+                ? `${i.items.length.toLocaleString("en-US")} issues and pull requests collected`
                 : "Unavailable",
           });
           return i;

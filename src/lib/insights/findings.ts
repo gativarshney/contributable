@@ -58,13 +58,22 @@ export function buildFindings(repository: Repository, analysis: Analysis): Findi
         rule: "Zero commits on the default branch in the last 30 days.",
         anchor: "activity",
       });
+    } else if (a30.commits >= 20) {
+      findings.push({
+        id: "bursts",
+        category: "Activity",
+        title: "Commits concentrated in a few days",
+        statement: `${plural(a30.commits, "commit")} were recorded in the last 30 days, on ${plural(a30.activeDays, "active day")}.`,
+        rule: "At least 20 commits on fewer than 8 distinct days in the last 30 days.",
+        anchor: "activity",
+      });
     } else {
       findings.push({
         id: "some-activity",
         category: "Activity",
         title: "Occasional commit activity",
         statement: `${plural(a30.commits, "commit")} were recorded in the last 30 days, across ${plural(a30.activeDays, "active day")}.`,
-        rule: "Between 1 and 19 commits, or fewer than 8 active days, in the last 30 days.",
+        rule: "Between 1 and 19 commits in the last 30 days.",
         anchor: "activity",
       });
     }

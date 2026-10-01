@@ -34,6 +34,7 @@ describe("parseRepoInput", () => {
     ["https://github.com/-bad/repo", "malformed"],
     ["https://github.com/owner/..", "malformed"],
     ["not a url", "malformed"],
+    ["notaurl", "malformed"],
     ["ftp://github.com/a/b", "malformed"],
     ["javascript:alert(1)", "malformed"],
   ])("rejects %j as %s", (input, reason) => {

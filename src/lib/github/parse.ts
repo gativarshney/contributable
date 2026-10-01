@@ -64,6 +64,7 @@ export function parseRepoInput(input: string): ParseResult {
     return { ok: false, reason: "malformed" };
   }
   const host = url.hostname.toLowerCase();
+  if (!host.includes(".")) return { ok: false, reason: "malformed" };
   if (host !== "github.com" && host !== "www.github.com") {
     return { ok: false, reason: "not_github" };
   }
