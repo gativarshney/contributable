@@ -54,7 +54,11 @@ const SLICES = [
 ];
 
 export function People({ report }: { report: Report }) {
-  const { contributing, contributors } = report.analysis;
+  const { contributing, contributors, activity } = report.analysis;
+  // On very busy repositories only the newest commits were read, not a full 90 days.
+  const commitSpan = contributors.windows[90].covered
+    ? "last 90 days"
+    : `last ${fmt(activity.sampleSize)} commits`;
   const real = !report.sample;
   const recent = contributors.windows[90];
   const { responders } = contributing;
@@ -148,11 +152,14 @@ export function People({ report }: { report: Report }) {
 
         <div>
           <h3 className="mb-5 font-medium tracking-tight">
-            Who wrote the code, last 90 days
+            Who wrote the code, {commitSpan}
           </h3>
           {recent.humanCommits > 0 ? (
             <div className="flex flex-col gap-8 sm:flex-row sm:items-center">
-              <Donut segments={segments} label="Share of commits by author, last 90 days">
+              <Donut
+                segments={segments}
+                label={`Share of commits by author, ${commitSpan}`}
+              >
                 <p>
                   <span className="block text-3xl leading-none font-medium tracking-tight">
                     {fmt(recent.contributors)}
