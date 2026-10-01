@@ -1,11 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Skyline } from "@/components/three/Skyline";
 import type { FlowAnalysis } from "@/lib/analysis/issues";
 import type { Report } from "@/lib/report/run";
 import { WINDOWS, type WindowDays } from "@/types";
+import { Checklist } from "./Checklist";
+import { Codebase } from "./Codebase";
 import { Contributing } from "./Contributing";
+import { People } from "./People";
+import { Rhythm } from "./Rhythm";
 import {
   ago,
   Bars,
@@ -169,11 +173,12 @@ function findingSpan(index: number, count: number): string {
 }
 
 const NAV = [
-  ["overview", "Overview"],
+  ["checklist", "Checklist"],
   ["contributing", "Contributing"],
+  ["people", "People"],
+  ["codebase", "Codebase"],
   ["activity", "Activity"],
   ["maintenance", "Maintenance"],
-  ["contributors", "Contributors"],
   ["releases", "Releases"],
   ["issues", "Issues"],
   ["pull-requests", "Pull requests"],
@@ -188,6 +193,14 @@ export function ReportView({ report }: { report: Report }) {
     () => activity.daily.slice(-84).map((d) => d.count),
     [activity.daily],
   );
+  const skylineTooltip = useCallback(
+    (index: number, value: number) => {
+      const date = activity.daily.slice(-84)[index]?.date;
+      return date ? `${day(date)} · ${value} commit${value === 1 ? "" : "s"}` : null;
+    },
+    [activity.daily],
+  );
+  const { rhythm } = analysis.contributing;
   const act = activity.windows[w];
   const con = contributors.windows[w];
   const stats: [string, string][] = [
@@ -218,7 +231,7 @@ export function ReportView({ report }: { report: Report }) {
         <div className="grid items-end gap-x-10 gap-y-6 lg:grid-cols-[minmax(0,1fr)_380px]">
           <div className="min-w-0">
             <p className="eyebrow">
-              Engineering report · data read {day(report.fetchedAt)},{" "}
+              Contributor report · data read {day(report.fetchedAt)},{" "}
               {report.fetchedAt.slice(11, 16)} UTC
             </p>
             <h1 className="display mt-5 text-[clamp(2.2rem,5.6vw,4.25rem)] break-words">
@@ -257,11 +270,14 @@ export function ReportView({ report }: { report: Report }) {
             <figure>
               <Skyline
                 values={skyline}
+                interactive
+                tooltip={skylineTooltip}
                 label={`Commits per day over the last 12 weeks, drawn as a 3D bar field. Peak ${Math.max(...skyline)} commits in a day.`}
                 className="h-[220px] w-full"
               />
               <figcaption className="eyebrow mt-1 text-center">
-                Commits per day · last 12 weeks{activity.complete ? "" : " · partial"}
+                Commits per day · last 12 weeks{activity.complete ? "" : " · partial"} ·
+                hover or drag
               </figcaption>
             </figure>
           ) : null}
@@ -276,38 +292,9 @@ export function ReportView({ report }: { report: Report }) {
         </dl>
       </header>
 
-      <section aria-labelledby="standout" className="border-hair border-t py-12">
-        <p className="eyebrow">Executive overview</p>
-        <h2 id="standout" className="display mt-4 text-[clamp(2rem,4.5vw,3.25rem)]">
-          What <em>stands out</em>
-        </h2>
-        {findings.length === 0 ? (
-          <p className="text-ink-2 mt-6 max-w-2xl">
-            No finding rule was triggered. The individual measurements below still apply.
-          </p>
-        ) : (
-          <ul className="bg-hair border-hair mt-10 grid gap-px border md:grid-cols-2 lg:grid-cols-6">
-            {findings.map((f, i) => (
-              <li
-                key={f.id}
-                className={`bg-bg flex flex-col p-6 ${findingSpan(i, findings.length)}`}
-              >
-                <p className="eyebrow !text-accent">{f.category}</p>
-                <h3 className="font-display mt-3 text-2xl leading-tight">{f.title}</h3>
-                <p className="mt-3 text-[15px]">{f.statement}</p>
-                <p className="text-ink-3 mt-auto pt-5 text-xs">
-                  Rule: {f.rule}{" "}
-                  <a href={`#${f.anchor}`} className="link text-ink-2 whitespace-nowrap">
-                    See evidence
-                  </a>
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      <Checklist checklist={report.checklist} />
 
-      <div className="bg-bg/90 border-hair sticky top-16 z-30 -mx-[clamp(20px,4vw,48px)] flex items-center gap-4 border-y px-[clamp(20px,4vw,48px)] py-3 backdrop-blur-md">
+      <div className="bg-bg/90 border-hair sticky top-14 z-30 -mx-[clamp(20px,4vw,48px)] flex items-center gap-4 border-y px-[clamp(20px,4vw,48px)] py-3 backdrop-blur-md">
         <nav aria-label="Report sections" className="min-w-0 flex-1 overflow-x-auto">
           <ul className="flex gap-5 text-sm whitespace-nowrap">
             {NAV.map(([id, label]) => (
@@ -344,6 +331,57 @@ export function ReportView({ report }: { report: Report }) {
       </div>
 
       <Contributing report={report} window={w} />
+
+      <People report={report} />
+
+      {rhythm.total >= 10 ? (
+        <section id="rhythm" className="border-hair border-t py-14 md:py-20">
+          <p className="eyebrow !text-accent">Timing</p>
+          <h2 className="display mt-4 text-[clamp(2rem,4.5vw,3.25rem)]">
+            When maintainers <em>are around</em>
+          </h2>
+          <p className="text-ink-2 mt-3 max-w-2xl">
+            Every comment by a team member in the observed period, by weekday and hour. A
+            fair guide to when a question is likely to be seen.
+          </p>
+          <div className="mt-8">
+            <Rhythm slots={rhythm.slots} total={rhythm.total} />
+          </div>
+        </section>
+      ) : null}
+
+      <Codebase report={report} />
+
+      <section aria-labelledby="standout" className="border-hair border-t py-14 md:py-20">
+        <p className="eyebrow">Project health</p>
+        <h2 id="standout" className="display mt-4 text-[clamp(2rem,4.5vw,3.25rem)]">
+          What <em>stands out</em>
+        </h2>
+        {findings.length === 0 ? (
+          <p className="text-ink-2 mt-6 max-w-2xl">
+            No finding rule was triggered. The individual measurements below still apply.
+          </p>
+        ) : (
+          <ul className="bg-hair border-hair mt-10 grid gap-px border md:grid-cols-2 lg:grid-cols-6">
+            {findings.map((f, i) => (
+              <li
+                key={f.id}
+                className={`bg-bg flex flex-col p-6 ${findingSpan(i, findings.length)}`}
+              >
+                <p className="eyebrow !text-accent">{f.category}</p>
+                <h3 className="font-display mt-3 text-2xl leading-tight">{f.title}</h3>
+                <p className="mt-3 text-[15px]">{f.statement}</p>
+                <p className="text-ink-3 mt-auto pt-5 text-xs">
+                  Rule: {f.rule}{" "}
+                  <a href={`#${f.anchor}`} className="link text-ink-2 whitespace-nowrap">
+                    See evidence
+                  </a>
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       <Section
         id="activity"

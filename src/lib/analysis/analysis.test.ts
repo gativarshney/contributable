@@ -22,6 +22,7 @@ import { calculateContributorConcentration } from "./contributors";
 import { analyze, calculateRepositoryAge } from "./index";
 import { calculateIssueSignals, calculatePullRequestSignals } from "./issues";
 import { calculateReleaseCadence } from "./releases";
+import { busiest, toLocalGrid } from "./rhythm";
 import { DAY_MS, median } from "./time";
 
 const NOW = new Date("2026-06-30T00:00:00Z");
@@ -442,7 +443,7 @@ describe("contributor checklist", () => {
     expect(checklist.checks).toHaveLength(10);
     expect(byId.license.state).toBe("yes");
     expect(byId["latest-commit"].state).toBe("yes");
-    expect(byId.guide.state).toBe("yes");
+    expect(byId.guide.state).toBe("no");
     expect(byId.starter.answer).toContain("5 unassigned issues");
     expect(checklist.favourable).toBe(
       checklist.checks.filter((c) => c.state === "yes").length,
@@ -560,5 +561,36 @@ describe("analyze", () => {
     expect(findings[0].id).toBe("archived");
     expect(findings.map((f) => f.id)).toContain("no-releases");
     expect(findings.map((f) => f.id)).not.toContain("concentrated");
+  });
+});
+
+describe("reply rhythm", () => {
+  const slots = () => new Array<number>(336).fill(0);
+
+  it("shifts UTC half-hour slots into a local time zone", () => {
+    const utc = slots();
+    utc[weekSlot("2026-06-29T23:30:00Z")] = 4; // Monday 23:30 UTC
+    const grid = toLocalGrid(utc, 330); // India, UTC+5:30
+
+    // 23:30 Monday + 5:30 = 05:00 Tuesday. Index is hour * 7 + weekday.
+    expect(grid[5 * 7 + 2]).toBe(4);
+    expect(grid.reduce((a, b) => a + b, 0)).toBe(4);
+  });
+
+  it("wraps around the week in both directions", () => {
+    const utc = slots();
+    utc[0] = 1; // Sunday 00:00 UTC
+    utc[335] = 2; // Saturday 23:30 UTC
+    expect(toLocalGrid(utc, -60)[23 * 7 + 6]).toBe(1); // back to Saturday 23:00
+    expect(toLocalGrid(utc, 60)[0 * 7 + 0]).toBe(2); // forward to Sunday 00:00
+  });
+
+  it("names the busiest weekday and three-hour stretch", () => {
+    const grid = new Array<number>(168).fill(0);
+    grid[14 * 7 + 2] = 5; // Tuesday 14:00
+    grid[15 * 7 + 2] = 6;
+    grid[16 * 7 + 3] = 4; // Wednesday 16:00
+    grid[3 * 7 + 6] = 2; // Saturday 03:00
+    expect(busiest(grid)).toEqual({ day: "Tuesday", from: 14, to: 17 });
   });
 });

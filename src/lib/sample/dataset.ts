@@ -185,7 +185,7 @@ export function buildSampleDataset(): Dataset {
     },
     community: {
       readme: URL_BASE,
-      contributing: URL_BASE,
+      contributing: null,
       codeOfConduct: URL_BASE,
       license: URL_BASE,
       issueTemplate: URL_BASE,
