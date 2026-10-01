@@ -12,6 +12,7 @@ const STAGES: { id: StageId; label: string }[] = [
   { id: "contributors", label: "Reading contributors" },
   { id: "releases", label: "Reading release history" },
   { id: "issues", label: "Reading issues and pull requests" },
+  { id: "contributing", label: "Reading contributor signals" },
   { id: "report", label: "Building engineering report" },
 ];
 
@@ -136,7 +137,7 @@ export function ReportLoader({ owner, name }: { owner: string; name: string }) {
           const done = detail !== undefined;
           // Fetches run in parallel once the repository is confirmed.
           const active =
-            !done && (i === firstPending || ("repository" in state.done && i < 5));
+            !done && (i === firstPending || ("repository" in state.done && i < 6));
           return (
             <li
               key={stage.id}
