@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { EvidenceCard } from "@/components/home/EvidenceCard";
-import { SamplePreview } from "@/components/home/SamplePreview";
+import { Showcase, type ShowcaseData } from "@/components/home/Showcase";
 import { RepoInput } from "@/components/site/RepoInput";
 import { Reveal } from "@/components/site/Reveal";
 import { Skyline } from "@/components/three/Skyline";
+import { buildSampleReport } from "@/lib/sample/dataset";
 import { buildSkylineValues } from "@/lib/sample/skyline";
 
-const examples = ["vercel/next.js", "facebook/react", "sindresorhus/ky"];
+const examples = ["vercel/next.js", "fastify/fastify", "sindresorhus/ky"];
 const skyline = buildSkylineValues();
 
 const layers = [
@@ -16,14 +17,19 @@ const layers = [
   ["Limited", "What it cannot prove."],
 ];
 
-const signals = [
-  ["Activity", "Commits, active days, trend"],
-  ["Maintenance", "Time since each kind of work"],
-  ["Contributors", "How concentrated the work is"],
-  ["Releases", "Latest release and cadence"],
-  ["Issues and pull requests", "Opened, closed, merged, time to resolve"],
-  ["Contributing", "Starter issues, merge share, response time"],
-];
+function showcaseData(): ShowcaseData {
+  const report = buildSampleReport();
+  const { contributing, contributors } = report.analysis;
+  return {
+    repository: report.repository.fullName,
+    checklist: report.checklist,
+    window: contributing.windows[90],
+    starter: contributing.starter,
+    responders: contributing.responders,
+    rhythm: contributing.rhythm,
+    authors: contributors.windows[90].distribution,
+  };
+}
 
 export default function HomePage() {
   return (
@@ -34,6 +40,7 @@ export default function HomePage() {
         <Skyline
           values={skyline}
           anchor="bottom"
+          reactive
           className="skyline-fade pointer-events-none absolute inset-x-0 bottom-0 h-[clamp(14rem,38svh,26rem)]"
         />
         <div className="shell relative flex flex-col items-center pt-[clamp(2rem,7svh,6rem)] pb-[clamp(10rem,29svh,20rem)] text-center">
@@ -42,7 +49,7 @@ export default function HomePage() {
             className="rise border-hair-strong text-ink-2 hover:text-ink bg-bg-2/60 inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] transition-colors"
           >
             <span className="bg-accent size-1.5 rounded-full" aria-hidden="true" />
-            Evidence, not scores
+            For open source contributors
             <span className="text-ink-3" aria-hidden="true">
               ·
             </span>
@@ -52,14 +59,14 @@ export default function HomePage() {
             className="display rise mt-7 max-w-4xl text-[clamp(2.5rem,min(7.4vw,10svh),5.25rem)]"
             style={{ animationDelay: "70ms" }}
           >
-            Understand a repository <em>before you commit to it.</em>
+            Know a repository <em>before your first pull request.</em>
           </h1>
           <p
             className="text-ink-2 rise mt-6 max-w-xl text-lg text-balance"
             style={{ animationDelay: "140ms" }}
           >
-            Whether you plan to depend on it or contribute to it: an engineering report
-            where every number shows its evidence.
+            Where to start, who maintains it, and whether outside contributions actually
+            get merged. Every answer shows its evidence.
           </p>
           <div className="rise mt-9 w-full max-w-xl" style={{ animationDelay: "210ms" }}>
             <RepoInput />
@@ -79,9 +86,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      <SamplePreview />
+      <section aria-labelledby="questions-heading" className="py-20 md:py-28">
+        <div className="shell">
+          <Reveal>
+            <p className="eyebrow">What you get</p>
+            <h2
+              id="questions-heading"
+              className="display mt-5 text-[clamp(2rem,4.6vw,3.25rem)]"
+            >
+              Six questions, <em>answered.</em>
+            </h2>
+          </Reveal>
+          <Reveal delay={100} className="mt-10">
+            <Showcase data={showcaseData()} />
+          </Reveal>
+        </div>
+      </section>
 
-      <section className="py-20 md:py-28">
+      <section className="border-hair border-t py-20 md:py-28">
         <div className="shell grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
           <Reveal>
             <p className="eyebrow">Evidence first</p>
@@ -99,34 +121,13 @@ export default function HomePage() {
                 </div>
               ))}
             </dl>
+            <p className="text-ink-3 mt-6 text-sm">
+              No score, no generated text. Also in every report: activity, maintenance,
+              releases, issues and pull requests.
+            </p>
           </Reveal>
           <Reveal delay={120}>
             <EvidenceCard />
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="border-hair border-t py-20 md:py-32">
-        <div className="shell">
-          <Reveal>
-            <p className="eyebrow">What a report covers</p>
-            <h2 className="display mt-5 text-[clamp(2rem,4.6vw,3.25rem)]">
-              Six signals. <em>No score.</em>
-            </h2>
-          </Reveal>
-          <Reveal delay={100}>
-            <ul className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {signals.map(([name, detail], i) => (
-                <li
-                  key={name}
-                  className="card hover:border-hair-strong p-6 transition-colors duration-300"
-                >
-                  <span className="text-accent font-mono text-xs">0{i + 1}</span>
-                  <h3 className="mt-6 text-lg font-medium tracking-tight">{name}</h3>
-                  <p className="text-ink-2 mt-1 text-[15px]">{detail}</p>
-                </li>
-              ))}
-            </ul>
           </Reveal>
         </div>
       </section>
@@ -135,7 +136,7 @@ export default function HomePage() {
         <div className="hero-glow rotate-180" aria-hidden="true" />
         <Reveal className="shell relative flex flex-col items-center text-center">
           <h2 className="display text-[clamp(2.2rem,5.4vw,4rem)]">
-            Start with <em>a repository.</em>
+            Pick a repository. <em>Start contributing.</em>
           </h2>
           <div className="mt-9 w-full max-w-xl">
             <RepoInput />

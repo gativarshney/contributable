@@ -15,7 +15,7 @@ const displaySerif = Instrument_Serif({
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 const description =
-  "RepoInsight turns public GitHub activity into an evidence-backed engineering report: maintenance, collaboration, releases, issues and pull requests, with the evidence behind every number.";
+  "RepoInsight tells open source contributors what to expect from a repository: where to start, who maintains it, how fast people reply and whether outside pull requests get merged, with the evidence behind every answer.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -26,7 +26,13 @@ export const metadata: Metadata = {
   description,
   applicationName: "RepoInsight",
   authors: [{ name: "Gati Varshney", url: "https://gativarshney.github.io/" }],
-  keywords: ["GitHub", "repository analysis", "open source", "engineering report"],
+  keywords: [
+    "open source",
+    "GitHub",
+    "contributing",
+    "good first issue",
+    "repository analysis",
+  ],
   openGraph: {
     type: "website",
     siteName: "RepoInsight",

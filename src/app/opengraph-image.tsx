@@ -25,7 +25,7 @@ export default function OpenGraphImage() {
         <div
           style={{ display: "flex", fontSize: 76, lineHeight: 1.05, letterSpacing: -2 }}
         >
-          Understand a GitHub repository
+          Know a repository
         </div>
         <div
           style={{
@@ -36,11 +36,11 @@ export default function OpenGraphImage() {
             color: "#6fd3cf",
           }}
         >
-          before you depend on it.
+          before your first pull request.
         </div>
       </div>
       <div style={{ display: "flex", fontSize: 28, color: "#a3a8ae" }}>
-        Evidence-backed engineering reports from public GitHub data
+        For open source contributors · evidence from public GitHub data
       </div>
     </div>,
     size,
