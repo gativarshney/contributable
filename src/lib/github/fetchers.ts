@@ -1,10 +1,13 @@
 import type {
   Collection,
   Commit,
+  CommunityFiles,
   Contributor,
   IssueItem,
   Release,
   Repository,
+  StarterIssue,
+  ThreadComment,
 } from "@/types";
 import { GitHubError, type GitHubClient } from "./client";
 import type { RepoRef } from "./parse";
@@ -16,6 +19,10 @@ const str = (v: unknown): string | null => (typeof v === "string" && v ? v : nul
 const num = (v: unknown): number => (typeof v === "number" ? v : 0);
 const isBot = (user: Raw | null | undefined): boolean =>
   user?.type === "Bot" || /\[bot\]$/.test(user?.login ?? "");
+// GitHub's author_association values for people with a formal role in the repository.
+const TEAM_ASSOCIATIONS = new Set(["OWNER", "MEMBER", "COLLABORATOR"]);
+/** GitHub's default labels for work that is open to new contributors. */
+export const STARTER_LABELS = ["good first issue", "help wanted"];
 
 export function normalizeRepository(raw: Raw): Repository {
   const spdx = raw.license?.spdx_id;
@@ -63,7 +70,23 @@ export function normalizeIssue(raw: Raw): IssueItem | null {
     closedAt: str(raw.closed_at),
     mergedAt: str(raw.pull_request?.merged_at ?? raw.merged_at),
     author: str(raw.user?.login),
+    association: isBot(raw.user)
+      ? "bot"
+      : TEAM_ASSOCIATIONS.has(raw.author_association)
+        ? "team"
+        : "community",
     url: raw.html_url ?? "",
+  };
+}
+
+export function normalizeComment(raw: Raw): ThreadComment | null {
+  const issue = /\/issues\/(\d+)$/.exec(raw.issue_url ?? "");
+  if (!issue || !raw.created_at) return null;
+  return {
+    issueNumber: Number(issue[1]),
+    createdAt: raw.created_at,
+    author: str(raw.user?.login),
+    isBot: isBot(raw.user),
   };
 }
 
@@ -266,6 +289,111 @@ export async function fetchOpenPullRequestCount(
       per_page: 1,
     });
     return res.lastPage ?? (Array.isArray(res.data) ? res.data.length : null);
+  } catch (error) {
+    rethrowFatal(error);
+    return null;
+  }
+}
+
+/**
+ * Conversation comments on issues and pull requests, newest first. Review approvals and
+ * inline review comments live in other endpoints and are not included.
+ */
+export async function fetchComments(
+  client: GitHubClient,
+  ref: RepoRef,
+  since: string,
+  maxPages: number,
+): Promise<Collection<ThreadComment>> {
+  try {
+    return await fetchList(
+      client,
+      `/repos/${ref.owner}/${ref.name}/issues/comments`,
+      { since, sort: "created", direction: "desc" },
+      maxPages,
+      since,
+      normalizeComment,
+      (raw) => raw.created_at,
+    );
+  } catch (error) {
+    rethrowFatal(error);
+    return unavailable(
+      "GitHub did not return conversation comments for this repository.",
+    );
+  }
+}
+
+/** Open issues carrying one of GitHub's default newcomer labels, most recent first. */
+export async function fetchStarterIssues(
+  client: GitHubClient,
+  ref: RepoRef,
+): Promise<Collection<StarterIssue>> {
+  try {
+    const pages = await Promise.all(
+      STARTER_LABELS.map((label) =>
+        client.get<Raw[]>(`/repos/${ref.owner}/${ref.name}/issues`, {
+          state: "open",
+          labels: label,
+          sort: "updated",
+          direction: "desc",
+          per_page: 100,
+        }),
+      ),
+    );
+    const seen = new Set<number>();
+    const items: StarterIssue[] = [];
+    pages.forEach((page, i) => {
+      for (const raw of Array.isArray(page.data) ? page.data : []) {
+        if (raw.pull_request || typeof raw.number !== "number" || seen.has(raw.number)) {
+          continue;
+        }
+        seen.add(raw.number);
+        items.push({
+          number: raw.number,
+          title: String(raw.title ?? "").slice(0, 120),
+          url: raw.html_url ?? "",
+          createdAt: raw.created_at,
+          comments: num(raw.comments),
+          assigned: Array.isArray(raw.assignees) && raw.assignees.length > 0,
+          label: STARTER_LABELS[i],
+        });
+      }
+    });
+    return {
+      status: "ok",
+      items,
+      complete: pages.every((page) => !page.hasNext),
+      coveredSince: null,
+    };
+  } catch (error) {
+    rethrowFatal(error);
+    if (error instanceof GitHubError && error.code === "gone") {
+      return { status: "ok", items: [], complete: true, coveredSince: null };
+    }
+    return unavailable("GitHub did not return labelled issues for this repository.");
+  }
+}
+
+/** Which community files GitHub detects (contributing guide, code of conduct, templates). */
+export async function fetchCommunityFiles(
+  client: GitHubClient,
+  ref: RepoRef,
+): Promise<CommunityFiles | null> {
+  try {
+    const { data } = await client.get<Raw>(
+      `/repos/${ref.owner}/${ref.name}/community/profile`,
+    );
+    const files = data.files ?? {};
+    const url = (file: Raw | null | undefined) =>
+      file ? (str(file.html_url) ?? str(file.url) ?? "") : null;
+    return {
+      readme: url(files.readme),
+      contributing: url(files.contributing),
+      codeOfConduct: url(files.code_of_conduct ?? files.code_of_conduct_file),
+      license: url(files.license),
+      issueTemplate: url(files.issue_template),
+      pullRequestTemplate: url(files.pull_request_template),
+    };
   } catch (error) {
     rethrowFatal(error);
     return null;

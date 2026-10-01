@@ -2,12 +2,15 @@ import { analyze, type Analysis } from "@/lib/analysis";
 import { DAY_MS } from "@/lib/analysis/time";
 import { createGitHubClient, GitHubError, type GitHubClient } from "@/lib/github/client";
 import {
+  fetchComments,
   fetchCommits,
+  fetchCommunityFiles,
   fetchContributors,
   fetchIssuesAndPulls,
   fetchOpenPullRequestCount,
   fetchReleases,
   fetchRepository,
+  fetchStarterIssues,
 } from "@/lib/github/fetchers";
 import type { RepoRef } from "@/lib/github/parse";
 import { buildFindings, type Finding } from "@/lib/insights/findings";
@@ -28,7 +31,13 @@ export interface ReportError {
 }
 
 export type StageId =
-  "repository" | "commits" | "contributors" | "releases" | "issues" | "report";
+  | "repository"
+  | "commits"
+  | "contributors"
+  | "releases"
+  | "issues"
+  | "contributing"
+  | "report";
 
 export type AnalysisEvent =
   | { type: "stage"; stage: StageId; detail: string }
@@ -104,55 +113,75 @@ export async function runAnalysis(
     // Unauthenticated requests are limited to 60 per hour, so collect less.
     const maxPages = client.authenticated ? 10 : 3;
 
-    const [commits, contributors, releases, issues, openPullRequests] = await Promise.all(
-      [
-        fetchCommits(client, canonical, since, maxPages).then((c) => {
-          emit({
-            type: "stage",
-            stage: "commits",
-            detail:
-              c.status === "ok"
-                ? `${count(c.items.length, "commit")} collected`
-                : "Unavailable",
-          });
-          return c;
-        }),
-        fetchContributors(client, canonical).then((c) => {
-          emit({
-            type: "stage",
-            stage: "contributors",
-            detail:
-              c.status === "ok"
-                ? `${count(c.items.length, "contributor")} listed`
-                : "Unavailable",
-          });
-          return c;
-        }),
-        fetchReleases(client, canonical).then((r) => {
-          emit({
-            type: "stage",
-            stage: "releases",
-            detail:
-              r.status === "ok"
-                ? `${count(r.items.length, "release")} collected`
-                : "Unavailable",
-          });
-          return r;
-        }),
-        fetchIssuesAndPulls(client, canonical, since, maxPages).then((i) => {
-          emit({
-            type: "stage",
-            stage: "issues",
-            detail:
-              i.status === "ok"
-                ? `${i.items.length.toLocaleString("en-US")} issues and pull requests collected`
-                : "Unavailable",
-          });
-          return i;
-        }),
-        fetchOpenPullRequestCount(client, canonical),
-      ],
-    );
+    const [
+      commits,
+      contributors,
+      releases,
+      issues,
+      openPullRequests,
+      [comments, starterIssues, community],
+    ] = await Promise.all([
+      fetchCommits(client, canonical, since, maxPages).then((c) => {
+        emit({
+          type: "stage",
+          stage: "commits",
+          detail:
+            c.status === "ok"
+              ? `${count(c.items.length, "commit")} collected`
+              : "Unavailable",
+        });
+        return c;
+      }),
+      fetchContributors(client, canonical).then((c) => {
+        emit({
+          type: "stage",
+          stage: "contributors",
+          detail:
+            c.status === "ok"
+              ? `${count(c.items.length, "contributor")} listed`
+              : "Unavailable",
+        });
+        return c;
+      }),
+      fetchReleases(client, canonical).then((r) => {
+        emit({
+          type: "stage",
+          stage: "releases",
+          detail:
+            r.status === "ok"
+              ? `${count(r.items.length, "release")} collected`
+              : "Unavailable",
+        });
+        return r;
+      }),
+      fetchIssuesAndPulls(client, canonical, since, maxPages).then((i) => {
+        emit({
+          type: "stage",
+          stage: "issues",
+          detail:
+            i.status === "ok"
+              ? `${i.items.length.toLocaleString("en-US")} issues and pull requests collected`
+              : "Unavailable",
+        });
+        return i;
+      }),
+      fetchOpenPullRequestCount(client, canonical),
+      Promise.all([
+        fetchComments(client, canonical, since, maxPages),
+        fetchStarterIssues(client, canonical),
+        fetchCommunityFiles(client, canonical),
+      ]).then((result) => {
+        emit({
+          type: "stage",
+          stage: "contributing",
+          detail:
+            result[1].status === "ok"
+              ? `${count(result[1].items.length, "starter issue")}, ${count(result[0].items.length, "comment")}`
+              : "Partly unavailable",
+        });
+        return result;
+      }),
+    ]);
 
     const report = buildReport({
       repository,
@@ -160,6 +189,9 @@ export async function runAnalysis(
       contributors,
       releases,
       issues,
+      comments,
+      starterIssues,
+      community,
       openPullRequests,
       fetchedAt: now.toISOString(),
     });

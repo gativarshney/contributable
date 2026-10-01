@@ -48,7 +48,43 @@ export interface IssueItem {
   closedAt: string | null;
   mergedAt: string | null;
   author: string | null;
+  association: Association;
   url: string;
+}
+
+/**
+ * How GitHub relates an author to the repository. "team" covers owners, organisation
+ * members and collaborators; everyone else who is not a bot is "community".
+ */
+export type Association = "team" | "community" | "bot";
+
+/** A comment on an issue or pull request conversation. */
+export interface ThreadComment {
+  issueNumber: number;
+  createdAt: string;
+  author: string | null;
+  isBot: boolean;
+}
+
+/** An open issue carrying a label that invites new contributors. */
+export interface StarterIssue {
+  number: number;
+  title: string;
+  url: string;
+  createdAt: string;
+  comments: number;
+  assigned: boolean;
+  label: string;
+}
+
+/** Community files GitHub detects for a repository; a null URL means not detected. */
+export interface CommunityFiles {
+  readme: string | null;
+  contributing: string | null;
+  codeOfConduct: string | null;
+  license: string | null;
+  issueTemplate: string | null;
+  pullRequestTemplate: string | null;
 }
 
 /**
@@ -70,6 +106,9 @@ export interface Dataset {
   contributors: Collection<Contributor>;
   releases: Collection<Release>;
   issues: Collection<IssueItem>;
+  comments: Collection<ThreadComment>;
+  starterIssues: Collection<StarterIssue>;
+  community: CommunityFiles | null;
   openPullRequests: number | null;
   fetchedAt: string;
 }

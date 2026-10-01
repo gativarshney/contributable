@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { buildFindings } from "@/lib/insights/findings";
 import { buildSampleDataset } from "@/lib/sample/dataset";
-import type { Collection, Commit, IssueItem, Release } from "@/types";
+import type { Collection, Commit, IssueItem, Release, StarterIssue } from "@/types";
 import { calculateActivity } from "./activity";
+import { calculateContributingSignals, firstResponseAt } from "./contributing";
 import { calculateContributorConcentration } from "./contributors";
 import { analyze, calculateRepositoryAge } from "./index";
 import { calculateIssueSignals, calculatePullRequestSignals } from "./issues";
@@ -164,29 +165,176 @@ describe("calculateReleaseCadence", () => {
   });
 });
 
-describe("issue and pull request signals", () => {
-  const item = (
-    number: number,
-    created: number,
-    closed: number | null,
-    extra: Partial<IssueItem> = {},
-  ): IssueItem => ({
-    number,
-    title: `#${number}`,
-    isPullRequest: false,
-    createdAt: ago(created),
-    closedAt: closed === null ? null : ago(closed),
-    mergedAt: null,
-    author: "ana",
-    url: "",
+const item = (
+  number: number,
+  created: number,
+  closed: number | null,
+  extra: Partial<IssueItem> = {},
+): IssueItem => ({
+  number,
+  title: `#${number}`,
+  isPullRequest: false,
+  createdAt: ago(created),
+  closedAt: closed === null ? null : ago(closed),
+  mergedAt: null,
+  author: "ana",
+  association: "team",
+  url: "",
+  ...extra,
+});
+const pr = (
+  number: number,
+  created: number,
+  closed: number | null,
+  merged: boolean,
+  extra: Partial<IssueItem> = {},
+) =>
+  item(number, created, closed, {
+    isPullRequest: true,
+    mergedAt: merged && closed !== null ? ago(closed) : null,
     ...extra,
   });
-  const pr = (number: number, created: number, closed: number | null, merged: boolean) =>
-    item(number, created, closed, {
-      isPullRequest: true,
-      mergedAt: merged && closed !== null ? ago(closed) : null,
-    });
 
+describe("contributing signals", () => {
+  const outsider = { author: "newcomer", association: "community" } as const;
+  const comment = (
+    issueNumber: number,
+    daysAgo: number,
+    author: string,
+    isBot = false,
+  ) => ({
+    issueNumber,
+    createdAt: ago(daysAgo),
+    author,
+    isBot,
+  });
+  const none = collection<StarterIssue>([], { coveredSince: null });
+
+  it("measures how community pull requests fare, separately from the team's", () => {
+    const items = [
+      pr(1, 10, 6, true, outsider), // merged after 4 days
+      pr(2, 12, 2, true, outsider), // merged after 10 days
+      pr(3, 9, 5, false, outsider), // closed without merge
+      pr(4, 3, null, false, outsider), // still open
+      pr(5, 8, 7, true), // team
+      pr(6, 5, 4, true, { author: "renovate[bot]", association: "bot" }),
+    ];
+    const result = calculateContributingSignals(
+      collection(items),
+      collection([]),
+      none,
+      null,
+      NOW,
+    );
+
+    expect(result.windows[30]).toMatchObject({
+      communityOpened: 4,
+      humanOpened: 5,
+      communityMerged: 2,
+      communityClosedUnmerged: 1,
+      mergeShare: 67,
+      medianDaysToMerge: 7,
+    });
+    expect(result.files).toBeNull();
+  });
+
+  it("finds the first human response and ignores bots and the author", () => {
+    const thread = item(7, 10, null, outsider);
+    const comments = [
+      comment(7, 9.9, "welcome[bot]", true),
+      comment(7, 9.5, "newcomer"),
+      comment(7, 8, "maintainer"),
+      comment(7, 6, "someone-else"),
+    ];
+    expect(firstResponseAt(thread, comments)).toBe(ago(8));
+    expect(firstResponseAt(thread, comments.slice(0, 2))).toBeNull();
+  });
+
+  it("treats a merge as a response when nobody commented first", () => {
+    const merged = pr(8, 10, 9, true, outsider);
+    expect(firstResponseAt(merged, undefined)).toBe(ago(9));
+    expect(firstResponseAt(merged, [comment(8, 9.5, "maintainer")])).toBe(ago(9.5));
+  });
+
+  it("summarises responses across community threads only", () => {
+    const items = [
+      item(1, 10, null, outsider), // answered after 2 days
+      item(2, 8, null, outsider), // no answer
+      pr(3, 6, 5, true, outsider), // merged after 1 day
+      item(4, 5, null), // team thread, not counted
+    ];
+    const comments = [comment(1, 8, "maintainer"), comment(4, 4, "newcomer")];
+    const result = calculateContributingSignals(
+      collection(items),
+      collection(comments),
+      none,
+      null,
+      NOW,
+    );
+
+    expect(result.windows[30]).toMatchObject({
+      responseCovered: true,
+      threads: 3,
+      answered: 2,
+      medianHoursToResponse: 36,
+    });
+  });
+
+  it("does not report response times the comment list cannot cover", () => {
+    const comments = collection([comment(1, 3, "maintainer")], {
+      complete: false,
+      coveredSince: ago(10),
+    });
+    const result = calculateContributingSignals(
+      collection([item(1, 5, null, outsider)]),
+      comments,
+      none,
+      null,
+      NOW,
+    );
+
+    expect(result.windows[7].responseCovered).toBe(true);
+    expect(result.windows[30].responseCovered).toBe(false);
+    expect(result.windows[30].covered).toBe(true);
+  });
+
+  it("counts starter issues that are still unassigned and lists community files", () => {
+    const starter = (number: number, age: number, assigned: boolean): StarterIssue => ({
+      number,
+      title: `Starter ${number}`,
+      url: "",
+      createdAt: ago(age),
+      comments: 0,
+      assigned,
+      label: "good first issue",
+    });
+    const result = calculateContributingSignals(
+      collection<IssueItem>([]),
+      collection([]),
+      collection([starter(1, 10, false), starter(2, 40, true), starter(3, 100, false)], {
+        coveredSince: null,
+      }),
+      {
+        readme: "https://example.test/readme",
+        contributing: null,
+        codeOfConduct: null,
+        license: "",
+        issueTemplate: null,
+        pullRequestTemplate: null,
+      },
+      NOW,
+    );
+
+    expect(result.starter).toMatchObject({ total: 3, unassigned: 2, medianAgeDays: 40 });
+    expect(result.starter.issues.map((i) => i.number)).toEqual([1, 3]);
+    expect(result.files?.filter((f) => f.url !== null).map((f) => f.key)).toEqual([
+      "readme",
+      "license",
+    ]);
+  });
+});
+
+describe("issue and pull request signals", () => {
   const items = [
     item(1, 5, 1),
     item(2, 20, null),

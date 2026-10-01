@@ -1,5 +1,6 @@
 import type { Dataset } from "@/types";
 import { calculateActivity, type ActivityAnalysis } from "./activity";
+import { calculateContributingSignals, type ContributingAnalysis } from "./contributing";
 import { calculateContributors, type ContributorAnalysis } from "./contributors";
 import {
   calculateIssueSignals,
@@ -33,6 +34,7 @@ export interface Analysis {
   issues: FlowAnalysis;
   pulls: FlowAnalysis;
   maintenance: MaintenanceAnalysis;
+  contributing: ContributingAnalysis;
 }
 
 export function calculateRepositoryAge(createdAt: string, now: Date) {
@@ -98,5 +100,12 @@ export function analyze(dataset: Dataset): Analysis {
     { activity, releases, issues, pulls },
     now,
   );
-  return { activity, contributors, releases, issues, pulls, maintenance };
+  const contributing = calculateContributingSignals(
+    dataset.issues,
+    dataset.comments,
+    dataset.starterIssues,
+    dataset.community,
+    now,
+  );
+  return { activity, contributors, releases, issues, pulls, maintenance, contributing };
 }

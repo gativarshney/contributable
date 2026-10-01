@@ -1,6 +1,13 @@
 import { DAY_MS } from "@/lib/analysis/time";
 import { buildReport, type Report } from "@/lib/report/run";
-import type { Commit, Dataset, IssueItem, Release } from "@/types";
+import type {
+  Commit,
+  Dataset,
+  IssueItem,
+  Release,
+  StarterIssue,
+  ThreadComment,
+} from "@/types";
 
 // A fixed instant and a seeded generator keep the example identical on every build.
 const NOW = new Date("2026-09-28T12:00:00Z").getTime();
@@ -24,6 +31,8 @@ const AUTHORS: [string, number, boolean][] = [
   ["sam-whitlock", 0.97, false],
   ["Elena Varga", 1, false],
 ];
+
+const TEAM = ["mira-okafor", "jonas-lindqvist", "priya-raman"];
 
 const at = (daysAgo: number, hours = 0) =>
   new Date(NOW - daysAgo * DAY_MS - hours * 3_600_000).toISOString();
@@ -72,9 +81,51 @@ export function buildSampleDataset(): Dataset {
       closedAt: resolved ? at(closedDaysAgo) : null,
       mergedAt: resolved && isPullRequest && random() < 0.88 ? at(closedDaysAgo) : null,
       author: AUTHORS[Math.floor(random() * AUTHORS.length)][0],
+      association: "community",
       url: URL_BASE,
     });
   }
+  for (const issue of issues) {
+    if (TEAM.includes(issue.author!)) issue.association = "team";
+    else if (issue.author!.endsWith("[bot]")) issue.association = "bot";
+    // Not every outside contribution lands: close some community pull requests unmerged.
+    else if (issue.isPullRequest && issue.closedAt && issue.number % 4 === 0) {
+      issue.mergedAt = null;
+    }
+  }
+
+  // Most community threads get a reply from the team within a couple of days.
+  const comments: ThreadComment[] = [];
+  for (const issue of issues) {
+    if (issue.association !== "community" || random() < 0.14) continue;
+    const created = (NOW - new Date(issue.createdAt).getTime()) / DAY_MS;
+    const delayDays = 0.05 + random() * random() * 3;
+    if (created - delayDays <= 0) continue;
+    comments.push({
+      issueNumber: issue.number,
+      createdAt: at(created - delayDays),
+      author: TEAM[Math.floor(random() * TEAM.length)],
+      isBot: false,
+    });
+  }
+
+  const starterIssues: StarterIssue[] = [
+    ["Document retry backoff options", 6, 3, false, "good first issue"],
+    ["Add example for scheduled jobs", 15, 1, false, "good first issue"],
+    ["Clearer error when the database URL is missing", 22, 4, true, "good first issue"],
+    ["Support custom logger in worker options", 31, 7, false, "help wanted"],
+    ["Flaky test: concurrency limit under load", 48, 5, false, "help wanted"],
+    ["Expose queue depth as a metric", 64, 9, true, "help wanted"],
+    ["Typo fixes in migration guide", 9, 0, false, "good first issue"],
+  ].map(([title, age, replies, assigned, label], i) => ({
+    number: 1790 - i * 7,
+    title: title as string,
+    url: URL_BASE,
+    createdAt: at(age as number),
+    comments: replies as number,
+    assigned: assigned as boolean,
+    label: label as string,
+  }));
 
   const since = at(90);
   return {
@@ -114,6 +165,21 @@ export function buildSampleDataset(): Dataset {
     },
     releases: { status: "ok", items: releases, complete: true, coveredSince: null },
     issues: { status: "ok", items: issues, complete: true, coveredSince: since },
+    comments: { status: "ok", items: comments, complete: true, coveredSince: since },
+    starterIssues: {
+      status: "ok",
+      items: starterIssues,
+      complete: true,
+      coveredSince: null,
+    },
+    community: {
+      readme: URL_BASE,
+      contributing: URL_BASE,
+      codeOfConduct: URL_BASE,
+      license: URL_BASE,
+      issueTemplate: URL_BASE,
+      pullRequestTemplate: null,
+    },
     openPullRequests: 23,
     fetchedAt: new Date(NOW).toISOString(),
   };

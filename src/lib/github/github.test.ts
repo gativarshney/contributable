@@ -2,11 +2,15 @@ import { describe, expect, it, vi } from "vitest";
 import { toReportError } from "@/lib/report/run";
 import { createGitHubClient, GitHubError, parseLinkHeader } from "./client";
 import {
+  fetchComments,
   fetchCommits,
+  fetchCommunityFiles,
   fetchContributors,
   fetchIssuesAndPulls,
   fetchOpenPullRequestCount,
   fetchRepository,
+  fetchStarterIssues,
+  normalizeIssue,
 } from "./fetchers";
 import { parseRepoInput } from "./parse";
 
@@ -255,6 +259,130 @@ describe("fetchers", () => {
     expect(
       await fetchOpenPullRequestCount(createGitHubClient({ fetch: none.fetch }), ref),
     ).toBe(0);
+  });
+});
+
+describe("contributor data", () => {
+  it("classifies authors as team, community or bot", () => {
+    const raw = (association: string, user: object) => ({
+      number: 1,
+      created_at: "2026-02-01T00:00:00Z",
+      author_association: association,
+      user,
+    });
+    const of = (association: string, user: object = { login: "ana", type: "User" }) =>
+      normalizeIssue(raw(association, user))?.association;
+
+    expect(of("OWNER")).toBe("team");
+    expect(of("MEMBER")).toBe("team");
+    expect(of("COLLABORATOR")).toBe("team");
+    expect(of("CONTRIBUTOR")).toBe("community");
+    expect(of("FIRST_TIME_CONTRIBUTOR")).toBe("community");
+    expect(of("NONE")).toBe("community");
+    expect(of("MEMBER", { login: "release-bot", type: "Bot" })).toBe("bot");
+    expect(of("NONE", { login: "dependabot[bot]", type: "User" })).toBe("bot");
+  });
+
+  it("links comments to their thread and reports coverage", async () => {
+    const { fetch } = fakeFetch({
+      "/issues/comments": {
+        body: [
+          {
+            issue_url: "https://api.github.com/repos/acme/widget/issues/42",
+            created_at: "2026-03-02T10:00:00Z",
+            user: { login: "ana", type: "User" },
+          },
+          {
+            issue_url: "https://api.github.com/repos/acme/widget/issues/7",
+            created_at: "2026-03-01T10:00:00Z",
+            user: { login: "ci[bot]", type: "Bot" },
+          },
+          { issue_url: "malformed", created_at: "2026-03-01T09:00:00Z" },
+        ],
+        headers: { link: '<https://api.github.com/x?page=2>; rel="next"' },
+      },
+    });
+    const comments = await fetchComments(createGitHubClient({ fetch }), ref, since, 1);
+
+    expect(comments.items).toEqual([
+      { issueNumber: 42, createdAt: "2026-03-02T10:00:00Z", author: "ana", isBot: false },
+      {
+        issueNumber: 7,
+        createdAt: "2026-03-01T10:00:00Z",
+        author: "ci[bot]",
+        isBot: true,
+      },
+    ]);
+    expect(comments.complete).toBe(false);
+    expect(comments.coveredSince).toBe("2026-03-01T09:00:00Z");
+  });
+
+  it("merges starter labels without duplicates and skips pull requests", async () => {
+    const issue = (number: number, extra: object = {}) => ({
+      number,
+      title: `Issue ${number}`,
+      html_url: `https://github.com/acme/widget/issues/${number}`,
+      created_at: "2026-02-01T00:00:00Z",
+      comments: 2,
+      assignees: [],
+      ...extra,
+    });
+    const { fetch, calls } = fakeFetch({
+      "/issues": (url) => ({
+        body:
+          url.searchParams.get("labels") === "good first issue"
+            ? [
+                issue(1),
+                issue(2, { assignees: [{ login: "ana" }] }),
+                issue(3, { pull_request: {} }),
+              ]
+            : [issue(2), issue(4)],
+      }),
+    });
+    const starters = await fetchStarterIssues(createGitHubClient({ fetch }), ref);
+
+    expect(calls.map((c) => c.searchParams.get("labels"))).toEqual([
+      "good first issue",
+      "help wanted",
+    ]);
+    expect(starters.items.map((i) => [i.number, i.label, i.assigned])).toEqual([
+      [1, "good first issue", false],
+      [2, "good first issue", true],
+      [4, "help wanted", false],
+    ]);
+    expect(starters.complete).toBe(true);
+  });
+
+  it("reads which community files exist", async () => {
+    const { fetch } = fakeFetch({
+      "/community/profile": {
+        body: {
+          files: {
+            readme: { html_url: "https://github.com/acme/widget/blob/main/README.md" },
+            contributing: null,
+            code_of_conduct: {
+              url: "https://api.github.com/codes_of_conduct/x",
+              html_url: null,
+            },
+            license: { html_url: "https://github.com/acme/widget/blob/main/LICENSE" },
+          },
+        },
+      },
+    });
+    const files = await fetchCommunityFiles(createGitHubClient({ fetch }), ref);
+
+    expect(files).toEqual({
+      readme: "https://github.com/acme/widget/blob/main/README.md",
+      contributing: null,
+      codeOfConduct: "https://api.github.com/codes_of_conduct/x",
+      license: "https://github.com/acme/widget/blob/main/LICENSE",
+      issueTemplate: null,
+      pullRequestTemplate: null,
+    });
+    const missing = fakeFetch({ "/community/profile": { status: 404 } });
+    expect(
+      await fetchCommunityFiles(createGitHubClient({ fetch: missing.fetch }), ref),
+    ).toBeNull();
   });
 });
 
