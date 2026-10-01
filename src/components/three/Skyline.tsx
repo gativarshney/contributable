@@ -3,12 +3,18 @@
 import { useEffect, useRef } from "react";
 
 interface SkylineProps {
-  /** One value per day, oldest first. Laid out in columns of seven. */
+  /** One value per cell, laid out in columns of seven, oldest column first. */
   values: number[];
   /** Accessible description. Omit when the canvas is purely decorative. */
   label?: string;
   /** "bottom" rests the bars on the lower edge of the canvas, for use as a backdrop. */
   anchor?: "center" | "bottom";
+  /** Hover a bar to read it, drag to turn the scene. */
+  interactive?: boolean;
+  /** Bars swell under the cursor, wherever it is on the page. */
+  reactive?: boolean;
+  /** Text shown when a bar is hovered. Return null for no tooltip. */
+  tooltip?: (index: number, value: number) => string | null;
   className?: string;
 }
 
@@ -16,6 +22,7 @@ const PALETTES = {
   dark: {
     empty: "#161a1f",
     ramp: ["#174f4d", "#23807b", "#3fb8b0", "#93f2ea"],
+    highlight: "#ffffff",
     sky: "#cfd8e3",
     ground: "#050607",
     key: 2.4,
@@ -24,6 +31,7 @@ const PALETTES = {
   light: {
     empty: "#e4e2dc",
     ramp: ["#b5dcd8", "#7cc4bf", "#3d9d97", "#14645f"],
+    highlight: "#0b2f2d",
     sky: "#ffffff",
     ground: "#cfcabf",
     key: 1.9,
@@ -35,11 +43,25 @@ const STEP = 1.32;
 const INTRO_SECONDS = 1.1;
 
 /**
- * A 3D field of bars, one per day, in the layout of a contribution calendar. The scene
- * is drawn with three.js, which is loaded on demand so it never blocks first paint.
+ * A 3D field of bars in the layout of a contribution calendar. The scene is drawn with
+ * three.js, which is loaded on demand so it never blocks first paint.
  */
-export function Skyline({ values, label, anchor = "center", className }: SkylineProps) {
+export function Skyline({
+  values,
+  label,
+  anchor = "center",
+  interactive = false,
+  reactive = false,
+  tooltip,
+  className = "",
+}: SkylineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const tipRef = useRef<HTMLDivElement>(null);
+  // Kept in a ref so a new function identity does not rebuild the whole scene.
+  const tooltipRef = useRef(tooltip);
+  useEffect(() => {
+    tooltipRef.current = tooltip;
+  }, [tooltip]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -56,16 +78,19 @@ export function Skyline({ values, label, anchor = "center", className }: Skyline
       } catch {
         return; // WebGL unavailable: the page simply renders without the scene.
       }
+      const canvas = renderer.domElement;
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.domElement.style.cssText = "display:block;width:100%;height:100%";
-      container.appendChild(renderer.domElement);
+      canvas.style.cssText = "display:block;width:100%;height:100%;touch-action:pan-y";
+      if (interactive) canvas.style.cursor = "grab";
+      container.appendChild(canvas);
 
-      const weeks = Math.ceil(values.length / 7);
+      const columns = Math.ceil(values.length / 7);
       const peak = Math.max(1, ...values);
       // A year reads as a long horizon; a few weeks read better as a compact block.
-      const compact = weeks <= 26;
+      const compact = columns <= 26;
       const maxHeight = compact ? 3.4 : 7.5;
-      const baseYaw = compact ? -0.62 : -0.16;
+      // Wider blocks are turned less, so their long side stays inside the frame.
+      const baseYaw = !compact ? -0.16 : columns > 14 ? -0.4 : -0.62;
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       const scene = new THREE.Scene();
@@ -92,23 +117,33 @@ export function Skyline({ values, label, anchor = "center", className }: Skyline
       const heights = values.map((v) =>
         v <= 0 ? 0.16 : 0.6 + Math.pow(v / peak, 0.75) * maxHeight,
       );
+      const colors = values.map(() => new THREE.Color());
+      const highlight = new THREE.Color();
+      let hovered = -1;
+
+      function paint(index: number) {
+        mesh.setColorAt(index, index === hovered ? highlight : colors[index]);
+        if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+      }
 
       function applyTheme() {
         const palette =
           PALETTES[document.documentElement.dataset.theme === "light" ? "light" : "dark"];
         const ramp = palette.ramp.map((hex) => new THREE.Color(hex));
-        const empty = new THREE.Color(palette.empty);
-        const color = new THREE.Color();
         values.forEach((v, i) => {
           if (v <= 0) {
-            mesh.setColorAt(i, empty);
-            return;
+            colors[i].set(palette.empty);
+          } else {
+            const t = Math.min(0.999, Math.sqrt(v / peak)) * (ramp.length - 1);
+            const low = Math.floor(t);
+            colors[i]
+              .copy(ramp[low])
+              .lerp(ramp[Math.min(low + 1, ramp.length - 1)], t - low);
           }
-          const t = Math.min(0.999, Math.sqrt(v / peak)) * (ramp.length - 1);
-          const low = Math.floor(t);
-          color.copy(ramp[low]).lerp(ramp[Math.min(low + 1, ramp.length - 1)], t - low);
-          mesh.setColorAt(i, color);
+          mesh.setColorAt(i, colors[i]);
         });
+        highlight.set(palette.highlight);
+        if (hovered >= 0) mesh.setColorAt(hovered, highlight);
         if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
         hemisphere.color.set(palette.sky);
         hemisphere.groundColor.set(palette.ground);
@@ -116,17 +151,24 @@ export function Skyline({ values, label, anchor = "center", className }: Skyline
         key.intensity = palette.key;
       }
 
+      // Where the cursor meets the ground, in grid cells. Used by the reactive swell.
+      const focus = { column: 0, row: 0, strength: 0, target: 0 };
       const dummy = new THREE.Object3D();
       function layout(elapsed: number) {
         for (let i = 0; i < values.length; i++) {
-          const week = Math.floor(i / 7);
-          const day = i % 7;
-          // Bars rise in a sweep from the oldest week to the newest.
-          const delay = (week / weeks) * 0.9 + day * 0.012;
+          const column = Math.floor(i / 7);
+          const row = i % 7;
+          // Bars rise in a sweep from the first column to the last.
+          const delay = (column / columns) * 0.9 + row * 0.012;
           const t = Math.min(1, Math.max(0, (elapsed - delay) / INTRO_SECONDS));
-          const eased = 1 - Math.pow(1 - t, 4);
-          dummy.position.set((week - (weeks - 1) / 2) * STEP, 0, (day - 3) * STEP);
-          dummy.scale.set(1, Math.max(0.02, heights[i] * eased), 1);
+          let height = heights[i] * (1 - Math.pow(1 - t, 4));
+          if (focus.strength > 0.001) {
+            const d2 = (column - focus.column) ** 2 + (row - focus.row) ** 2;
+            height *= 1 + focus.strength * 0.9 * Math.exp(-d2 / 14);
+          }
+          if (i === hovered) height *= 1.12;
+          dummy.position.set((column - (columns - 1) / 2) * STEP, 0, (row - 3) * STEP);
+          dummy.scale.set(1, Math.max(0.02, height), 1);
           dummy.updateMatrix();
           mesh.setMatrixAt(i, dummy.matrix);
         }
@@ -142,7 +184,9 @@ export function Skyline({ values, label, anchor = "center", className }: Skyline
         const vFov = (camera.fov * Math.PI) / 180;
         const hFov = 2 * Math.atan(Math.tan(vFov / 2) * camera.aspect);
         const tanV = Math.tan(vFov / 2);
-        const width = compact ? Math.hypot(weeks, 7) * STEP * 1.12 : weeks * STEP * 1.04;
+        const width = compact
+          ? (columns * Math.cos(baseYaw) + 7 * Math.abs(Math.sin(baseYaw))) * STEP * 1.34
+          : columns * STEP * 1.04;
         const height = 7 * STEP * Math.sin(elevation) + maxHeight * Math.cos(elevation);
         // On narrow screens the strip is allowed to run off both edges instead of shrinking.
         const fitWidth =
@@ -163,14 +207,102 @@ export function Skyline({ values, label, anchor = "center", className }: Skyline
           distance * Math.sin(elevation),
           distance * Math.cos(elevation),
         );
-        camera.lookAt(0, maxHeight * 0.22 + lift, 0);
+        // A wide block sits closer to the camera at one end, so look a little lower to centre it.
+        camera.lookAt(0, (compact && columns > 14 ? -1.6 : maxHeight * 0.22) + lift, 0);
         camera.updateProjectionMatrix();
       }
 
+      const raycaster = new THREE.Raycaster();
+      const ndc = new THREE.Vector2();
+      const ground = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+      const hit = new THREE.Vector3();
       const pointer = { x: 0, y: 0 };
-      const onPointerMove = (event: PointerEvent) => {
+      const drag = { active: false, lastX: 0, yaw: 0 };
+      const tip = tipRef.current;
+
+      function toNdc(event: PointerEvent) {
+        const rect = canvas.getBoundingClientRect();
+        ndc.set(
+          ((event.clientX - rect.left) / rect.width) * 2 - 1,
+          -((event.clientY - rect.top) / rect.height) * 2 + 1,
+        );
+        return rect;
+      }
+
+      function setHovered(next: number) {
+        if (next === hovered) return;
+        const previous = hovered;
+        hovered = next;
+        if (previous >= 0) paint(previous);
+        if (hovered >= 0) paint(hovered);
+      }
+
+      const onWindowPointerMove = (event: PointerEvent) => {
         pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
         pointer.y = (event.clientY / window.innerHeight) * 2 - 1;
+        if (!reactive) return;
+        toNdc(event);
+        raycaster.setFromCamera(ndc, camera);
+        if (Math.abs(ndc.y) > 1.4 || !raycaster.ray.intersectPlane(ground, hit)) {
+          focus.target = 0;
+          return;
+        }
+        group.worldToLocal(hit);
+        focus.column = hit.x / STEP + (columns - 1) / 2;
+        focus.row = hit.z / STEP + 3;
+        focus.target = 1;
+        schedule();
+      };
+      const onWindowPointerLeave = () => {
+        focus.target = 0;
+      };
+
+      const onCanvasPointerMove = (event: PointerEvent) => {
+        if (drag.active) {
+          drag.yaw = Math.max(
+            -1.3,
+            Math.min(1.3, drag.yaw + (event.clientX - drag.lastX) * 0.006),
+          );
+          drag.lastX = event.clientX;
+          schedule();
+          return;
+        }
+        const rect = toNdc(event);
+        raycaster.setFromCamera(ndc, camera);
+        const [first] = raycaster.intersectObject(mesh);
+        setHovered(first?.instanceId ?? -1);
+        const text =
+          hovered >= 0 ? (tooltipRef.current?.(hovered, values[hovered]) ?? null) : null;
+        if (tip) {
+          if (text) {
+            tip.textContent = text;
+            tip.style.opacity = "1";
+            tip.style.transform = `translate(${Math.min(rect.width - 16, Math.max(16, event.clientX - rect.left))}px, ${event.clientY - rect.top - 14}px) translate(-50%, -100%)`;
+          } else {
+            tip.style.opacity = "0";
+          }
+        }
+        schedule();
+      };
+      const onCanvasPointerDown = (event: PointerEvent) => {
+        drag.active = true;
+        drag.lastX = event.clientX;
+        canvas.setPointerCapture(event.pointerId);
+        canvas.style.cursor = "grabbing";
+        if (tip) tip.style.opacity = "0";
+      };
+      const onCanvasPointerUp = (event: PointerEvent) => {
+        drag.active = false;
+        if (canvas.hasPointerCapture(event.pointerId)) {
+          canvas.releasePointerCapture(event.pointerId);
+        }
+        canvas.style.cursor = "grab";
+      };
+      const onCanvasPointerLeave = () => {
+        if (drag.active) return;
+        setHovered(-1);
+        if (tip) tip.style.opacity = "0";
+        schedule();
       };
 
       let frame = 0;
@@ -184,12 +316,19 @@ export function Skyline({ values, label, anchor = "center", className }: Skyline
         const elapsed = (now - start) / 1000;
         if (reduceMotion) {
           layout(Infinity);
-          group.rotation.y = baseYaw;
+          group.rotation.y = baseYaw + drag.yaw;
         } else {
-          if (elapsed < INTRO_SECONDS + 1.2) layout(elapsed);
-          const targetYaw = baseYaw + Math.sin(elapsed * 0.22) * 0.05 + pointer.x * 0.1;
-          group.rotation.y += (targetYaw - group.rotation.y) * 0.05;
-          group.rotation.x += (pointer.y * 0.04 - group.rotation.x) * 0.05;
+          focus.strength += (focus.target - focus.strength) * 0.08;
+          layout(elapsed);
+          const sway = interactive
+            ? 0
+            : Math.sin(elapsed * 0.22) * 0.05 + pointer.x * 0.1;
+          const targetYaw = baseYaw + drag.yaw + sway;
+          group.rotation.y +=
+            (targetYaw - group.rotation.y) * (drag.active ? 0.35 : 0.06);
+          if (!interactive) {
+            group.rotation.x += (pointer.y * 0.04 - group.rotation.x) * 0.05;
+          }
         }
         renderer.render(scene, camera);
         if (!reduceMotion && visible && !document.hidden) schedule();
@@ -224,8 +363,18 @@ export function Skyline({ values, label, anchor = "center", className }: Skyline
       visibilityObserver.observe(container);
       const onVisibility = () => !document.hidden && schedule();
       document.addEventListener("visibilitychange", onVisibility);
-      if (!reduceMotion)
-        window.addEventListener("pointermove", onPointerMove, { passive: true });
+
+      if (!reduceMotion) {
+        window.addEventListener("pointermove", onWindowPointerMove, { passive: true });
+        document.documentElement.addEventListener("pointerleave", onWindowPointerLeave);
+      }
+      if (interactive) {
+        canvas.addEventListener("pointermove", onCanvasPointerMove);
+        canvas.addEventListener("pointerdown", onCanvasPointerDown);
+        canvas.addEventListener("pointerup", onCanvasPointerUp);
+        canvas.addEventListener("pointercancel", onCanvasPointerUp);
+        canvas.addEventListener("pointerleave", onCanvasPointerLeave);
+      }
 
       cleanup = () => {
         cancelAnimationFrame(frame);
@@ -233,12 +382,16 @@ export function Skyline({ values, label, anchor = "center", className }: Skyline
         themeObserver.disconnect();
         visibilityObserver.disconnect();
         document.removeEventListener("visibilitychange", onVisibility);
-        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("pointermove", onWindowPointerMove);
+        document.documentElement.removeEventListener(
+          "pointerleave",
+          onWindowPointerLeave,
+        );
         geometry.dispose();
         material.dispose();
         mesh.dispose();
         renderer.dispose();
-        renderer.domElement.remove();
+        canvas.remove();
       };
     });
 
@@ -246,15 +399,24 @@ export function Skyline({ values, label, anchor = "center", className }: Skyline
       disposed = true;
       cleanup();
     };
-  }, [values, anchor]);
+  }, [values, anchor, interactive, reactive]);
 
   return (
     <div
       ref={containerRef}
       className={className}
+      // The tooltip is positioned against the container.
+      style={interactive ? { position: "relative" } : undefined}
       role={label ? "img" : undefined}
       aria-label={label}
       aria-hidden={label ? undefined : true}
-    />
+    >
+      {interactive ? (
+        <div
+          ref={tipRef}
+          className="border-hair-strong bg-bg text-ink pointer-events-none absolute top-0 left-0 z-10 rounded-md border px-2.5 py-1.5 font-mono text-[11px] whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-150"
+        />
+      ) : null}
+    </div>
   );
 }
