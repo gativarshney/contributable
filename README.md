@@ -42,8 +42,8 @@ out.
 | Section              | Question                           | Shown as                                                   |
 | -------------------- | ---------------------------------- | ---------------------------------------------------------- |
 | Checklist            | Should I contribute here?          | Ten yes / no / not-enough-data answers and a ring          |
-| Where to start       | Where do I start?                  | Unassigned starter issues; which community files exist     |
-| Pull request journey | What happens to my pull request?   | Stacked bars for outcomes and for time to a first reply    |
+| Where to start       | Where do I start?                  | Starter issues checked for being really free; hard blocks  |
+| Pull request journey | What happens to my pull request?   | Outcomes, the merged pull requests as proof, the queue     |
 | People               | Who will I work with?              | Maintainers who reply; a donut of who wrote recent commits |
 | Timing               | When will someone see my question? | A week-by-hour heatmap in the viewer's time zone           |
 | Codebase             | Is it my kind of project?          | Languages with logos; labels on recent work                |
@@ -128,9 +128,10 @@ the partial-data rules above possible: the code always knows how far back it can
 | Starter issues           | `GET /repos/{owner}/{repo}/issues?labels=`              | 2        |
 | Community files          | `GET /repos/{owner}/{repo}/community/profile`           | 1        |
 | Languages                | `GET /repos/{owner}/{repo}/languages`                   | 1        |
+| Starter issue history    | `GET /repos/{owner}/{repo}/issues/{n}/timeline`         | 0 to 4   |
 
 N is the page limit: 3 pages (300 items) without a token, 10 pages (1,000 items) with
-one. A small repository costs 11 requests. Independent requests run in parallel.
+one. A small repository costs 11 requests, plus one for each starter issue checked (four at most). Independent requests run in parallel.
 
 ## Cost and scaling
 
@@ -168,7 +169,19 @@ Periods are trailing, measured back from the moment the data was read.
 - **Responsiveness check** — judged only on threads at least two days old, so a thread
   opened an hour ago is not held against anyone.
 - **Starter issues** — open issues labelled `good first issue` or `help wanted` with no
-  assignee.
+  assignee. For the first four, the issue's timeline is read: it **looks free** when no
+  open pull request refers to it and nobody outside the team has written that they want
+  to take it; otherwise the report says which, and how long ago someone asked.
+- **Landed as a commit** — a community pull request that was closed rather than merged,
+  where a later commit mentions its number, or a commit within two days of the close is
+  by or co-credited to its author. Some projects apply outside work this way; counting
+  only merged pull requests would report those as rejections.
+- **Outside share of merges** — community pull requests merged, out of all pull requests
+  merged by people (bots excluded).
+- **Queue** — open pull requests divided by pull requests merged per week.
+- **Hard blocks** — a source-available licence (BUSL, Elastic, SSPL, FSL, PolyForm,
+  Commons Clause) fails the licence check; a known CLA bot commenting on pull requests
+  is flagged.
 - **Maintainers who reply** — team members ranked by how many community threads they
   commented on.
 - **Who wrote the code** — share of commits on the default branch per author over 90
@@ -191,6 +204,12 @@ Periods are trailing, measured back from the moment the data was read.
 - Only GitHub's two default starter labels are checked. Projects with their own labels
   show no starter issues.
 - Closed without merging includes withdrawn, duplicate and low-quality submissions.
+- "Looks free" matches common phrases for claiming an issue; an unusual wording can be
+  missed, and only the first 100 timeline events are read.
+- Hidden merges are only seen within the commits that were read, and a commit that
+  merely mentions a pull request is counted as landing it.
+- Stars, total commits and the raw open-issue count are shown as facts and never used as
+  a quality signal.
 - Authorship follows GitHub attribution. Squash merges credit whoever merged.
 - Projects that publish through tags or a package registry show no GitHub Releases.
 - Tone is not measured. Nothing here tells you whether a community is welcoming.
@@ -255,6 +274,8 @@ deploying it requires written permission. See [`LICENSE`](LICENSE).
 ## Roadmap
 
 - Read approving reviews, so pull requests answered only by a review count as answered
+- Who actually merges, to show when review depends on one person
+- Accounts that file many issues and ask to be assigned each one
 - Detect a project's own starter labels instead of only GitHub's defaults
 - Tag-based release detection when GitHub Releases are not used
 - Shareable, versioned report snapshots
