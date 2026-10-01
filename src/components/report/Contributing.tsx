@@ -42,7 +42,11 @@ export function Contributing({
           label="Starter issues"
           value={starter.available ? fmt(starter.unassigned) : null}
           unit="open"
-          context={`Unassigned, of ${starter.total}${starter.complete ? "" : "+"} labelled for newcomers`}
+          context={`Unassigned, of ${starter.total}${starter.complete ? "" : "+"} labelled${
+            starter.medianAgeDays === null
+              ? ""
+              : ` · median age ${fmt(starter.medianAgeDays)} days`
+          }`}
           missing="GitHub did not return labelled issues."
           formula='open issues labelled "good first issue" or "help wanted" with no assignee'
           evidence={[
@@ -114,7 +118,7 @@ export function Contributing({
             ["No response observed", data.threads - data.answered],
           ]}
           meaning="Slow or missing first responses are among the strongest predictors of contributors abandoning their work."
-          caveat="Counts conversation comments and merges. Review approvals and inline review comments are not visible here, so a pull request answered only by a review appears unanswered. Bot replies are ignored."
+          caveat="Counts conversation comments, inline review comments and merges. A review that only approves, without a comment, is not visible, so some answered pull requests appear unanswered. Bot replies are ignored."
         />
       </div>
 

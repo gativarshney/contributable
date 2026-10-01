@@ -66,7 +66,7 @@ const limitations = [
   "Very active repositories exceed the collection limit; the report states the period it covers.",
   "Authorship follows GitHub attribution. Squash merges and unlinked emails blur who did the work.",
   "Projects that publish through tags or a package registry show no GitHub Releases.",
-  "Response times see conversation comments and merges only; a pull request answered only by a review looks unanswered.",
+  "Response times see comments and merges; a pull request answered only by an approving review looks unanswered.",
   "Tone is not measured. Nothing here tells you whether a community is welcoming.",
   "Activity is not quality. A quiet repository can be finished; a busy one can be unstable.",
 ];

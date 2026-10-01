@@ -80,7 +80,10 @@ export function normalizeIssue(raw: Raw): IssueItem | null {
 }
 
 export function normalizeComment(raw: Raw): ThreadComment | null {
-  const issue = /\/issues\/(\d+)$/.exec(raw.issue_url ?? "");
+  // Conversation comments point at an issue; inline review comments at a pull request.
+  const issue = /\/(?:issues|pulls)\/(\d+)$/.exec(
+    raw.issue_url ?? raw.pull_request_url ?? "",
+  );
   if (!issue || !raw.created_at) return null;
   return {
     issueNumber: Number(issue[1]),
@@ -296,8 +299,8 @@ export async function fetchOpenPullRequestCount(
 }
 
 /**
- * Conversation comments on issues and pull requests, newest first. Review approvals and
- * inline review comments live in other endpoints and are not included.
+ * Conversation comments on issues and pull requests plus inline review comments, newest
+ * first. A review that only approves, without commenting, is not visible in either list.
  */
 export async function fetchComments(
   client: GitHubClient,
@@ -306,15 +309,30 @@ export async function fetchComments(
   maxPages: number,
 ): Promise<Collection<ThreadComment>> {
   try {
-    return await fetchList(
-      client,
-      `/repos/${ref.owner}/${ref.name}/issues/comments`,
-      { since, sort: "created", direction: "desc" },
-      maxPages,
-      since,
-      normalizeComment,
-      (raw) => raw.created_at,
+    const [conversation, review] = await Promise.all(
+      ["issues", "pulls"].map((kind) =>
+        fetchList(
+          client,
+          `/repos/${ref.owner}/${ref.name}/${kind}/comments`,
+          { since, sort: "created", direction: "desc" },
+          maxPages,
+          since,
+          normalizeComment,
+          (raw) => raw.created_at,
+        ),
+      ),
     );
+    // Coverage is only as deep as the shallower of the two lists.
+    const coveredSince =
+      conversation.coveredSince && review.coveredSince
+        ? [conversation.coveredSince, review.coveredSince].sort()[1]
+        : null;
+    return {
+      status: "ok",
+      items: [...conversation.items, ...review.items],
+      complete: conversation.complete && review.complete,
+      coveredSince,
+    };
   } catch (error) {
     rethrowFatal(error);
     return unavailable(

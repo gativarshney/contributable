@@ -94,11 +94,12 @@ always produces the same result and every function can be tested in isolation.
 | Issues and pull requests | `GET /repos/{owner}/{repo}/issues?state=all&since=`     | 1 to N   |
 | Open pull request count  | `GET /repos/{owner}/{repo}/pulls?state=open&per_page=1` | 1        |
 | Conversation comments    | `GET /repos/{owner}/{repo}/issues/comments?since=`      | 1 to N   |
+| Inline review comments   | `GET /repos/{owner}/{repo}/pulls/comments?since=`       | 1 to N   |
 | Starter issues           | `GET /repos/{owner}/{repo}/issues?labels=`              | 2        |
 | Community files          | `GET /repos/{owner}/{repo}/community/profile`           | 1        |
 
 N is the page limit: 3 pages (300 items) without a token, 10 pages (1,000 items) with
-one. A small repository costs about 10 requests. Independent requests run in parallel and
+one. A small repository costs about 11 requests. Independent requests run in parallel and
 finished reports are cached in memory for 10 minutes.
 
 ## Metric methodology
@@ -128,7 +129,7 @@ in the window * 100`. Accounts GitHub marks as bots are excluded. Commits not li
 - **Community PRs merged** — `merged / (merged + closed without merge) * 100` over
   community pull requests closed inside the window.
 - **First human response** — for each issue or pull request opened by a community author
-  inside the window: the earliest conversation comment by another person, or the merge,
+  inside the window: the earliest conversation or inline review comment by another person, or the merge,
   whichever comes first. The metric is the median of those waits.
 - **Starter issues** — open issues labelled `good first issue` or `help wanted` with no
   assignee.
@@ -157,8 +158,8 @@ if the fetched data is known to be complete back to its start.
 - Authorship follows GitHub attribution. Squash merges and unlinked emails distort it.
 - Merged-PR and closed-issue recency is only observed within the last 90 days.
 - Projects that publish through tags or a package registry show no GitHub Releases.
-- Response times see conversation comments and merges only. Review approvals and inline
-  review comments are not read, so a pull request answered only by a review looks
+- Response times see comments (conversation and inline review) and merges. A review that
+  only approves, without a comment, is not read, so some answered pull requests look
   unanswered.
 - Organisation members with private membership are indistinguishable from community
   authors.

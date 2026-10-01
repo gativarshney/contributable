@@ -301,6 +301,16 @@ describe("contributor data", () => {
         ],
         headers: { link: '<https://api.github.com/x?page=2>; rel="next"' },
       },
+      // Inline review comments reference the pull request instead of an issue.
+      "/pulls/comments": {
+        body: [
+          {
+            pull_request_url: "https://api.github.com/repos/acme/widget/pulls/9",
+            created_at: "2026-02-20T08:00:00Z",
+            user: { login: "ben", type: "User" },
+          },
+        ],
+      },
     });
     const comments = await fetchComments(createGitHubClient({ fetch }), ref, since, 1);
 
@@ -312,9 +322,17 @@ describe("contributor data", () => {
         author: "ci[bot]",
         isBot: true,
       },
+      { issueNumber: 9, createdAt: "2026-02-20T08:00:00Z", author: "ben", isBot: false },
     ]);
+    // The conversation list was cut short, so coverage stops where it stops.
     expect(comments.complete).toBe(false);
     expect(comments.coveredSince).toBe("2026-03-01T09:00:00Z");
+  });
+
+  it("marks comments unavailable if either list cannot be read", async () => {
+    const { fetch } = fakeFetch({ "/issues/comments": { body: [] } });
+    const comments = await fetchComments(createGitHubClient({ fetch }), ref, since, 1);
+    expect(comments.status).toBe("unavailable");
   });
 
   it("merges starter labels without duplicates and skips pull requests", async () => {
