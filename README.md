@@ -1,9 +1,11 @@
 # RepoInsight
 
-Turn a public GitHub repository into an evidence-backed engineering report.
+Know a repository before your first pull request.
 
-Paste a repository URL and RepoInsight answers one question: _what should I know about
-this repository before I depend on it, contribute to it, or start working on it?_
+RepoInsight is for open source contributors. Paste a public GitHub repository and it
+tells you what to expect: where to start, who maintains it, how fast people reply, and
+whether pull requests from outside the team actually get merged. Every answer shows the
+evidence it was calculated from.
 
 Live: https://repoinsight-app.vercel.app
 
@@ -37,6 +39,13 @@ as a response.
 
 ## Features
 
+- **Contributor checklist** — ten questions from GitHub's
+  [Open Source Guide](https://opensource.guide/how-to-contribute/#a-checklist-before-you-contribute),
+  each answered from data with a stated threshold; undecidable ones say so
+- **People** — the maintainers who reply to outside contributors, recent and all-time
+  top contributors
+- **Timing** — an interactive 3D chart of when the team comments, in your time zone
+- **Codebase** — languages and the labels on recent issues and pull requests
 - A contributor view on every report: starter issues, community merge share, time to
   merge, time to first human response, and a checklist of community files
 
@@ -74,7 +83,7 @@ src/
   components/{site,home,report,three}
   lib/github/               parse.ts, client.ts, fetchers.ts
   lib/analysis/             activity, contributors, contributing, releases, issues, time
-  lib/insights/             findings.ts
+  lib/insights/             checklist.ts, findings.ts
   lib/report/               run.ts
   lib/sample/               deterministic example dataset
   types/                    normalized data model
@@ -97,9 +106,10 @@ always produces the same result and every function can be tested in isolation.
 | Inline review comments   | `GET /repos/{owner}/{repo}/pulls/comments?since=`       | 1 to N   |
 | Starter issues           | `GET /repos/{owner}/{repo}/issues?labels=`              | 2        |
 | Community files          | `GET /repos/{owner}/{repo}/community/profile`           | 1        |
+| Languages                | `GET /repos/{owner}/{repo}/languages`                   | 1        |
 
 N is the page limit: 3 pages (300 items) without a token, 10 pages (1,000 items) with
-one. A small repository costs about 11 requests. Independent requests run in parallel and
+one. A small repository costs about 12 requests. Independent requests run in parallel and
 finished reports are cached in memory for 10 minutes.
 
 ## Metric methodology
@@ -133,6 +143,13 @@ in the window * 100`. Accounts GitHub marks as bots are excluded. Commits not li
   whichever comes first. The metric is the median of those waits.
 - **Starter issues** — open issues labelled `good first issue` or `help wanted` with no
   assignee.
+- **Maintainers who reply** — team members ranked by the number of community threads
+  they commented on.
+- **Timing** — every team comment placed in a half-hour slot of the week (UTC), shifted
+  to the viewer's time zone in the browser.
+- **Checklist** — each check has a fixed rule in
+  [`src/lib/insights/checklist.ts`](src/lib/insights/checklist.ts); the headline is the
+  count of checks that pass, not a weighted score.
 
 Finding rules and their thresholds live in
 [`src/lib/insights/findings.ts`](src/lib/insights/findings.ts) and are printed in the
