@@ -33,6 +33,15 @@ const AUTHORS: [string, number, boolean][] = [
 ];
 
 const TEAM = ["mira-okafor", "jonas-lindqvist", "priya-raman"];
+const LABELS = [
+  ["bug"],
+  ["enhancement"],
+  ["documentation"],
+  ["bug", "postgres"],
+  [],
+  ["enhancement", "worker"],
+  ["dependencies"],
+];
 
 const at = (daysAgo: number, hours = 0) =>
   new Date(NOW - daysAgo * DAY_MS - hours * 3_600_000).toISOString();
@@ -54,6 +63,7 @@ export function buildSampleDataset(): Dataset {
         sha,
         date: at(d, 1 + i * 2),
         author,
+        login: author.includes(" ") ? null : author,
         isBot,
         url: `${URL_BASE}/commit/${sha}`,
       });
@@ -82,6 +92,7 @@ export function buildSampleDataset(): Dataset {
       mergedAt: resolved && isPullRequest && random() < 0.88 ? at(closedDaysAgo) : null,
       author: AUTHORS[Math.floor(random() * AUTHORS.length)][0],
       association: "community",
+      labels: LABELS[n % LABELS.length],
       url: URL_BASE,
     });
   }
@@ -105,7 +116,7 @@ export function buildSampleDataset(): Dataset {
       issueNumber: issue.number,
       createdAt: at(created - delayDays),
       author: TEAM[Math.floor(random() * TEAM.length)],
-      isBot: false,
+      association: "team",
     });
   }
 
@@ -180,6 +191,7 @@ export function buildSampleDataset(): Dataset {
       issueTemplate: URL_BASE,
       pullRequestTemplate: null,
     },
+    languages: { TypeScript: 812_400, JavaScript: 61_200, PLpgSQL: 38_900, Shell: 9_100 },
     openPullRequests: 23,
     fetchedAt: new Date(NOW).toISOString(),
   };

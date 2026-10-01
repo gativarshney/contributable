@@ -1,9 +1,23 @@
 import { describe, expect, it } from "vitest";
 import { buildFindings } from "@/lib/insights/findings";
 import { buildSampleDataset } from "@/lib/sample/dataset";
-import type { Collection, Commit, IssueItem, Release, StarterIssue } from "@/types";
+import { buildChecklist } from "@/lib/insights/checklist";
+import type {
+  Association,
+  Collection,
+  Commit,
+  IssueItem,
+  Release,
+  StarterIssue,
+  ThreadComment,
+} from "@/types";
 import { calculateActivity } from "./activity";
-import { calculateContributingSignals, firstResponseAt } from "./contributing";
+import {
+  calculateContributingSignals,
+  calculateStack,
+  firstResponseAt,
+  weekSlot,
+} from "./contributing";
 import { calculateContributorConcentration } from "./contributors";
 import { analyze, calculateRepositoryAge } from "./index";
 import { calculateIssueSignals, calculatePullRequestSignals } from "./issues";
@@ -17,6 +31,7 @@ const commit = (daysAgo: number, author = "ana", isBot = false): Commit => ({
   sha: `${daysAgo}-${author}`,
   date: ago(daysAgo),
   author,
+  login: author,
   isBot,
   url: "",
 });
@@ -110,7 +125,12 @@ describe("calculateContributorConcentration", () => {
       top3Share: 100,
       halfCount: 1,
     });
-    expect(result.distribution[0]).toEqual({ name: "ana", commits: 6, share: 60 });
+    expect(result.distribution[0]).toEqual({
+      name: "ana",
+      login: "ana",
+      commits: 6,
+      share: 60,
+    });
   });
 
   it("finds how many authors make up half of the commits", () => {
@@ -179,6 +199,7 @@ const item = (
   mergedAt: null,
   author: "ana",
   association: "team",
+  labels: [],
   url: "",
   ...extra,
 });
@@ -201,12 +222,12 @@ describe("contributing signals", () => {
     issueNumber: number,
     daysAgo: number,
     author: string,
-    isBot = false,
-  ) => ({
+    association: Association = "team",
+  ): ThreadComment => ({
     issueNumber,
     createdAt: ago(daysAgo),
     author,
-    isBot,
+    association,
   });
   const none = collection<StarterIssue>([], { coveredSince: null });
 
@@ -241,7 +262,7 @@ describe("contributing signals", () => {
   it("finds the first human response and ignores bots and the author", () => {
     const thread = item(7, 10, null, outsider);
     const comments = [
-      comment(7, 9.9, "welcome[bot]", true),
+      comment(7, 9.9, "welcome[bot]", "bot"),
       comment(7, 9.5, "newcomer"),
       comment(7, 8, "maintainer"),
       comment(7, 6, "someone-else"),
@@ -331,6 +352,128 @@ describe("contributing signals", () => {
       "readme",
       "license",
     ]);
+  });
+});
+
+describe("people, rhythm and stack", () => {
+  const outsider = { author: "newcomer", association: "community" } as const;
+  const reply = (issueNumber: number, at: string, author: string): ThreadComment => ({
+    issueNumber,
+    createdAt: at,
+    author,
+    association: "team",
+  });
+
+  it("ranks team members by the community threads they reply on", () => {
+    const items = [
+      item(1, 10, null, outsider),
+      item(2, 9, null, outsider),
+      item(3, 8, null),
+    ];
+    const comments = [
+      reply(1, ago(9), "mia"),
+      reply(1, ago(8), "mia"),
+      reply(2, ago(7), "mia"),
+      reply(2, ago(6), "raj"),
+      reply(3, ago(5), "raj"), // on a team thread: not a reply to the community
+      { ...reply(1, ago(4), "newcomer"), association: "community" as const },
+    ];
+    const result = calculateContributingSignals(
+      collection(items),
+      collection(comments),
+      collection<StarterIssue>([], { coveredSince: null }),
+      null,
+      NOW,
+    );
+
+    expect(result.responders).toEqual([
+      { login: "mia", replies: 3, threads: 2 },
+      { login: "raj", replies: 1, threads: 1 },
+    ]);
+    // Every team comment counts towards the weekly rhythm, wherever it was left.
+    expect(result.rhythm.total).toBe(5);
+    expect(result.rhythm.slots.reduce((a, b) => a + b, 0)).toBe(5);
+  });
+
+  it("places timestamps in half-hour slots of a UTC week", () => {
+    expect(weekSlot("2026-06-28T00:00:00Z")).toBe(0); // Sunday midnight
+    expect(weekSlot("2026-06-28T00:45:00Z")).toBe(1);
+    expect(weekSlot("2026-06-29T13:10:00Z")).toBe(48 + 26); // Monday 13:00
+    expect(weekSlot("2026-07-04T23:59:00Z")).toBe(335); // Saturday, last slot
+  });
+
+  it("counts labels on recently opened threads only", () => {
+    const items = [
+      item(1, 5, null, { labels: ["bug", "docs"] }),
+      item(2, 20, null, { labels: ["bug"] }),
+      item(3, 200, 10, { labels: ["bug", "ancient"] }),
+    ];
+    const result = calculateContributingSignals(
+      collection(items),
+      collection([]),
+      collection<StarterIssue>([], { coveredSince: null }),
+      null,
+      NOW,
+    );
+    expect(result.labels).toEqual([
+      { name: "bug", count: 2 },
+      { name: "docs", count: 1 },
+    ]);
+  });
+
+  it("turns language bytes into shares and folds the tail into Other", () => {
+    expect(calculateStack(null)).toEqual([]);
+    expect(calculateStack({})).toEqual([]);
+    const stack = calculateStack({ TypeScript: 9000, CSS: 900, Shell: 95, Makefile: 5 });
+    expect(stack).toEqual([
+      { name: "TypeScript", share: 90 },
+      { name: "CSS", share: 9 },
+      { name: "Other", share: 1 },
+    ]);
+  });
+});
+
+describe("contributor checklist", () => {
+  it("answers each question from the example data and counts favourable ones", () => {
+    const dataset = buildSampleDataset();
+    const checklist = buildChecklist(dataset.repository, analyze(dataset));
+    const byId = Object.fromEntries(checklist.checks.map((c) => [c.id, c]));
+
+    expect(checklist.checks).toHaveLength(10);
+    expect(byId.license.state).toBe("yes");
+    expect(byId["latest-commit"].state).toBe("yes");
+    expect(byId.guide.state).toBe("yes");
+    expect(byId.starter.answer).toContain("5 unassigned issues");
+    expect(checklist.favourable).toBe(
+      checklist.checks.filter((c) => c.state === "yes").length,
+    );
+    expect(checklist.decided).toBeLessThanOrEqual(checklist.checks.length);
+  });
+
+  it("says unknown instead of guessing when there is too little to go on", () => {
+    const dataset = buildSampleDataset();
+    dataset.issues = collection<IssueItem>([], {
+      coveredSince: dataset.issues.coveredSince,
+    });
+    dataset.comments = collection<ThreadComment>([], { status: "unavailable" });
+    dataset.community = null;
+    const checklist = buildChecklist(dataset.repository, analyze(dataset));
+    const state = (id: string) => checklist.checks.find((c) => c.id === id)?.state;
+
+    expect(state("community-merged")).toBe("unknown");
+    expect(state("responsive")).toBe("unknown");
+    expect(state("guide")).toBe("unknown");
+    expect(state("issues-closed")).toBe("no");
+    expect(state("license")).toBe("yes"); // still known from repository metadata
+  });
+
+  it("puts an archived repository first and marks it unfavourable", () => {
+    const dataset = buildSampleDataset();
+    dataset.repository.archived = true;
+    const checklist = buildChecklist(dataset.repository, analyze(dataset));
+
+    expect(checklist.checks[0]).toMatchObject({ id: "archived", state: "no" });
+    expect(checklist.checks).toHaveLength(11);
   });
 });
 

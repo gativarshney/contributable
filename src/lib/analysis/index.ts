@@ -1,6 +1,11 @@
 import type { Dataset } from "@/types";
 import { calculateActivity, type ActivityAnalysis } from "./activity";
-import { calculateContributingSignals, type ContributingAnalysis } from "./contributing";
+import {
+  calculateContributingSignals,
+  calculateStack,
+  type ContributingAnalysis,
+  type LanguageShare,
+} from "./contributing";
 import { calculateContributors, type ContributorAnalysis } from "./contributors";
 import {
   calculateIssueSignals,
@@ -35,6 +40,7 @@ export interface Analysis {
   pulls: FlowAnalysis;
   maintenance: MaintenanceAnalysis;
   contributing: ContributingAnalysis;
+  stack: LanguageShare[];
 }
 
 export function calculateRepositoryAge(createdAt: string, now: Date) {
@@ -107,5 +113,15 @@ export function analyze(dataset: Dataset): Analysis {
     dataset.community,
     now,
   );
-  return { activity, contributors, releases, issues, pulls, maintenance, contributing };
+  const stack = calculateStack(dataset.languages);
+  return {
+    activity,
+    contributors,
+    releases,
+    issues,
+    pulls,
+    maintenance,
+    contributing,
+    stack,
+  };
 }

@@ -1,4 +1,5 @@
 import type {
+  Association,
   Collection,
   Commit,
   CommunityFiles,
@@ -21,6 +22,12 @@ const isBot = (user: Raw | null | undefined): boolean =>
   user?.type === "Bot" || /\[bot\]$/.test(user?.login ?? "");
 // GitHub's author_association values for people with a formal role in the repository.
 const TEAM_ASSOCIATIONS = new Set(["OWNER", "MEMBER", "COLLABORATOR"]);
+const associationOf = (raw: Raw): Association =>
+  isBot(raw.user)
+    ? "bot"
+    : TEAM_ASSOCIATIONS.has(raw.author_association)
+      ? "team"
+      : "community";
 /** GitHub's default labels for work that is open to new contributors. */
 export const STARTER_LABELS = ["good first issue", "help wanted"];
 
@@ -55,6 +62,7 @@ export function normalizeCommit(raw: Raw): Commit | null {
     sha: raw.sha,
     date,
     author: str(raw.author?.login) ?? str(raw.commit?.author?.name) ?? "Unknown author",
+    login: str(raw.author?.login),
     isBot: isBot(raw.author),
     url: raw.html_url ?? "",
   };
@@ -70,11 +78,11 @@ export function normalizeIssue(raw: Raw): IssueItem | null {
     closedAt: str(raw.closed_at),
     mergedAt: str(raw.pull_request?.merged_at ?? raw.merged_at),
     author: str(raw.user?.login),
-    association: isBot(raw.user)
-      ? "bot"
-      : TEAM_ASSOCIATIONS.has(raw.author_association)
-        ? "team"
-        : "community",
+    association: associationOf(raw),
+    labels: (Array.isArray(raw.labels) ? raw.labels : [])
+      .map((label: Raw | string) => (typeof label === "string" ? label : label?.name))
+      .filter((name: unknown): name is string => typeof name === "string")
+      .slice(0, 8),
     url: raw.html_url ?? "",
   };
 }
@@ -89,7 +97,7 @@ export function normalizeComment(raw: Raw): ThreadComment | null {
     issueNumber: Number(issue[1]),
     createdAt: raw.created_at,
     author: str(raw.user?.login),
-    isBot: isBot(raw.user),
+    association: associationOf(raw),
   };
 }
 
@@ -389,6 +397,24 @@ export async function fetchStarterIssues(
       return { status: "ok", items: [], complete: true, coveredSince: null };
     }
     return unavailable("GitHub did not return labelled issues for this repository.");
+  }
+}
+
+/** Bytes of code per language. */
+export async function fetchLanguages(
+  client: GitHubClient,
+  ref: RepoRef,
+): Promise<Record<string, number> | null> {
+  try {
+    const { data } = await client.get<Raw>(`/repos/${ref.owner}/${ref.name}/languages`);
+    const languages: Record<string, number> = {};
+    for (const [name, bytes] of Object.entries(data ?? {})) {
+      if (typeof bytes === "number") languages[name] = bytes;
+    }
+    return languages;
+  } catch (error) {
+    rethrowFatal(error);
+    return null;
   }
 }
 

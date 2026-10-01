@@ -23,6 +23,8 @@ export interface Commit {
   date: string;
   /** GitHub login when the commit is linked to an account, otherwise the git author name. */
   author: string;
+  /** GitHub login, when the commit is linked to an account. */
+  login: string | null;
   isBot: boolean;
   url: string;
 }
@@ -49,6 +51,7 @@ export interface IssueItem {
   mergedAt: string | null;
   author: string | null;
   association: Association;
+  labels: string[];
   url: string;
 }
 
@@ -63,7 +66,7 @@ export interface ThreadComment {
   issueNumber: number;
   createdAt: string;
   author: string | null;
-  isBot: boolean;
+  association: Association;
 }
 
 /** An open issue carrying a label that invites new contributors. */
@@ -109,6 +112,8 @@ export interface Dataset {
   comments: Collection<ThreadComment>;
   starterIssues: Collection<StarterIssue>;
   community: CommunityFiles | null;
+  /** Bytes of code per language, as GitHub reports them. Null when unavailable. */
+  languages: Record<string, number> | null;
   openPullRequests: number | null;
   fetchedAt: string;
 }

@@ -37,6 +37,15 @@ export interface CommunityFile {
   url: string | null;
 }
 
+/** A team member, ranked by how much they reply to people outside the team. */
+export interface Responder {
+  login: string;
+  /** Comments left on community-authored issues and pull requests. */
+  replies: number;
+  /** Distinct community threads they replied on. */
+  threads: number;
+}
+
 export interface ContributingAnalysis {
   available: boolean;
   windows: Record<WindowDays, ContributingWindow>;
@@ -52,6 +61,15 @@ export interface ContributingAnalysis {
   };
   /** Null when GitHub did not return a community profile. */
   files: CommunityFile[] | null;
+  /** Team members who replied to community threads in the observed period, busiest first. */
+  responders: Responder[];
+  /**
+   * When team members comment: 336 half-hour slots across a UTC week, Sunday 00:00 first.
+   * Half hours let the browser shift the pattern into any local time zone.
+   */
+  rhythm: { total: number; slots: number[] };
+  /** Labels on issues and pull requests opened in the trailing 90 days, most used first. */
+  labels: { name: string; count: number }[];
 }
 
 const FILE_LABELS: [keyof CommunityFiles, string][] = [
@@ -62,6 +80,16 @@ const FILE_LABELS: [keyof CommunityFiles, string][] = [
   ["issueTemplate", "Issue templates"],
   ["pullRequestTemplate", "Pull request template"],
 ];
+
+export const SLOTS_PER_WEEK = 7 * 48;
+
+/** Index of the half-hour slot a timestamp falls in, counted from Sunday 00:00 UTC. */
+export function weekSlot(iso: string): number {
+  const date = new Date(iso);
+  return (
+    date.getUTCDay() * 48 + date.getUTCHours() * 2 + (date.getUTCMinutes() >= 30 ? 1 : 0)
+  );
+}
 
 /**
  * When a community-authored thread first heard back from a person.
@@ -76,9 +104,9 @@ export function firstResponseAt(
 ): string | null {
   let first: string | null = null;
   for (const comment of comments ?? []) {
-    if (comment.isBot || comment.author === null || comment.author === thread.author)
+    if (comment.association === "bot" || comment.author === null) continue;
+    if (comment.author === thread.author || comment.createdAt < thread.createdAt)
       continue;
-    if (comment.createdAt < thread.createdAt) continue;
     if (first === null || comment.createdAt < first) first = comment.createdAt;
   }
   if (thread.mergedAt && (first === null || thread.mergedAt < first))
@@ -107,9 +135,9 @@ export function calculateContributingSignals(
 
   for (const days of WINDOWS) {
     const opened = pulls.filter((p) => inWindow(p.createdAt, now, days));
-    const community = pulls.filter((p) => p.association === "community");
-    const merged = community.filter((p) => inWindow(p.mergedAt, now, days));
-    const closedUnmerged = community.filter(
+    const fromCommunity = pulls.filter((p) => p.association === "community");
+    const merged = fromCommunity.filter((p) => inWindow(p.mergedAt, now, days));
+    const closedUnmerged = fromCommunity.filter(
       (p) => !p.mergedAt && inWindow(p.closedAt, now, days),
     );
     const closed = merged.length + closedUnmerged.length;
@@ -141,6 +169,41 @@ export function calculateContributingSignals(
     };
   }
 
+  // Who on the team talks to outside contributors, and when the team is around.
+  const communityNumbers = new Set(communityThreads.map((t) => t.number));
+  const replies = new Map<string, { replies: number; threads: Set<number> }>();
+  const slots = new Array<number>(SLOTS_PER_WEEK).fill(0);
+  let teamComments = 0;
+  for (const comment of comments.items) {
+    if (comment.association !== "team" || comment.author === null) continue;
+    slots[weekSlot(comment.createdAt)] += 1;
+    teamComments += 1;
+    if (!communityNumbers.has(comment.issueNumber)) continue;
+    const entry = replies.get(comment.author) ?? { replies: 0, threads: new Set() };
+    entry.replies += 1;
+    entry.threads.add(comment.issueNumber);
+    replies.set(comment.author, entry);
+  }
+  const responders = [...replies.entries()]
+    .map(([login, r]) => ({ login, replies: r.replies, threads: r.threads.size }))
+    .sort(
+      (a, b) =>
+        b.threads - a.threads || b.replies - a.replies || a.login.localeCompare(b.login),
+    )
+    .slice(0, 6);
+
+  const labelCounts = new Map<string, number>();
+  for (const item of issues.items) {
+    if (!inWindow(item.createdAt, now, 90)) continue;
+    for (const label of item.labels) {
+      labelCounts.set(label, (labelCounts.get(label) ?? 0) + 1);
+    }
+  }
+  const labels = [...labelCounts.entries()]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+    .slice(0, 10);
+
   const unassigned = starterIssues.items.filter((issue) => !issue.assigned);
   const age = median(
     starterIssues.items.map((issue) => wholeDaysSince(issue.createdAt, now)),
@@ -160,5 +223,32 @@ export function calculateContributingSignals(
     files: community
       ? FILE_LABELS.map(([key, label]) => ({ key, label, url: community[key] }))
       : null,
+    responders,
+    rhythm: { total: teamComments, slots },
+    labels,
   };
+}
+
+export interface LanguageShare {
+  name: string;
+  /** Share of the repository's code by bytes, 0-100. */
+  share: number;
+}
+
+/** The repository's languages by share of bytes; small ones are folded into "Other". */
+export function calculateStack(
+  languages: Record<string, number> | null,
+): LanguageShare[] {
+  if (!languages) return [];
+  const entries = Object.entries(languages).filter(([, bytes]) => bytes > 0);
+  const total = entries.reduce((sum, [, bytes]) => sum + bytes, 0);
+  if (total === 0) return [];
+  const ranked = entries
+    .map(([name, bytes]) => ({ name, share: (bytes / total) * 100 }))
+    .sort((a, b) => b.share - a.share);
+  const top = ranked.slice(0, 5).filter((l) => l.share >= 1);
+  const other = 100 - top.reduce((sum, l) => sum + l.share, 0);
+  const result = top.map((l) => ({ name: l.name, share: round(l.share) }));
+  if (other >= 0.5) result.push({ name: "Other", share: round(other) });
+  return result;
 }

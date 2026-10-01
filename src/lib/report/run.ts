@@ -7,12 +7,14 @@ import {
   fetchCommunityFiles,
   fetchContributors,
   fetchIssuesAndPulls,
+  fetchLanguages,
   fetchOpenPullRequestCount,
   fetchReleases,
   fetchRepository,
   fetchStarterIssues,
 } from "@/lib/github/fetchers";
 import type { RepoRef } from "@/lib/github/parse";
+import { buildChecklist, type Checklist } from "@/lib/insights/checklist";
 import { buildFindings, type Finding } from "@/lib/insights/findings";
 import type { Dataset, Repository } from "@/types";
 
@@ -20,6 +22,7 @@ export interface Report {
   repository: Repository;
   analysis: Analysis;
   findings: Finding[];
+  checklist: Checklist;
   fetchedAt: string;
   sample?: boolean;
 }
@@ -50,6 +53,7 @@ export function buildReport(dataset: Dataset): Report {
     repository: dataset.repository,
     analysis,
     findings: buildFindings(dataset.repository, analysis),
+    checklist: buildChecklist(dataset.repository, analysis),
     fetchedAt: dataset.fetchedAt,
   };
 }
@@ -119,7 +123,7 @@ export async function runAnalysis(
       releases,
       issues,
       openPullRequests,
-      [comments, starterIssues, community],
+      [comments, starterIssues, community, languages],
     ] = await Promise.all([
       fetchCommits(client, canonical, since, maxPages).then((c) => {
         emit({
@@ -170,6 +174,7 @@ export async function runAnalysis(
         fetchComments(client, canonical, since, maxPages),
         fetchStarterIssues(client, canonical),
         fetchCommunityFiles(client, canonical),
+        fetchLanguages(client, canonical),
       ]).then((result) => {
         emit({
           type: "stage",
@@ -192,13 +197,14 @@ export async function runAnalysis(
       comments,
       starterIssues,
       community,
+      languages,
       openPullRequests,
       fetchedAt: now.toISOString(),
     });
     emit({
       type: "stage",
       stage: "report",
-      detail: `${count(report.findings.length, "finding")}`,
+      detail: `${report.checklist.favourable} of ${report.checklist.checks.length} contributor signals favourable`,
     });
 
     if (cache.size >= 100) cache.delete(cache.keys().next().value!);

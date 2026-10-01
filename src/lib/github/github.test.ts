@@ -307,6 +307,7 @@ describe("contributor data", () => {
           {
             pull_request_url: "https://api.github.com/repos/acme/widget/pulls/9",
             created_at: "2026-02-20T08:00:00Z",
+            author_association: "MEMBER",
             user: { login: "ben", type: "User" },
           },
         ],
@@ -315,14 +316,24 @@ describe("contributor data", () => {
     const comments = await fetchComments(createGitHubClient({ fetch }), ref, since, 1);
 
     expect(comments.items).toEqual([
-      { issueNumber: 42, createdAt: "2026-03-02T10:00:00Z", author: "ana", isBot: false },
+      {
+        issueNumber: 42,
+        createdAt: "2026-03-02T10:00:00Z",
+        author: "ana",
+        association: "community",
+      },
       {
         issueNumber: 7,
         createdAt: "2026-03-01T10:00:00Z",
         author: "ci[bot]",
-        isBot: true,
+        association: "bot",
       },
-      { issueNumber: 9, createdAt: "2026-02-20T08:00:00Z", author: "ben", isBot: false },
+      {
+        issueNumber: 9,
+        createdAt: "2026-02-20T08:00:00Z",
+        author: "ben",
+        association: "team",
+      },
     ]);
     // The conversation list was cut short, so coverage stops where it stops.
     expect(comments.complete).toBe(false);
