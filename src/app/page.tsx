@@ -21,8 +21,8 @@ const signals = [
   ["Maintenance", "Time since each kind of work"],
   ["Contributors", "How concentrated the work is"],
   ["Releases", "Latest release and cadence"],
-  ["Issues", "Opened, closed, time to close"],
-  ["Pull requests", "Opened, merged, time to merge"],
+  ["Issues and pull requests", "Opened, closed, merged, time to resolve"],
+  ["Contributing", "Starter issues, merge share, response time"],
 ];
 
 export default function HomePage() {
@@ -52,14 +52,14 @@ export default function HomePage() {
             className="display rise mt-7 max-w-4xl text-[clamp(2.5rem,min(7.4vw,10svh),5.25rem)]"
             style={{ animationDelay: "70ms" }}
           >
-            Understand a repository <em>before you depend on it.</em>
+            Understand a repository <em>before you commit to it.</em>
           </h1>
           <p
             className="text-ink-2 rise mt-6 max-w-xl text-lg text-balance"
             style={{ animationDelay: "140ms" }}
           >
-            Paste a public GitHub repository. Get an engineering report where every number
-            shows its evidence.
+            Whether you plan to depend on it or contribute to it: an engineering report
+            where every number shows its evidence.
           </p>
           <div className="rise mt-9 w-full max-w-xl" style={{ animationDelay: "210ms" }}>
             <RepoInput />

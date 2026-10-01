@@ -41,12 +41,33 @@ const rules = [
   ],
 ];
 
+const contributorSignals = [
+  [
+    "Where to start",
+    "Open issues labelled good first issue or help wanted that nobody is assigned to. Finding a first task is the barrier newcomers report most.",
+  ],
+  [
+    "Will it be merged",
+    "The share of pull requests from outside the team that were merged rather than closed, and how long merging took.",
+  ],
+  [
+    "Will anyone reply",
+    "The median wait for a first reply from another person. Bot comments never count, because bots often reply first.",
+  ],
+  [
+    "Is the process written down",
+    "Whether GitHub detects a README, contributing guide, code of conduct, licence and templates.",
+  ],
+];
+
 const limitations = [
   "Only public data is visible. Private forks, internal trackers and chat never show up.",
   "Commit metrics cover the default branch. Long-lived release branches are not included.",
   "Very active repositories exceed the collection limit; the report states the period it covers.",
   "Authorship follows GitHub attribution. Squash merges and unlinked emails blur who did the work.",
   "Projects that publish through tags or a package registry show no GitHub Releases.",
+  "Response times see conversation comments and merges only; a pull request answered only by a review looks unanswered.",
+  "Tone is not measured. Nothing here tells you whether a community is welcoming.",
   "Activity is not quality. A quiet repository can be finished; a busy one can be unstable.",
 ];
 
@@ -94,6 +115,21 @@ export default function MethodologyPage() {
             </div>
           ))}
         </dl>
+      </Block>
+
+      <Block title="For contributors">
+        <dl className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
+          {contributorSignals.map(([term, detail]) => (
+            <div key={term}>
+              <dt className="font-medium">{term}</dt>
+              <dd className="text-ink-2 mt-1">{detail}</dd>
+            </div>
+          ))}
+        </dl>
+        <p className="text-ink-3 mt-8 max-w-2xl text-sm">
+          These follow published research on newcomer barriers, pull request abandonment
+          and first-response times. Sources are listed in the project README.
+        </p>
       </Block>
 
       <Block title="Limitations">

@@ -13,7 +13,11 @@ export function SamplePreview() {
       `${analysis.contributors.windows[90].topShare}%`,
       "of commits, 90 days",
     ],
-    ["Release interval", `${analysis.releases.medianIntervalDays} d`, "median"],
+    [
+      "Community PRs merged",
+      `${analysis.contributing.windows[90].mergeShare}%`,
+      "90 days",
+    ],
     ["PRs merged", String(analysis.pulls.windows[30].resolved), "30 days"],
   ];
 
