@@ -23,6 +23,8 @@ export interface ActivityAnalysis {
   windows: Record<WindowDays, ActivityWindow>;
   /** One entry per UTC day for the trailing 90 days, oldest first. */
   daily: { date: string; count: number }[];
+  /** Twelve 7-day totals ending today, oldest first; `start` is the first day of each. */
+  weekly: { start: string; count: number }[];
   /** Longest run of consecutive days without a commit in the trailing 90 days. */
   longestQuietDays: number | null;
 }
@@ -86,6 +88,10 @@ export function calculateActivity(
     ),
     windows,
     daily,
+    weekly: Array.from({ length: 12 }, (_, week) => {
+      const days = daily.slice(6 + week * 7, 13 + week * 7);
+      return { start: days[0].date, count: days.reduce((sum, d) => sum + d.count, 0) };
+    }),
     longestQuietDays,
   };
 }

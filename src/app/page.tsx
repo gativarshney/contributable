@@ -28,6 +28,7 @@ function showcaseData(): ShowcaseData {
     responders: contributing.responders,
     rhythm: contributing.rhythm,
     authors: contributors.windows[90].distribution,
+    people: contributors.windows[90].contributors,
   };
 }
 

@@ -53,7 +53,7 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
         ? "A license file was detected."
         : "GitHub does not detect a license for this repository.",
     rule: "GitHub detects a license.",
-    anchor: "contributing",
+    anchor: "start",
   });
 
   const lastCommit = maintenance.recency.find((r) => r.id === "commit")?.days ?? null;
@@ -74,7 +74,7 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
           ? "Today, on the default branch."
           : `${plural(lastCommit, "day")} ago, on the default branch.`,
     rule: "Latest commit within the last 30 days.",
-    anchor: "maintenance",
+    anchor: "pulse",
   });
 
   const weeks = maintenance.activeWeeks;
@@ -88,7 +88,7 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
         ? "Commit history for the last 13 weeks is not fully covered."
         : `Commits landed in ${weeks} of the last 13 weeks.`,
     rule: "Commits in at least 7 of the last 13 weeks.",
-    anchor: "activity",
+    anchor: "pulse",
   });
 
   const c90 = contributors.windows[90];
@@ -101,7 +101,7 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
       ? `${c90.contributors} ${c90.contributors === 1 ? "person" : "people"} authored commits in the last 90 days.`
       : "Commit authors for the last 90 days are not fully covered.",
     rule: "More than one person authored commits in the last 90 days.",
-    anchor: "contributors",
+    anchor: "people",
   });
 
   const i30 = issues.windows[30];
@@ -117,7 +117,7 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
         ? "Issue activity for the last 30 days is not fully covered."
         : `${plural(i30.resolved, "issue")} closed and ${i30.opened} opened in the last 30 days.`,
     rule: "At least one issue closed in the last 30 days.",
-    anchor: "issues",
+    anchor: "pulse",
   });
 
   const lastMerge = maintenance.recency.find((r) => r.id === "merge")?.days ?? null;
@@ -143,7 +143,7 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
           ? "No pull request was merged in the last 90 days."
           : "Pull request history is not fully covered.",
     rule: "A pull request merged within the last 30 days.",
-    anchor: "pull-requests",
+    anchor: "journey",
   });
 
   // Use the widest window the data fully covers, so busy repositories still get an answer.
@@ -154,45 +154,53 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
     id: "community-merged",
     group: "Open to contributions",
     question: "Do outside pull requests get merged?",
-    state:
-      !w || closed < 3 || w.mergeShare === null
-        ? "unknown"
-        : w.mergeShare >= 50
-          ? "yes"
-          : "no",
+    // The question is whether outside work lands at all. A low share alone does not
+    // fail it: popular projects close many drive-by submissions.
+    state: !w
+      ? "unknown"
+      : w.communityMerged >= 3
+        ? "yes"
+        : closed >= 3
+          ? "no"
+          : "unknown",
     answer: !w
       ? "Pull request history is not fully covered."
-      : closed < 3
-        ? `Only ${plural(closed, "community pull request")} closed in the last ${window} days; too few to say.`
-        : `${w.communityMerged} of ${closed} community pull requests closed in the last ${window} days were merged (${w.mergeShare}%).`,
-    rule: "At least half of community pull requests were merged, with 3 or more closed.",
-    anchor: "contributing",
+      : closed === 0
+        ? `No community pull request was merged or closed in the last ${window} days.`
+        : `${plural(w.communityMerged, "community pull request")} merged in the last ${window} days, out of ${closed} closed.`,
+    rule: "At least 3 pull requests from outside the team were merged in the period.",
+    anchor: "journey",
   });
 
   const responseWindow = ([90, 30, 7] as const).find(
     (d) => contributing.windows[d].responseCovered,
   );
   const r = responseWindow ? contributing.windows[responseWindow] : null;
-  const answeredShare = r && r.threads > 0 ? r.answered / r.threads : null;
+  // Only threads at least two days old are judged: newer ones have not had a fair chance.
+  const handledShare =
+    r && r.matureThreads > 0 ? r.matureHandled / r.matureThreads : null;
   add({
     id: "responsive",
     group: "Open to contributions",
     question: "Do maintainers respond quickly?",
     state:
-      !r || r.threads < 3 || r.medianHoursToResponse === null
+      !r || r.matureThreads < 3
         ? "unknown"
-        : r.medianHoursToResponse <= 48 && answeredShare! >= 0.5
+        : handledShare! >= 0.5 &&
+            (r.medianHoursToResponse === null || r.medianHoursToResponse <= 48)
           ? "yes"
           : "no",
     answer: !r
       ? "Comment history is not fully covered."
-      : r.threads < 3
-        ? `Only ${plural(r.threads, "community thread")} opened in the last ${responseWindow} days; too few to say.`
-        : r.medianHoursToResponse === null
-          ? `None of ${r.threads} community threads has a response yet.`
-          : `${r.answered} of ${r.threads} community threads got a human reply, typically within ${hours(r.medianHoursToResponse)}.`,
-    rule: "Median first reply within 48 hours and at least half of community threads answered.",
-    anchor: "contributing",
+      : r.matureThreads < 3
+        ? `Only ${plural(r.matureThreads, "community thread")} old enough to judge in the last ${responseWindow} days.`
+        : `${r.matureHandled} of ${r.matureThreads} community threads were answered or closed${
+            r.medianHoursToResponse === null
+              ? "."
+              : `; a first reply typically takes ${hours(r.medianHoursToResponse)}.`
+          }`,
+    rule: "At least half of community threads older than two days were answered or closed, with a median first reply within 48 hours.",
+    anchor: "journey",
   });
 
   const guide = contributing.files?.find((f) => f.key === "contributing");
@@ -207,7 +215,7 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
         ? "A contributing guide was detected."
         : "No contributing guide in the standard locations.",
     rule: "GitHub detects a CONTRIBUTING file.",
-    anchor: "contributing",
+    anchor: "start",
   });
 
   const { starter } = contributing;
@@ -222,7 +230,7 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
         ? `${plural(starter.unassigned, "unassigned issue")} labelled good first issue or help wanted.`
         : "No unassigned issues carry GitHub's default newcomer labels.",
     rule: "At least one unassigned open issue labelled good first issue or help wanted.",
-    anchor: "contributing",
+    anchor: "start",
   });
 
   if (repository.archived) {
@@ -234,7 +242,7 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
       state: "no",
       answer: "The owner has archived this repository. It is read-only.",
       rule: "The repository is not archived.",
-      anchor: "maintenance",
+      anchor: "pulse",
     });
   }
 

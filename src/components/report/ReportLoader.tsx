@@ -2,24 +2,174 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import type { AnalysisEvent, Report, ReportError, StageId } from "@/lib/report/run";
 import { RepoInput } from "@/components/site/RepoInput";
+import type { AnalysisEvent, Report, ReportError, StageId } from "@/lib/report/run";
 import { ReportView } from "./ReportView";
 
-const STAGES: { id: StageId; label: string }[] = [
-  { id: "repository", label: "Connecting to GitHub" },
-  { id: "commits", label: "Reading commit history" },
-  { id: "contributors", label: "Reading contributors" },
-  { id: "releases", label: "Reading release history" },
-  { id: "issues", label: "Reading issues and pull requests" },
-  { id: "contributing", label: "Reading contributor signals" },
-  { id: "report", label: "Building engineering report" },
+const STAGES: { id: StageId; label: string; icon: string }[] = [
+  {
+    id: "repository",
+    label: "Repository",
+    icon: "M4 5a2 2 0 0 1 2-2h12v15H6a2 2 0 0 0-2 2V5Zm0 15a2 2 0 0 0 2 2h12v-4",
+  },
+  {
+    id: "commits",
+    label: "Commits",
+    icon: "M2 12h6m8 0h6M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z",
+  },
+  {
+    id: "contributors",
+    label: "Contributors",
+    icon: "M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm11.5 9v-1a4 4 0 0 0-3-3.87M15 4.13a3.5 3.5 0 0 1 0 6.75",
+  },
+  {
+    id: "releases",
+    label: "Releases",
+    icon: "M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8ZM7.5 7.5h.01",
+  },
+  {
+    id: "issues",
+    label: "Issues and PRs",
+    icon: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-13v5m0 3h.01",
+  },
+  {
+    id: "contributing",
+    label: "Conversations",
+    icon: "M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z",
+  },
+  {
+    id: "report",
+    label: "Report",
+    icon: "M5 20V10m7 10V4m7 16v-7",
+  },
 ];
 
 type State =
   | { status: "loading"; done: Partial<Record<StageId, string>> }
   | { status: "ready"; report: Report }
   | { status: "error"; error: ReportError };
+
+/** Splits "121 commits" into the figure and the words after it. */
+function headline(detail: string): { figure: string | null; rest: string } {
+  const match = /^([\d,]+)\s+(.*)$/.exec(detail);
+  return match ? { figure: match[1], rest: match[2] } : { figure: null, rest: detail };
+}
+
+function Progress({
+  owner,
+  name,
+  done,
+}: {
+  owner: string;
+  name: string;
+  done: Partial<Record<StageId, string>>;
+}) {
+  const finished = STAGES.filter((stage) => stage.id in done).length;
+  const found = "repository" in done;
+  const size = 132;
+  const stroke = 6;
+  const radius = (size - stroke) / 2;
+  const circumference = 2 * Math.PI * radius;
+
+  return (
+    <div className="shell flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-center py-16 text-center">
+      <div className="relative" style={{ width: size, height: size }}>
+        <svg width={size} height={size} className="-rotate-90" aria-hidden="true">
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            fill="none"
+            strokeWidth={stroke}
+            className="stroke-bg-3"
+          />
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            fill="none"
+            strokeWidth={stroke}
+            strokeLinecap="round"
+            strokeDasharray={`${(finished / STAGES.length) * circumference} ${circumference}`}
+            className="stroke-accent transition-[stroke-dasharray] duration-500 ease-out"
+          />
+        </svg>
+        <span className="scan-ring absolute inset-0 rounded-full" aria-hidden="true" />
+        <p className="absolute inset-0 grid place-items-center text-3xl font-medium tracking-tight">
+          <span>
+            {finished}
+            <span className="text-ink-3 text-lg"> / {STAGES.length}</span>
+          </span>
+        </p>
+      </div>
+
+      <p className="eyebrow mt-8">Reading from GitHub</p>
+      <h1 className="display mt-3 text-[clamp(1.8rem,5vw,3rem)] break-words">
+        {owner}/<em>{name}</em>
+      </h1>
+
+      <ol
+        className="mt-12 grid w-full max-w-4xl grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7"
+        aria-live="polite"
+      >
+        {STAGES.map((stage, i) => {
+          const detail = done[stage.id];
+          const isDone = detail !== undefined;
+          // The repository is checked first; everything else is then read in parallel.
+          const isLast = i === STAGES.length - 1;
+          const active =
+            !isDone &&
+            (i === 0 || (found && (!isLast || finished === STAGES.length - 1)));
+          const result = isDone ? headline(detail) : null;
+          return (
+            <li
+              key={stage.id}
+              className={`card flex flex-col items-center gap-3 p-4 transition-all duration-500 ${
+                isDone ? "border-accent/50" : active ? "" : "opacity-40"
+              }`}
+            >
+              <span
+                className={`grid size-10 place-items-center rounded-full transition-colors duration-500 ${
+                  isDone ? "bg-accent text-accent-ink" : "bg-bg-3 text-ink-2"
+                } ${active ? "stage-pulse" : ""}`}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  className="size-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d={isDone ? "M5 12.5 10 17 19 7.5" : stage.icon} />
+                </svg>
+              </span>
+              <span className="text-sm leading-tight">{stage.label}</span>
+              <span className="text-ink-2 min-h-10 text-xs leading-tight">
+                {result ? (
+                  result.figure ? (
+                    <>
+                      <strong className="text-ink block text-lg font-medium">
+                        {result.figure}
+                      </strong>
+                      {result.rest}
+                    </>
+                  ) : (
+                    result.rest
+                  )
+                ) : active ? (
+                  "reading…"
+                ) : null}
+              </span>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
 
 export function ReportLoader({ owner, name }: { owner: string; name: string }) {
   const [state, setState] = useState<State>({ status: "loading", done: {} });
@@ -117,57 +267,12 @@ export function ReportLoader({ owner, name }: { owner: string; name: string }) {
             </button>
           ) : null}
           <Link href="/sample" className="btn btn-ghost">
-            Read the example report
+            See the example report
           </Link>
         </div>
       </div>
     );
   }
 
-  const firstPending = STAGES.findIndex((stage) => !(stage.id in state.done));
-  return (
-    <div className="shell py-20 md:py-28">
-      <p className="eyebrow">Analyzing</p>
-      <h1 className="display mt-5 text-[clamp(2.2rem,6vw,4rem)] break-words">
-        {owner}/<em>{name}</em>
-      </h1>
-      <ol className="border-hair mt-12 max-w-xl border-t" aria-live="polite">
-        {STAGES.map((stage, i) => {
-          const detail = state.done[stage.id];
-          const done = detail !== undefined;
-          // Fetches run in parallel once the repository is confirmed.
-          const active =
-            !done && (i === firstPending || ("repository" in state.done && i < 6));
-          return (
-            <li
-              key={stage.id}
-              className="border-hair flex items-baseline gap-4 border-b py-4"
-            >
-              <span
-                aria-hidden="true"
-                className={`w-4 font-mono text-sm ${done ? "text-accent" : "text-ink-3"}`}
-              >
-                {done ? (
-                  "✓"
-                ) : active ? (
-                  <span className="pulse-dot inline-block">●</span>
-                ) : (
-                  "·"
-                )}
-              </span>
-              <span className={done || active ? "text-ink" : "text-ink-3"}>
-                {stage.label}
-              </span>
-              <span className="text-ink-2 ml-auto text-right font-mono text-xs">
-                {done ? detail : active ? "in progress" : ""}
-              </span>
-            </li>
-          );
-        })}
-      </ol>
-      <p className="text-ink-3 mt-6 max-w-xl text-sm">
-        Each line is a real request to GitHub&rsquo;s public API. Nothing is stored.
-      </p>
-    </div>
-  );
+  return <Progress owner={owner} name={name} done={state.done} />;
 }

@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { buildFindings } from "@/lib/insights/findings";
 import { buildSampleDataset } from "@/lib/sample/dataset";
 import { buildChecklist } from "@/lib/insights/checklist";
 import type {
@@ -535,32 +534,86 @@ describe("analyze", () => {
     expect(analyze(dataset)).toEqual(analyze(buildSampleDataset()));
   });
 
-  it("produces findings backed by the calculated numbers", () => {
-    const dataset = buildSampleDataset();
-    const analysis = analyze(dataset);
-    const findings = buildFindings(dataset.repository, analysis);
-    const active = findings.find((f) => f.id === "active");
-
-    expect(analysis.issues.openNow).toBe(96 - 23);
-    expect(active?.statement).toContain(String(analysis.activity.windows[30].commits));
-    expect(findings.length).toBeLessThanOrEqual(6);
+  it("derives open issues by subtracting open pull requests", () => {
+    expect(analyze(buildSampleDataset()).issues.openNow).toBe(96 - 23);
   });
 
-  it("leads with the archived finding and stays quiet without data", () => {
-    const dataset = buildSampleDataset();
-    dataset.repository.archived = true;
-    dataset.commits = collection<Commit>([], {
-      coveredSince: dataset.commits.coveredSince,
-    });
-    dataset.releases = collection<Release>([]);
-    dataset.issues = collection<IssueItem>([], {
-      coveredSince: dataset.issues.coveredSince,
-    });
-    const findings = buildFindings(dataset.repository, analyze(dataset));
+  it("sums daily commits into twelve weekly totals", () => {
+    const commits = [commit(0.5), commit(1), commit(8), commit(80), commit(89)];
+    const { weekly, daily } = calculateActivity(collection(commits), NOW);
 
-    expect(findings[0].id).toBe("archived");
-    expect(findings.map((f) => f.id)).toContain("no-releases");
-    expect(findings.map((f) => f.id)).not.toContain("concentrated");
+    expect(weekly).toHaveLength(12);
+    expect(weekly[11].count).toBe(2); // the last seven days
+    expect(weekly[10].count).toBe(1);
+    expect(weekly[0].count).toBe(1); // day 80 falls in the first week; day 89 is before it
+    expect(weekly[0].start).toBe(daily[6].date);
+  });
+});
+
+describe("reply buckets and fair response checks", () => {
+  const outsider = { author: "newcomer", association: "community" } as const;
+  const reply = (issueNumber: number, daysAgo: number): ThreadComment => ({
+    issueNumber,
+    createdAt: ago(daysAgo),
+    author: "maintainer",
+    association: "team",
+  });
+  const none = collection<StarterIssue>([], { coveredSince: null });
+
+  it("sorts community threads by how long the first reply took", () => {
+    const items = [
+      item(1, 20, null, outsider), // replied after 12 hours
+      item(2, 20, null, outsider), // replied after 3 days
+      item(3, 20, null, outsider), // replied after 10 days
+      item(4, 20, 15, outsider), // closed, nobody commented
+      item(5, 20, null, outsider), // still waiting
+      item(6, 1, null, outsider), // one day old: too new to judge
+      pr(7, 10, null, false, outsider), // open community pull request
+    ];
+    const comments = [reply(1, 19.5), reply(2, 17), reply(3, 10)];
+    const w = calculateContributingSignals(
+      collection(items),
+      collection(comments),
+      none,
+      null,
+      NOW,
+    ).windows[30];
+
+    expect(w.replies).toEqual({
+      withinDay: 1,
+      withinWeek: 1,
+      later: 1,
+      closedQuietly: 1,
+      waiting: 3,
+    });
+    expect(w.communityStillOpen).toBe(1);
+    // Thread 6 is younger than two days, so it is not held against the maintainers.
+    expect(w.matureThreads).toBe(6);
+    expect(w.matureHandled).toBe(4);
+  });
+
+  it("does not fail a project for closing drive-by pull requests if others are merged", () => {
+    const dataset = buildSampleDataset();
+    const merged = [1, 2, 3].map((n) => pr(n, 20, 10, true, outsider));
+    const rejected = Array.from({ length: 9 }, (_, n) =>
+      pr(10 + n, 20, 19, false, outsider),
+    );
+    dataset.fetchedAt = NOW.toISOString();
+    dataset.issues = collection([...merged, ...rejected]);
+    const checklist = buildChecklist(dataset.repository, analyze(dataset));
+    const check = checklist.checks.find((c) => c.id === "community-merged");
+
+    expect(check?.state).toBe("yes");
+    expect(check?.answer).toContain("3 community pull requests merged");
+    expect(check?.answer).toContain("out of 12 closed");
+  });
+
+  it("says no when outside pull requests are closed and none merged", () => {
+    const dataset = buildSampleDataset();
+    dataset.fetchedAt = NOW.toISOString();
+    dataset.issues = collection([1, 2, 3, 4].map((n) => pr(n, 20, 19, false, outsider)));
+    const checklist = buildChecklist(dataset.repository, analyze(dataset));
+    expect(checklist.checks.find((c) => c.id === "community-merged")?.state).toBe("no");
   });
 });
 

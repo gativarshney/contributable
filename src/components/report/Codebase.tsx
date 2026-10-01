@@ -1,30 +1,68 @@
+import { languageLogo } from "@/lib/languages";
 import type { Report } from "@/lib/report/run";
+import { Block, Notes } from "./Block";
 
-// Opacity steps of the accent colour; the last entry is the neutral "Other" bucket.
-const SHADES = ["opacity-100", "opacity-75", "opacity-55", "opacity-40", "opacity-25"];
+const SLOTS = ["bg-cat-1", "bg-cat-2", "bg-cat-3", "bg-cat-4"];
+
+function Logo({ name }: { name: string }) {
+  const path = languageLogo(name);
+  return (
+    <span className="bg-bg-3 grid size-11 shrink-0 place-items-center rounded-xl">
+      {path ? (
+        <svg
+          viewBox="0 0 24 24"
+          className="size-5"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path d={path} />
+        </svg>
+      ) : (
+        <span aria-hidden="true" className="text-ink-2 text-xs font-medium">
+          {name.slice(0, 2)}
+        </span>
+      )}
+    </span>
+  );
+}
 
 export function Codebase({ report }: { report: Report }) {
   const { stack, contributing } = report.analysis;
-  const { labels } = contributing;
+  const labels = contributing.labels.slice(0, 6);
   if (stack.length === 0 && labels.length === 0) return null;
+
+  const named = stack.filter((l) => l.name !== "Other");
+  const main = named[0];
   const busiest = Math.max(1, ...labels.map((l) => l.count));
+  const colorOf = (name: string) => {
+    const index = named.findIndex((l) => l.name === name);
+    return index >= 0 && index < SLOTS.length ? SLOTS[index] : "bg-bg-3";
+  };
 
   return (
-    <section id="codebase" className="border-hair border-t py-14 md:py-20">
-      <p className="eyebrow !text-accent">The work</p>
-      <h2 className="display mt-4 text-[clamp(2rem,4.5vw,3.25rem)]">
-        Is it <em>your kind of project?</em>
-      </h2>
-      <p className="text-ink-2 mt-3 max-w-2xl">
-        What the code is written in, and what recent issues and pull requests are about.
-      </p>
-
-      <div className="mt-10 grid gap-x-16 gap-y-12 lg:grid-cols-2">
+    <Block
+      id="codebase"
+      question="Is it my kind of project?"
+      title={
+        main ? (
+          <>
+            Mostly <em>{main.name}</em>
+            {named[1] && named[1].share >= 10 ? (
+              <>, with some {named[1].name}.</>
+            ) : (
+              <>.</>
+            )}
+          </>
+        ) : (
+          <>What people are working on.</>
+        )
+      }
+    >
+      <div className="grid gap-x-16 gap-y-12 lg:grid-cols-2">
         {stack.length > 0 ? (
           <div>
-            <h3 className="eyebrow border-hair border-b pb-3">Languages</h3>
             <div
-              className="mt-6 flex h-3 gap-0.5 overflow-hidden rounded-full"
+              className="flex h-4 gap-0.5"
               role="img"
               aria-label={`Languages by share of code: ${stack.map((l) => `${l.name} ${l.share}%`).join(", ")}`}
             >
@@ -32,74 +70,70 @@ export function Codebase({ report }: { report: Report }) {
                 <span
                   key={language.name}
                   title={`${language.name} ${language.share}%`}
-                  style={{ width: `${language.share}%` }}
-                  className={
-                    language.name === "Other"
-                      ? "bg-bg-3"
-                      : `bg-accent ${SHADES[Math.min(i, SHADES.length - 1)]}`
-                  }
+                  style={{ flexGrow: language.share, flexBasis: 0 }}
+                  className={`h-full min-w-1 ${colorOf(language.name)} ${
+                    i === 0 ? "rounded-l-sm" : ""
+                  } ${i === stack.length - 1 ? "rounded-r-sm" : ""}`}
                 />
               ))}
             </div>
-            <ul className="mt-5 grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
-              {stack.map((language, i) => (
-                <li
-                  key={language.name}
-                  className="flex items-center justify-between gap-3"
-                >
-                  <span className="flex items-center gap-2.5">
-                    <span
-                      aria-hidden="true"
-                      className={`size-2 rounded-full ${
-                        language.name === "Other"
-                          ? "bg-bg-3"
-                          : `bg-accent ${SHADES[Math.min(i, SHADES.length - 1)]}`
-                      }`}
-                    />
-                    {language.name}
+            <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+              {named.slice(0, 4).map((language) => (
+                <li key={language.name} className="flex items-center gap-3.5">
+                  <Logo name={language.name} />
+                  <span className="min-w-0">
+                    <span className="flex items-center gap-2 font-medium tracking-tight">
+                      <span
+                        aria-hidden="true"
+                        className={`size-2 shrink-0 rounded-[2px] ${colorOf(language.name)}`}
+                      />
+                      <span className="truncate">{language.name}</span>
+                    </span>
+                    <span className="text-ink-2 text-sm">
+                      {language.share}% of the code
+                    </span>
                   </span>
-                  <span className="text-ink-2 font-mono text-xs">{language.share}%</span>
                 </li>
               ))}
             </ul>
-            <p className="text-ink-3 mt-4 text-xs">
-              Share of code by bytes, as GitHub detects it. Vendored and generated files
-              can skew this.
-            </p>
           </div>
         ) : null}
 
         {labels.length > 0 ? (
           <div>
-            <h3 className="eyebrow border-hair border-b pb-3">
-              What people are working on
+            <h3 className="mb-5 font-medium tracking-tight">
+              What recent issues and pull requests are about
             </h3>
-            <ul className="mt-5 space-y-2.5">
-              {labels.slice(0, 8).map((label) => (
-                <li
-                  key={label.name}
-                  className="grid grid-cols-[minmax(0,11rem)_1fr_auto] items-center gap-4 text-sm"
-                >
-                  <span className="truncate">{label.name}</span>
-                  <span className="bg-bg-2 h-1.5 overflow-hidden rounded-full">
+            <ul className="space-y-3.5">
+              {labels.map((label) => (
+                <li key={label.name}>
+                  <span className="flex items-baseline justify-between gap-4 text-sm">
+                    <span className="truncate">{label.name}</span>
+                    <span className="text-ink-2 shrink-0">{label.count}</span>
+                  </span>
+                  <span className="bg-bg-3 mt-1.5 block h-1.5 overflow-hidden rounded-full">
                     <span
                       className="bg-accent block h-full rounded-full"
                       style={{ width: `${(label.count / busiest) * 100}%` }}
                     />
                   </span>
-                  <span className="text-ink-2 w-8 text-right font-mono text-xs">
-                    {label.count}
-                  </span>
                 </li>
               ))}
             </ul>
-            <p className="text-ink-3 mt-4 text-xs">
-              Labels on issues and pull requests opened in the last 90 days. Depends
-              entirely on how the project labels its work.
-            </p>
           </div>
         ) : null}
       </div>
-    </section>
+
+      <Notes>
+        <li>
+          Languages are shares of code by bytes, as GitHub detects them. Generated or
+          vendored files can skew the picture.
+        </li>
+        <li>
+          Labels are counted on issues and pull requests opened in the last 90 days, and
+          depend on how the project labels its work.
+        </li>
+      </Notes>
+    </Block>
   );
 }

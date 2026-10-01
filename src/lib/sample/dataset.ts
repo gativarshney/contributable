@@ -46,6 +46,16 @@ const LABELS = [
 const at = (daysAgo: number, hours = 0) =>
   new Date(NOW - daysAgo * DAY_MS - hours * 3_600_000).toISOString();
 
+/** Moves a timestamp into a weekday working hour, the way a real team's replies cluster. */
+function workingHours(iso: string, roll: number): string {
+  const date = new Date(iso);
+  const weekday = date.getUTCDay();
+  if (weekday === 0) date.setUTCDate(date.getUTCDate() + 1);
+  if (weekday === 6) date.setUTCDate(date.getUTCDate() + 2);
+  date.setUTCHours(8 + Math.floor(roll * roll * 9), Math.floor(roll * 60));
+  return date.toISOString();
+}
+
 export function buildSampleDataset(): Dataset {
   const random = seeded(42);
 
@@ -112,10 +122,14 @@ export function buildSampleDataset(): Dataset {
     const created = (NOW - new Date(issue.createdAt).getTime()) / DAY_MS;
     const delayDays = 0.05 + random() * random() * 3;
     if (created - delayDays <= 0) continue;
+    const repliedAt = workingHours(at(created - delayDays), random());
+    const author = TEAM[Math.floor(random() * TEAM.length)];
+    // A reply cannot come before its thread, or after the moment the data was read.
+    if (repliedAt <= issue.createdAt || new Date(repliedAt).getTime() > NOW) continue;
     comments.push({
       issueNumber: issue.number,
-      createdAt: at(created - delayDays),
-      author: TEAM[Math.floor(random() * TEAM.length)],
+      createdAt: repliedAt,
+      author,
       association: "team",
     });
   }

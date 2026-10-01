@@ -2,7 +2,7 @@
   "name": "repoinsight",
   "version": "0.1.0",
   "private": true,
-  "description": "Turn a public GitHub repository into an evidence-backed engineering report.",
+  "description": "Know a repository before your first pull request. Contributor reports from public GitHub data.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -21,6 +21,7 @@
     "next": "16.3.8",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "simple-icons": "^16.33.0",
     "three": "^0.186.1"
   },
   "devDependencies": {
@@ -36,5 +37,7 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^5.0.3"
-  }
+  },
+  "license": "UNLICENSED",
+  "author": "Gati Varshney (https://gativarshney.github.io/)"
 }

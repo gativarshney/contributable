@@ -124,7 +124,6 @@ body {
   .font-display {
     font-weight: 500;
     letter-spacing: -0.035em;
-    font-variant-numeric: tabular-nums;
   }
 
   .btn {
@@ -295,4 +294,65 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Categorical chart colours. A fixed order, checked for colour-blind separation. */
+:root {
+  --cat-1: #2a78d6;
+  --cat-2: #eb6834;
+  --cat-3: #1baf7a;
+  --cat-4: #eda100;
+}
+
+:root[data-theme="dark"] {
+  --cat-1: #3987e5;
+  --cat-2: #d95926;
+  --cat-3: #199e70;
+  --cat-4: #c98500;
+}
+
+@theme inline {
+  --color-cat-1: var(--cat-1);
+  --color-cat-2: var(--cat-2);
+  --color-cat-3: var(--cat-3);
+  --color-cat-4: var(--cat-4);
+}
+
+/* The pill around the search field shows focus, so the field itself stays clean. */
+.repo-input input:focus-visible {
+  outline: none;
+}
+
+@keyframes ring-draw {
+  from {
+    stroke-dasharray: 0 1000;
+  }
+}
+
+.ring-draw {
+  animation: ring-draw 1.1s var(--ease-out) both;
+}
+
+/* Analysis screen: a soft ripple around the counter, and a pulse on stages in progress. */
+@keyframes scan-ring {
+  from {
+    box-shadow: 0 0 0 0 var(--glow);
+  }
+  to {
+    box-shadow: 0 0 0 26px transparent;
+  }
+}
+
+.scan-ring {
+  animation: scan-ring 1.6s ease-out infinite;
+}
+
+@keyframes stage-pulse {
+  50% {
+    box-shadow: 0 0 0 6px var(--glow);
+  }
+}
+
+.stage-pulse {
+  animation: stage-pulse 1.2s ease-in-out infinite;
 }

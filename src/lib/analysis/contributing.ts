@@ -29,6 +29,24 @@ export interface ContributingWindow {
   /** Of those, how many received a reply from another person, or were merged. */
   answered: number;
   medianHoursToResponse: number | null;
+  /** Community pull requests opened in the window that are still open. */
+  communityStillOpen: number;
+  /** How quickly each community thread opened in the window first heard back. */
+  replies: ReplyBuckets;
+  /** Threads opened at least 48 hours ago: the ones that have had a fair chance. */
+  matureThreads: number;
+  /** Of those, how many were replied to, merged or closed. */
+  matureHandled: number;
+}
+
+export interface ReplyBuckets {
+  withinDay: number;
+  withinWeek: number;
+  later: number;
+  /** Closed with no reply we can see, for example after an approving review. */
+  closedQuietly: number;
+  /** Still open with no reply. */
+  waiting: number;
 }
 
 export interface CommunityFile {
@@ -144,12 +162,34 @@ export function calculateContributingSignals(
     const mergeDays = median(merged.map((p) => daysBetween(p.createdAt, p.mergedAt!)));
 
     const threads = communityThreads.filter((t) => inWindow(t.createdAt, now, days));
-    const responseHours = threads
-      .map((t) => firstResponseAt(t, byThread.get(t.number)))
-      .map((at, i) => (at ? daysBetween(threads[i].createdAt, at) * 24 : null))
-      .filter((h): h is number => h !== null);
+    const waits = threads.map((t) => {
+      const at = firstResponseAt(t, byThread.get(t.number));
+      return at ? daysBetween(t.createdAt, at) * 24 : null;
+    });
+    const responseHours = waits.filter((h): h is number => h !== null);
     const medianHours = median(responseHours);
     const covered = ok && isCovered(issues.coveredSince, now, days);
+
+    const replies: ReplyBuckets = {
+      withinDay: 0,
+      withinWeek: 0,
+      later: 0,
+      closedQuietly: 0,
+      waiting: 0,
+    };
+    let matureThreads = 0;
+    let matureHandled = 0;
+    threads.forEach((thread, i) => {
+      const hours = waits[i];
+      if (hours === null) replies[thread.closedAt ? "closedQuietly" : "waiting"] += 1;
+      else if (hours <= 24) replies.withinDay += 1;
+      else if (hours <= 24 * 7) replies.withinWeek += 1;
+      else replies.later += 1;
+      if (daysBetween(thread.createdAt, now) >= 2) {
+        matureThreads += 1;
+        if (hours !== null || thread.closedAt) matureHandled += 1;
+      }
+    });
 
     windows[days] = {
       covered,
@@ -166,6 +206,12 @@ export function calculateContributingSignals(
       threads: threads.length,
       answered: responseHours.length,
       medianHoursToResponse: medianHours === null ? null : round(medianHours),
+      communityStillOpen: opened.filter(
+        (p) => p.association === "community" && !p.closedAt,
+      ).length,
+      replies,
+      matureThreads,
+      matureHandled,
     };
   }
 

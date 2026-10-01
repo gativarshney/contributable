@@ -15,13 +15,11 @@ import {
 } from "@/lib/github/fetchers";
 import type { RepoRef } from "@/lib/github/parse";
 import { buildChecklist, type Checklist } from "@/lib/insights/checklist";
-import { buildFindings, type Finding } from "@/lib/insights/findings";
 import type { Dataset, Repository } from "@/types";
 
 export interface Report {
   repository: Repository;
   analysis: Analysis;
-  findings: Finding[];
   checklist: Checklist;
   fetchedAt: string;
   sample?: boolean;
@@ -52,7 +50,6 @@ export function buildReport(dataset: Dataset): Report {
   return {
     repository: dataset.repository,
     analysis,
-    findings: buildFindings(dataset.repository, analysis),
     checklist: buildChecklist(dataset.repository, analysis),
     fetchedAt: dataset.fetchedAt,
   };
@@ -106,7 +103,7 @@ export async function runAnalysis(
 
   try {
     const repository = await fetchRepository(client, ref);
-    emit({ type: "stage", stage: "repository", detail: `Found ${repository.fullName}` });
+    emit({ type: "stage", stage: "repository", detail: "found" });
 
     // Use the canonical name: GitHub follows redirects for renamed repositories.
     const canonical = { owner: repository.owner, name: repository.name };
@@ -129,10 +126,7 @@ export async function runAnalysis(
         emit({
           type: "stage",
           stage: "commits",
-          detail:
-            c.status === "ok"
-              ? `${count(c.items.length, "commit")} collected`
-              : "Unavailable",
+          detail: c.status === "ok" ? count(c.items.length, "commit") : "unavailable",
         });
         return c;
       }),
@@ -141,9 +135,7 @@ export async function runAnalysis(
           type: "stage",
           stage: "contributors",
           detail:
-            c.status === "ok"
-              ? `${count(c.items.length, "contributor")} listed`
-              : "Unavailable",
+            c.status === "ok" ? count(c.items.length, "contributor") : "unavailable",
         });
         return c;
       }),
@@ -151,10 +143,7 @@ export async function runAnalysis(
         emit({
           type: "stage",
           stage: "releases",
-          detail:
-            r.status === "ok"
-              ? `${count(r.items.length, "release")} collected`
-              : "Unavailable",
+          detail: r.status === "ok" ? count(r.items.length, "release") : "unavailable",
         });
         return r;
       }),
@@ -162,10 +151,7 @@ export async function runAnalysis(
         emit({
           type: "stage",
           stage: "issues",
-          detail:
-            i.status === "ok"
-              ? `${i.items.length.toLocaleString("en-US")} issues and pull requests collected`
-              : "Unavailable",
+          detail: i.status === "ok" ? count(i.items.length, "thread") : "unavailable",
         });
         return i;
       }),
@@ -180,9 +166,9 @@ export async function runAnalysis(
           type: "stage",
           stage: "contributing",
           detail:
-            result[1].status === "ok"
-              ? `${count(result[1].items.length, "starter issue")}, ${count(result[0].items.length, "comment")}`
-              : "Partly unavailable",
+            result[0].status === "ok"
+              ? count(result[0].items.length, "comment")
+              : "partly unavailable",
         });
         return result;
       }),
@@ -204,7 +190,7 @@ export async function runAnalysis(
     emit({
       type: "stage",
       stage: "report",
-      detail: `${report.checklist.favourable} of ${report.checklist.checks.length} contributor signals favourable`,
+      detail: `${report.checklist.favourable} of ${report.checklist.checks.length} signals`,
     });
 
     if (cache.size >= 100) cache.delete(cache.keys().next().value!);
