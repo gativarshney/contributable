@@ -44,7 +44,11 @@ as a response.
   each answered from data with a stated threshold; undecidable ones say so
 - **People** — the maintainers who reply to outside contributors, recent and all-time
   top contributors
-- **Timing** — an interactive 3D chart of when the team comments, in your time zone
+- **Timing** — a week-by-hour heatmap of when the team comments, in your time zone
+- **Pull request journey** — where outside pull requests ended up and how long people
+  waited for a first reply, as stacked bars
+- **Language logos**, a commit-share donut, and a visual progress screen while GitHub is
+  being read
 - **Codebase** — languages and the labels on recent issues and pull requests
 - A contributor view on every report: starter issues, community merge share, time to
   merge, time to first human response, and a checklist of community files
@@ -224,6 +228,12 @@ the finding rules.
 3. Set `NEXT_PUBLIC_SITE_URL` to the production URL.
 
 No database or paid service is needed. The app fits the free tier.
+
+## Licence
+
+Copyright © 2026 Gati Varshney. All rights reserved. The source is published so it can be
+read and evaluated; it is not open source. Copying, redistributing, modifying or
+deploying it requires written permission. See [`LICENSE`](LICENSE).
 
 ## Roadmap
 
