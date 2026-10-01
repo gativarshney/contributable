@@ -211,7 +211,9 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
     answer: !r
       ? "Comment history could not be read."
       : r.matureThreads < 3
-        ? `Only ${plural(r.matureThreads, "community thread")} old enough to judge in the last ${periodLabel(r.days)}.`
+        ? r.days < 3
+          ? `Only the last ${periodLabel(r.days)} of conversation could be read, which is too short to judge reply times.`
+          : `Only ${plural(r.matureThreads, "community thread")} old enough to judge in the last ${periodLabel(r.days)}.`
         : `${r.matureHandled} of ${r.matureThreads} community threads were answered or closed${
             r.medianHoursToResponse === null
               ? "."
