@@ -1,22 +1,21 @@
 import Link from "next/link";
+import { Logo } from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
-  { href: "/#how-it-works", label: "How it works" },
-  { href: "/#methodology", label: "Methodology" },
-  { href: "/#limitations", label: "Limitations" },
-  { href: "/sample", label: "Example report" },
+  { href: "/sample", label: "Example" },
+  { href: "/methodology", label: "Methodology" },
 ];
 
 export function SiteHeader() {
   return (
-    <header className="border-hair bg-bg/85 sticky top-0 z-40 border-b backdrop-blur-md">
-      <div className="shell flex h-16 items-center justify-between gap-6">
-        <Link href="/" className="font-display text-[22px] leading-none tracking-tight">
-          Repo<em className="text-accent">Insight</em>
+    <header className="border-hair bg-bg/75 sticky top-0 z-40 border-b backdrop-blur-xl">
+      <div className="shell flex h-14 items-center justify-between gap-6">
+        <Link href="/" aria-label="RepoInsight home">
+          <Logo />
         </Link>
-        <nav aria-label="Primary" className="flex items-center gap-1 sm:gap-6">
-          <ul className="hidden items-center gap-6 md:flex">
+        <nav aria-label="Primary" className="flex items-center gap-5">
+          <ul className="flex items-center gap-5">
             {links.map((link) => (
               <li key={link.href}>
                 <Link

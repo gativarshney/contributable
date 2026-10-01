@@ -1,24 +1,22 @@
 import Link from "next/link";
+import { Logo } from "./Logo";
 
 export function SiteFooter() {
   return (
-    <footer className="border-hair mt-24 border-t">
-      <div className="shell flex flex-col gap-8 py-12 md:flex-row md:items-end md:justify-between">
-        <div className="max-w-md">
-          <p className="font-display text-2xl leading-none">
-            Repo<em className="text-accent">Insight</em>
-          </p>
-          <p className="text-ink-2 mt-3 text-sm">
-            Evidence-backed engineering reports for public GitHub repositories. No
-            sign-in, no tracking, nothing stored.
+    <footer className="border-hair border-t">
+      <div className="shell flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-2">
+          <Logo />
+          <p className="text-ink-3 text-sm">
+            Built by Gati Varshney. Not affiliated with GitHub.
           </p>
         </div>
-        <div className="eyebrow flex flex-wrap gap-x-6 gap-y-2">
-          <Link href="/#methodology" className="hover:text-ink transition-colors">
-            Methodology
+        <nav aria-label="Footer" className="text-ink-2 flex gap-6 text-sm">
+          <Link href="/sample" className="hover:text-ink transition-colors">
+            Example
           </Link>
-          <Link href="/#limitations" className="hover:text-ink transition-colors">
-            Limitations
+          <Link href="/methodology" className="hover:text-ink transition-colors">
+            Methodology
           </Link>
           <a
             href="https://github.com/gativarshney/repoinsight"
@@ -26,14 +24,9 @@ export function SiteFooter() {
             rel="noreferrer"
             className="hover:text-ink transition-colors"
           >
-            Source ↗
+            Source
           </a>
-        </div>
-      </div>
-      <div className="shell border-hair border-t py-5">
-        <p className="eyebrow !text-ink-3">
-          Built by Gati Varshney · Not affiliated with GitHub
-        </p>
+        </nav>
       </div>
     </footer>
   );
