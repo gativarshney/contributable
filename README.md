@@ -5,6 +5,8 @@ Turn a public GitHub repository into an evidence-backed engineering report.
 Paste a repository URL and RepoInsight answers one question: _what should I know about
 this repository before I depend on it, contribute to it, or start working on it?_
 
+Live: https://repoinsight-app.vercel.app
+
 ## Why it exists
 
 Judging a repository usually means clicking through commits, contributors, releases,
@@ -13,7 +15,30 @@ data, calculates a small set of deterministic metrics, and shows the evidence be
 one. It is deliberately not a chatbot, not a GitHub clone, and it does not produce a
 "health score".
 
+## For contributors
+
+Research on open source onboarding keeps finding the same obstacles. Each one maps to
+something a report measures:
+
+| What newcomers run into                                                                      | What the report shows                                                               |
+| -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Finding a task to start with is the most cited barrier [1]                                   | Open issues labelled `good first issue` or `help wanted` that nobody is assigned to |
+| Slow or missing replies; lengthy reviews predict abandoned pull requests [1][2][3]           | Median time to the first human response on community issues and pull requests       |
+| Uncertainty about whether outside work is accepted; novices are abandoned more often [2]     | Share of community pull requests merged, and the median time to merge               |
+| Incomplete documentation, observed by 93% of survey respondents; licence clarity matters [4] | Whether a README, contributing guide, code of conduct, licence and templates exist  |
+
+Bots often post the first reply to a pull request [3], so bot comments are never counted
+as a response.
+
+1. Steinmacher et al., [Barriers Faced by Newcomers to Open Source Projects: A Systematic Review](https://link.springer.com/chapter/10.1007/978-3-642-55128-4_21)
+2. Khatoonabadi et al., [On Wasted Contributions: Understanding the Dynamics of Contributor-Abandoned Pull Requests](https://arxiv.org/abs/2110.15447)
+3. Hasan et al., [Understanding the Time to First Response in GitHub Pull Requests](https://arxiv.org/abs/2304.08426)
+4. GitHub, [Open Source Survey 2017](https://opensourcesurvey.org/2017/)
+
 ## Features
+
+- A contributor view on every report: starter issues, community merge share, time to
+  merge, time to first human response, and a checklist of community files
 
 - A 3D activity skyline (three.js): decorative on the homepage, and drawn from the
   repository's real daily commit counts on every report
@@ -48,7 +73,7 @@ src/
   app/                      routes, metadata, route handler
   components/{site,home,report,three}
   lib/github/               parse.ts, client.ts, fetchers.ts
-  lib/analysis/             activity, contributors, releases, issues, time, index
+  lib/analysis/             activity, contributors, contributing, releases, issues, time
   lib/insights/             findings.ts
   lib/report/               run.ts
   lib/sample/               deterministic example dataset
@@ -68,9 +93,12 @@ always produces the same result and every function can be tested in isolation.
 | Releases                 | `GET /repos/{owner}/{repo}/releases`                    | 1        |
 | Issues and pull requests | `GET /repos/{owner}/{repo}/issues?state=all&since=`     | 1 to N   |
 | Open pull request count  | `GET /repos/{owner}/{repo}/pulls?state=open&per_page=1` | 1        |
+| Conversation comments    | `GET /repos/{owner}/{repo}/issues/comments?since=`      | 1 to N   |
+| Starter issues           | `GET /repos/{owner}/{repo}/issues?labels=`              | 2        |
+| Community files          | `GET /repos/{owner}/{repo}/community/profile`           | 1        |
 
 N is the page limit: 3 pages (300 items) without a token, 10 pages (1,000 items) with
-one. A small repository costs about 6 requests. Independent requests run in parallel and
+one. A small repository costs about 10 requests. Independent requests run in parallel and
 finished reports are cached in memory for 10 minutes.
 
 ## Metric methodology
@@ -95,6 +123,15 @@ in the window * 100`. Accounts GitHub marks as bots are excluded. Commits not li
   merge.
 - **Median time to close / merge** — median of `closed_at - created_at` (or `merged_at`)
   over items closed or merged inside the window.
+- **Community** — an author whose GitHub association with the repository is not owner,
+  member or collaborator, and who is not a bot.
+- **Community PRs merged** — `merged / (merged + closed without merge) * 100` over
+  community pull requests closed inside the window.
+- **First human response** — for each issue or pull request opened by a community author
+  inside the window: the earliest conversation comment by another person, or the merge,
+  whichever comes first. The metric is the median of those waits.
+- **Starter issues** — open issues labelled `good first issue` or `help wanted` with no
+  assignee.
 
 Finding rules and their thresholds live in
 [`src/lib/insights/findings.ts`](src/lib/insights/findings.ts) and are printed in the
@@ -120,6 +157,14 @@ if the fetched data is known to be complete back to its start.
 - Authorship follows GitHub attribution. Squash merges and unlinked emails distort it.
 - Merged-PR and closed-issue recency is only observed within the last 90 days.
 - Projects that publish through tags or a package registry show no GitHub Releases.
+- Response times see conversation comments and merges only. Review approvals and inline
+  review comments are not read, so a pull request answered only by a review looks
+  unanswered.
+- Organisation members with private membership are indistinguishable from community
+  authors.
+- Only GitHub's two default starter labels are checked. Projects with their own labels
+  show no starter issues.
+- Tone is not measured. Nothing here tells you whether a community is welcoming.
 - Activity is not quality. Nothing here measures correctness, security or test coverage.
 
 ## Local development
