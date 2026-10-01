@@ -15,6 +15,8 @@ one. It is deliberately not a chatbot, not a GitHub clone, and it does not produ
 
 ## Features
 
+- A 3D activity skyline (three.js): decorative on the homepage, and drawn from the
+  repository's real daily commit counts on every report
 - Report for any public repository, no sign-in and no token required from the user
 - Six signal areas: activity, maintenance recency, contributor concentration, releases,
   issues and pull requests
@@ -25,6 +27,7 @@ one. It is deliberately not a chatbot, not a GitHub clone, and it does not produ
 - Honest degradation: when a repository exceeds the collection limit, affected windows
   show a dash instead of a partial number
 - Example report at `/sample`, clearly marked and built from illustrative data
+- Methodology and limitations on their own page at `/methodology`
 - Light and dark themes, responsive layout, keyboard and screen reader support
 
 ## Architecture
@@ -43,7 +46,7 @@ GitHub REST API
 ```
 src/
   app/                      routes, metadata, route handler
-  components/{site,home,report}
+  components/{site,home,report,three}
   lib/github/               parse.ts, client.ts, fetchers.ts
   lib/analysis/             activity, contributors, releases, issues, time, index
   lib/insights/             findings.ts
