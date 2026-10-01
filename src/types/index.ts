@@ -26,6 +26,10 @@ export interface Commit {
   /** GitHub login, when the commit is linked to an account. */
   login: string | null;
   isBot: boolean;
+  /** Issue and pull request numbers the commit message mentions. */
+  refs: number[];
+  /** Logins credited with a Co-authored-by trailer, lower case. */
+  coAuthors: string[];
   url: string;
 }
 
@@ -72,7 +76,17 @@ export interface StarterIssue {
   comments: number;
   assigned: boolean;
   label: string;
+  /** Opened by an owner, organisation member or collaborator. */
+  byMaintainer: boolean;
+  /** Whether anyone seems to be on it already; "unchecked" when we did not look. */
+  availability: StarterAvailability;
 }
+
+export type StarterAvailability =
+  | { state: "unchecked" }
+  | { state: "free" }
+  | { state: "linked"; pullRequest: number; url: string }
+  | { state: "claimed"; by: string | null; at: string };
 
 /** Community files GitHub detects for a repository; a null URL means not detected. */
 export interface CommunityFiles {

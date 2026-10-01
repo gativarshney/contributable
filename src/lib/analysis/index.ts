@@ -112,6 +112,7 @@ export function analyze(dataset: Dataset): Analysis {
     dataset.starterIssues,
     dataset.community,
     now,
+    { commits: dataset.commits.items, openPullRequests: dataset.openPullRequests },
   );
   const stack = calculateStack(dataset.languages);
   return {

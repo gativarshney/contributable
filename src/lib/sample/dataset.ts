@@ -5,6 +5,7 @@ import type {
   Dataset,
   IssueItem,
   Release,
+  StarterAvailability,
   StarterIssue,
   ThreadComment,
 } from "@/types";
@@ -30,6 +31,31 @@ const AUTHORS: [string, number, boolean][] = [
   ["dependabot[bot]", 0.93, true],
   ["sam-whitlock", 0.97, false],
   ["Elena Varga", 1, false],
+];
+
+// What a look at each starter issue's timeline found.
+const AVAILABILITY: Record<number, StarterAvailability> = {
+  0: { state: "free" },
+  1: { state: "linked", pullRequest: 1812, url: URL_BASE },
+  3: { state: "claimed", by: "sam-whitlock", at: "2026-09-02T10:00:00Z" },
+  4: { state: "free" },
+};
+
+const PULL_TITLES = [
+  "Fix backoff overflow for very long retry chains",
+  "Add a dry-run flag to the migrate command",
+  "Document the dead letter queue settings",
+  "Handle connection resets during batch claim",
+  "Speed up the scheduler's polling query",
+  "Correct the types for job priority",
+];
+const ISSUE_TITLES = [
+  "Jobs stay locked after a worker crash",
+  "Support cron expressions with seconds",
+  "Docs: clarify at-least-once delivery",
+  "Scheduler drifts across DST changes",
+  "Expose per-queue concurrency in metrics",
+  "Type error with strict null checks",
 ];
 
 const TEAM = ["mira-okafor", "jonas-lindqvist", "priya-raman"];
@@ -75,6 +101,8 @@ export function buildSampleDataset(): Dataset {
         author,
         login: author.includes(" ") ? null : author,
         isBot,
+        refs: [],
+        coAuthors: [],
         url: `${URL_BASE}/commit/${sha}`,
       });
     }
@@ -95,7 +123,7 @@ export function buildSampleDataset(): Dataset {
     const closedDaysAgo = Math.max(0.1, created - random() * (isPullRequest ? 5 : 20));
     issues.push({
       number: 1840 - n,
-      title: isPullRequest ? "Example pull request" : "Example issue",
+      title: (isPullRequest ? PULL_TITLES : ISSUE_TITLES)[n % 6],
       isPullRequest,
       createdAt: at(created),
       closedAt: resolved ? at(closedDaysAgo) : null,
@@ -112,6 +140,10 @@ export function buildSampleDataset(): Dataset {
     // Not every outside contribution lands: close some community pull requests unmerged.
     else if (issue.isPullRequest && issue.closedAt && issue.number % 4 === 0) {
       issue.mergedAt = null;
+      // A few of those were applied by hand: a later commit mentions the pull request.
+      if (issue.number % 8 === 0) {
+        commits.find((commit) => commit.date > issue.closedAt!)?.refs.push(issue.number);
+      }
     }
   }
 
@@ -150,6 +182,8 @@ export function buildSampleDataset(): Dataset {
     comments: replies as number,
     assigned: assigned as boolean,
     label: label as string,
+    byMaintainer: i % 2 === 0,
+    availability: AVAILABILITY[i] ?? { state: "unchecked" },
   }));
 
   const since = at(90);

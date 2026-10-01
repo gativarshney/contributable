@@ -1,13 +1,16 @@
 import {
   WINDOWS,
   type Collection,
+  type Commit,
   type CommunityFiles,
   type IssueItem,
   type StarterIssue,
   type ThreadComment,
   type WindowDays,
 } from "@/types";
+import { isClaBot } from "@/lib/github/signals";
 import {
+  DAY_MS,
   daysBetween,
   inWindow,
   isCovered,
@@ -45,6 +48,26 @@ export interface ContributingWindow {
   matureThreads: number;
   /** Of those, how many were replied to, merged or closed. */
   matureHandled: number;
+
+  /** Pull requests merged in the period by anyone who is not a bot. */
+  humanMerged: number;
+  /** Median days to merge for the team's own pull requests, for comparison. */
+  teamMedianDaysToMerge: number | null;
+  /**
+   * Community pull requests that were closed rather than merged, yet whose work seems to
+   * have landed: a commit refers to the pull request or credits its author.
+   */
+  landedOtherwise: number;
+  /** The most recently merged community pull requests, kept as evidence. */
+  merged: MergedExample[];
+}
+
+export interface MergedExample {
+  number: number;
+  title: string;
+  url: string;
+  author: string | null;
+  daysToMerge: number;
 }
 
 /** A window whose length was chosen by what the data covers; `days` can be a fraction. */
@@ -106,6 +129,13 @@ export interface ContributingAnalysis {
   rhythm: { total: number; slots: number[] };
   /** Labels on issues and pull requests opened in the trailing 90 days, most used first. */
   labels: { name: string; count: number }[];
+  /**
+   * How long the review queue is at the recent pace: open pull requests divided by
+   * pull requests merged per week. Null when either figure is unknown.
+   */
+  queue: { open: number; mergedPerWeek: number; weeks: number | null } | null;
+  /** Login of a bot seen enforcing a contributor licence agreement, if any. */
+  claBot: string | null;
 }
 
 const FILE_LABELS: [keyof CommunityFiles, string][] = [
@@ -150,13 +180,50 @@ export function firstResponseAt(
   return first;
 }
 
+/**
+ * Whether a closed, unmerged pull request seems to have landed anyway. Some projects
+ * apply outside work by hand and close the pull request, which would otherwise read as
+ * a rejection. Counted when a later commit mentions the pull request's number, or when
+ * a commit within two days of the close is by, or co-credited to, its author.
+ */
+export function landedByCommit(pull: IssueItem, commits: Commit[]): boolean {
+  if (pull.mergedAt || !pull.closedAt) return false;
+  const author = pull.author?.toLowerCase() ?? null;
+  const closed = new Date(pull.closedAt).getTime();
+  return commits.some((commit) => {
+    if (commit.date < pull.createdAt) return false;
+    if (commit.refs.includes(pull.number)) return true;
+    if (author === null) return false;
+    const near = Math.abs(new Date(commit.date).getTime() - closed) <= 2 * DAY_MS;
+    return (
+      near &&
+      (commit.coAuthors.includes(author) || commit.login?.toLowerCase() === author)
+    );
+  });
+}
+
+function queueFor(
+  open: number | null,
+  observed: ObservedWindow | null,
+): ContributingAnalysis["queue"] {
+  if (open === null || !observed) return null;
+  const mergedPerWeek = round(observed.humanMerged / (observed.days / 7));
+  return {
+    open,
+    mergedPerWeek,
+    weeks: mergedPerWeek > 0 ? round(open / mergedPerWeek) : null,
+  };
+}
+
 export function calculateContributingSignals(
   issues: Collection<IssueItem>,
   comments: Collection<ThreadComment>,
   starterIssues: Collection<StarterIssue>,
   community: CommunityFiles | null,
   now: Date,
+  extra: { commits?: Commit[]; openPullRequests?: number | null } = {},
 ): ContributingAnalysis {
+  const commits = extra.commits ?? [];
   const ok = issues.status === "ok";
   const byThread = new Map<number, ThreadComment[]>();
   for (const comment of comments.items) {
@@ -178,6 +245,11 @@ export function calculateContributingSignals(
     );
     const closed = merged.length + closedUnmerged.length;
     const mergeDays = median(merged.map((p) => daysBetween(p.createdAt, p.mergedAt!)));
+    const teamMergeDays = median(
+      pulls
+        .filter((p) => p.association === "team" && inWindow(p.mergedAt, now, days))
+        .map((p) => daysBetween(p.createdAt, p.mergedAt!)),
+    );
 
     const threads = communityThreads.filter((t) => inWindow(t.createdAt, now, days));
     const waits = threads.map((t) => {
@@ -230,6 +302,21 @@ export function calculateContributingSignals(
       replies,
       matureThreads,
       matureHandled,
+      humanMerged: pulls.filter(
+        (p) => p.association !== "bot" && inWindow(p.mergedAt, now, days),
+      ).length,
+      teamMedianDaysToMerge: teamMergeDays === null ? null : round(teamMergeDays),
+      landedOtherwise: closedUnmerged.filter((p) => landedByCommit(p, commits)).length,
+      merged: [...merged]
+        .sort((a, b) => b.mergedAt!.localeCompare(a.mergedAt!))
+        .slice(0, 4)
+        .map((p) => ({
+          number: p.number,
+          title: p.title,
+          url: p.url,
+          author: p.author,
+          daysToMerge: round(daysBetween(p.createdAt, p.mergedAt!)),
+        })),
     };
   };
   for (const days of WINDOWS) windows[days] = windowFor(days);
@@ -242,6 +329,8 @@ export function calculateContributingSignals(
       ? [issues.coveredSince, comments.coveredSince].sort()[1]
       : null;
   const replyDays = ok ? observedDays(replyCoverage, now) : null;
+
+  const observed = pullDays === null ? null : { days: pullDays, ...windowFor(pullDays) };
 
   // Who on the team talks to outside contributors, and when the team is around.
   const communityNumbers = new Set(communityThreads.map((t) => t.number));
@@ -286,7 +375,7 @@ export function calculateContributingSignals(
   return {
     available: ok,
     windows,
-    observed: pullDays === null ? null : { days: pullDays, ...windowFor(pullDays) },
+    observed,
     observedReplies:
       replyDays === null ? null : { days: replyDays, ...windowFor(replyDays) },
     starter: {
@@ -302,6 +391,10 @@ export function calculateContributingSignals(
       : null,
     responders,
     rhythm: { total: teamComments, slots },
+    queue: queueFor(extra.openPullRequests ?? null, observed),
+    claBot:
+      comments.items.map((c) => c.author).find((login) => login && isClaBot(login)) ??
+      null,
     labels,
   };
 }

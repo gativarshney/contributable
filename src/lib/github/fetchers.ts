@@ -6,10 +6,12 @@ import type {
   IssueItem,
   Release,
   Repository,
+  StarterAvailability,
   StarterIssue,
   ThreadComment,
 } from "@/types";
 import { GitHubError, type GitHubClient } from "./client";
+import { isClaim, parseCommitMessage } from "./signals";
 import type { RepoRef } from "./parse";
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- raw GitHub payloads are narrowed field by field */
@@ -63,6 +65,7 @@ export function normalizeCommit(raw: Raw): Commit | null {
     author: str(raw.author?.login) ?? str(raw.commit?.author?.name) ?? "Unknown author",
     login: str(raw.author?.login),
     isBot: isBot(raw.author),
+    ...parseCommitMessage(String(raw.commit?.message ?? "")),
     url: raw.html_url ?? "",
   };
 }
@@ -355,6 +358,8 @@ export async function fetchStarterIssues(
           comments: num(raw.comments),
           assigned: Array.isArray(raw.assignees) && raw.assignees.length > 0,
           label: STARTER_LABELS[i],
+          byMaintainer: TEAM_ASSOCIATIONS.has(raw.author_association),
+          availability: { state: "unchecked" },
         });
       }
     });
@@ -370,6 +375,51 @@ export async function fetchStarterIssues(
       return { status: "ok", items: [], complete: true, coveredSince: null };
     }
     return unavailable("GitHub did not return labelled issues for this repository.");
+  }
+}
+
+/**
+ * Looks at one issue's timeline to see whether it is really up for grabs: an open pull
+ * request that references it, or a comment from someone asking to take it. One request
+ * per issue, so callers should only check the few they are about to show.
+ */
+export async function fetchStarterAvailability(
+  client: GitHubClient,
+  ref: RepoRef,
+  issue: StarterIssue,
+): Promise<StarterAvailability> {
+  try {
+    const { data } = await client.get<Raw[]>(
+      `/repos/${ref.owner}/${ref.name}/issues/${issue.number}/timeline`,
+      { per_page: 100 },
+    );
+    let claim: { by: string | null; at: string } | null = null;
+    for (const event of Array.isArray(data) ? data : []) {
+      const source = event.source?.issue;
+      if (
+        event.event === "cross-referenced" &&
+        source?.pull_request &&
+        source.state === "open"
+      ) {
+        return {
+          state: "linked",
+          pullRequest: num(source.number),
+          url: source.html_url ?? "",
+        };
+      }
+      if (
+        event.event === "commented" &&
+        !isBot(event.user) &&
+        !TEAM_ASSOCIATIONS.has(event.author_association) &&
+        isClaim(String(event.body ?? ""))
+      ) {
+        claim = { by: str(event.user?.login), at: event.created_at };
+      }
+    }
+    return claim ? { state: "claimed", ...claim } : { state: "free" };
+  } catch (error) {
+    rethrowFatal(error);
+    return { state: "unchecked" };
   }
 }
 

@@ -10,11 +10,12 @@ import {
   fetchOpenPullRequestCount,
   fetchReleases,
   fetchRepository,
+  fetchStarterAvailability,
   fetchStarterIssues,
 } from "@/lib/github/fetchers";
 import type { RepoRef } from "@/lib/github/parse";
 import { buildChecklist, type Checklist } from "@/lib/insights/checklist";
-import type { Dataset, Repository } from "@/types";
+import type { Collection, Dataset, Repository, StarterIssue } from "@/types";
 
 export interface Report {
   repository: Repository;
@@ -78,6 +79,28 @@ export function toReportError(error: unknown): ReportError {
 const count = (n: number, word: string) =>
   `${n.toLocaleString("en-US")} ${word}${n === 1 ? "" : "s"}`;
 
+// Each availability check costs one request, so only the issues a report shows get one.
+const STARTERS_CHECKED = 4;
+
+/** Finds out whether the first few unassigned starter issues are really free to take. */
+async function checkAvailability(
+  client: GitHubClient,
+  ref: RepoRef,
+  starter: Collection<StarterIssue>,
+): Promise<Collection<StarterIssue>> {
+  const shown = starter.items
+    .filter((issue) => !issue.assigned)
+    .slice(0, STARTERS_CHECKED);
+  const checked = await Promise.all(
+    shown.map(async (issue) => ({
+      ...issue,
+      availability: await fetchStarterAvailability(client, ref, issue),
+    })),
+  );
+  const byNumber = new Map(checked.map((issue) => [issue.number, issue]));
+  return { ...starter, items: starter.items.map((i) => byNumber.get(i.number) ?? i) };
+}
+
 /**
  * Reads a repository from GitHub and builds its report. It runs wherever `fetch` does:
  * on the server with the shared token, or in a visitor's browser on their own GitHub
@@ -138,7 +161,9 @@ export async function analyzeRepository(
       fetchOpenPullRequestCount(client, canonical),
       Promise.all([
         fetchComments(client, canonical, since, maxPages),
-        fetchStarterIssues(client, canonical),
+        fetchStarterIssues(client, canonical).then((starter) =>
+          checkAvailability(client, canonical, starter),
+        ),
         fetchCommunityFiles(client, canonical),
         fetchLanguages(client, canonical),
       ]).then((result) => {

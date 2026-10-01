@@ -1,5 +1,6 @@
 import type { Analysis } from "@/lib/analysis";
 import { periodLabel } from "@/lib/analysis/time";
+import { isSourceAvailable } from "@/lib/github/signals";
 import type { Repository } from "@/types";
 
 export type CheckState = "yes" | "no" | "unknown";
@@ -44,17 +45,20 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
 
   const licenseFile = contributing.files?.find((f) => f.key === "license");
   const licensed = Boolean(repository.license) || (licenseFile?.url ?? null) !== null;
+  const sourceAvailable = isSourceAvailable(repository.license);
   add({
     id: "license",
     group: "Open source",
-    question: "Does it have a license?",
-    state: licensed ? "yes" : "no",
-    answer: repository.license
-      ? `${repository.license} license detected.`
-      : licensed
-        ? "A license file was detected."
-        : "GitHub does not detect a license for this repository.",
-    rule: "GitHub detects a license.",
+    question: "Does it have an open source license?",
+    state: sourceAvailable ? "no" : licensed ? "yes" : "no",
+    answer: sourceAvailable
+      ? `${repository.license} is a source-available licence, not an open source one.`
+      : repository.license
+        ? `${repository.license} license detected.`
+        : licensed
+          ? "A license file was detected."
+          : "GitHub does not detect a license for this repository.",
+    rule: "GitHub detects a license, and it is not a known source-available one (BUSL, Elastic, SSPL, FSL, PolyForm, Commons Clause).",
     anchor: "start",
   });
 
@@ -173,13 +177,15 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
   // it: popular projects close many drive-by submissions.
   const o = contributing.observed;
   const closed = o ? o.communityMerged + o.communityClosedUnmerged : 0;
+  // Work applied by hand counts: the contributor's change still ended up in the project.
+  const landed = o ? o.communityMerged + o.landedOtherwise : 0;
   add({
     id: "community-merged",
     group: "Open to contributions",
     question: "Do outside pull requests get merged?",
     state: !o
       ? "unknown"
-      : o.communityMerged >= 3
+      : landed >= 3
         ? "yes"
         : closed >= 3 && o.days >= 30
           ? "no"
@@ -188,8 +194,10 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
       ? "Pull request history could not be read."
       : closed === 0
         ? `No community pull request was merged or closed in the last ${periodLabel(o.days)}.`
-        : `${plural(o.communityMerged, "community pull request")} merged in the last ${periodLabel(o.days)}, out of ${closed} closed.`,
-    rule: "At least 3 pull requests from outside the team were merged. A no needs at least 30 days of history with 3 or more closed.",
+        : `${plural(o.communityMerged, "community pull request")} merged in the last ${periodLabel(o.days)}, out of ${closed} closed${
+            o.landedOtherwise > 0 ? `; ${o.landedOtherwise} more landed as commits` : ""
+          }.`,
+    rule: "At least 3 pull requests from outside the team were merged. A no needs at least 30 days of history with 3 or more closed. Work that landed as a commit crediting the contributor counts as merged.",
     anchor: "journey",
   });
 

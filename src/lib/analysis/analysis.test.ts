@@ -33,6 +33,8 @@ const commit = (daysAgo: number, author = "ana", isBot = false): Commit => ({
   author,
   login: author,
   isBot,
+  refs: [],
+  coAuthors: [],
   url: "",
 });
 
@@ -328,6 +330,8 @@ describe("contributing signals", () => {
       comments: 0,
       assigned,
       label: "good first issue",
+      byMaintainer: false,
+      availability: { state: "unchecked" },
     });
     const result = calculateContributingSignals(
       collection<IssueItem>([]),
