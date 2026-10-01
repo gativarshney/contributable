@@ -26,10 +26,13 @@ export function Stat({
   value,
   unit,
   label,
+  detail,
 }: {
   value: string | number | null;
   unit?: string;
   label: string;
+  /** A second, quieter line: a comparison or the figures behind the value. */
+  detail?: string | null;
 }) {
   return (
     <div>
@@ -40,6 +43,7 @@ export function Stat({
         ) : null}
       </p>
       <p className="text-ink-2 mt-3 text-[15px]">{label}</p>
+      {detail ? <p className="text-ink-3 mt-1 text-sm">{detail}</p> : null}
     </div>
   );
 }

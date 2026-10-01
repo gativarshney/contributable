@@ -92,7 +92,12 @@ export function ReportView({ report }: { report: Report }) {
 
       <Verdict checklist={checklist} />
       <Start report={report} />
-      <Journey pulls={contributing.observed} replies={contributing.observedReplies} />
+      <Journey
+        pulls={contributing.observed}
+        replies={contributing.observedReplies}
+        queue={contributing.queue}
+        real={!report.sample}
+      />
       <People report={report} />
 
       {contributing.rhythm.total >= 10 ? (
