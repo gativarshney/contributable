@@ -116,22 +116,28 @@ the partial-data rules above possible: the code always knows how far back it can
 
 ## GitHub data sources
 
-| Data                     | Endpoint                                                | Requests |
-| ------------------------ | ------------------------------------------------------- | -------- |
-| Repository metadata      | `GET /repos/{owner}/{repo}`                             | 1        |
-| Commits (default branch) | `GET /repos/{owner}/{repo}/commits?since=`              | 1 to N   |
-| Releases                 | `GET /repos/{owner}/{repo}/releases`                    | 1        |
-| Issues and pull requests | `GET /repos/{owner}/{repo}/issues?state=all&since=`     | 1 to N   |
-| Open pull request count  | `GET /repos/{owner}/{repo}/pulls?state=open&per_page=1` | 1        |
-| Conversation comments    | `GET /repos/{owner}/{repo}/issues/comments?since=`      | 1 to N   |
-| Inline review comments   | `GET /repos/{owner}/{repo}/pulls/comments?since=`       | 1 to N   |
-| Starter issues           | `GET /repos/{owner}/{repo}/issues?labels=`              | 2        |
-| Community files          | `GET /repos/{owner}/{repo}/community/profile`           | 1        |
-| Languages                | `GET /repos/{owner}/{repo}/languages`                   | 1        |
-| Starter issue history    | `GET /repos/{owner}/{repo}/issues/{n}/timeline`         | 0 to 4   |
+| Data                     | Endpoint                                                    | Requests |
+| ------------------------ | ----------------------------------------------------------- | -------- |
+| Repository metadata      | `GET /repos/{owner}/{repo}`                                 | 1        |
+| Commits (default branch) | `GET /repos/{owner}/{repo}/commits?since=`                  | 1 to N   |
+| Releases                 | `GET /repos/{owner}/{repo}/releases`                        | 1        |
+| Issues and pull requests | `GET /repos/{owner}/{repo}/issues?state=all&since=`         | 1 to N   |
+| Open pull request count  | `GET /repos/{owner}/{repo}/pulls?state=open&per_page=1`     | 1        |
+| Conversation comments    | `GET /repos/{owner}/{repo}/issues/comments?since=`          | 1 to N   |
+| Inline review comments   | `GET /repos/{owner}/{repo}/pulls/comments?since=`           | 1 to N   |
+| Starter issues           | `GET /repos/{owner}/{repo}/issues?labels=`                  | 2        |
+| Community files          | `GET /repos/{owner}/{repo}/community/profile`               | 1        |
+| Issue template folder    | `GET /repos/{owner}/{repo}/contents/.github/ISSUE_TEMPLATE` | 0 to 1   |
+| Languages                | `GET /repos/{owner}/{repo}/languages`                       | 1        |
+| Starter issue history    | `GET /repos/{owner}/{repo}/issues/{n}/timeline`             | 0 to 4   |
 
 N is the page limit: 3 pages (300 items) without a token, 10 pages (1,000 items) with
-one. A small repository costs 11 requests, plus one for each starter issue checked (four at most). Independent requests run in parallel.
+one. A small repository costs 11 or 12 requests, plus one for each starter issue checked
+(four at most). Independent requests run in parallel.
+
+The community profile only reports the old single-file issue template, so when it reports
+none the `.github/ISSUE_TEMPLATE` folder is checked directly. Without that, most projects
+with modern templates or issue forms would be shown as having none.
 
 ## Cost and scaling
 

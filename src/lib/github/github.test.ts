@@ -413,6 +413,56 @@ describe("contributor data", () => {
       await fetchCommunityFiles(createGitHubClient({ fetch: missing.fetch }), ref),
     ).toBeNull();
   });
+
+  it("finds a folder of issue templates the community profile does not report", async () => {
+    const folder = fakeFetch({
+      "/community/profile": { body: { files: { issue_template: null } } },
+      "/contents/.github/ISSUE_TEMPLATE": { body: [{ name: "bug.yml" }] },
+    });
+    const files = await fetchCommunityFiles(
+      createGitHubClient({ fetch: folder.fetch }),
+      ref,
+    );
+    expect(files?.issueTemplate).toBe(
+      "https://github.com/acme/widget/tree/HEAD/.github/ISSUE_TEMPLATE",
+    );
+
+    const single = fakeFetch({
+      "/community/profile": {
+        body: { files: { issue_template: { html_url: "https://x.test/template" } } },
+      },
+    });
+    const reported = await fetchCommunityFiles(
+      createGitHubClient({ fetch: single.fetch }),
+      ref,
+    );
+    expect(reported?.issueTemplate).toBe("https://x.test/template");
+    // The folder is only looked up when the profile reports nothing.
+    expect(single.calls).toHaveLength(1);
+
+    const empty = fakeFetch({
+      "/community/profile": { body: { files: {} } },
+      "/contents/.github/ISSUE_TEMPLATE": { body: [] },
+    });
+    const none = await fetchCommunityFiles(
+      createGitHubClient({ fetch: empty.fetch }),
+      ref,
+    );
+    expect(none?.issueTemplate).toBeNull();
+  });
+
+  it("passes a rate limit on the template folder up to the caller", async () => {
+    const { fetch } = fakeFetch({
+      "/community/profile": { body: { files: {} } },
+      "/contents/.github/ISSUE_TEMPLATE": {
+        status: 403,
+        headers: { "x-ratelimit-remaining": "0" },
+      },
+    });
+    await expect(
+      fetchCommunityFiles(createGitHubClient({ fetch }), ref),
+    ).rejects.toMatchObject({ code: "rate_limited" });
+  });
 });
 
 describe("toReportError", () => {
@@ -477,8 +527,8 @@ describe("analyzeRepository", () => {
     expect(report.analysis.activity.windows[7].commits).toBe(1);
     expect(report.analysis.stack).toEqual([{ name: "TypeScript", share: 100 }]);
     expect(report.checklist.checks.find((c) => c.id === "license")?.state).toBe("yes");
-    // A small repository costs eleven requests, which is what makes the free tier viable.
-    expect(calls).toHaveLength(11);
+    // A small repository costs twelve requests, which is what makes the free tier viable.
+    expect(calls).toHaveLength(12);
   });
 
   it("throws on a rate limit so the caller can fall back to another allowance", async () => {

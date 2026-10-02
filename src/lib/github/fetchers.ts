@@ -458,9 +458,30 @@ export async function fetchCommunityFiles(
       contributing: url(files.contributing),
       codeOfConduct: url(files.code_of_conduct ?? files.code_of_conduct_file),
       license: url(files.license),
-      issueTemplate: url(files.issue_template),
+      issueTemplate:
+        url(files.issue_template) ?? (await fetchIssueTemplateFolder(client, ref)),
       pullRequestTemplate: url(files.pull_request_template),
     };
+  } catch (error) {
+    rethrowFatal(error);
+    return null;
+  }
+}
+
+/**
+ * The community profile only reports the old single-file issue template. Most projects
+ * keep a folder of templates or forms instead, so look for that before saying there is none.
+ */
+async function fetchIssueTemplateFolder(
+  client: GitHubClient,
+  ref: RepoRef,
+): Promise<string | null> {
+  try {
+    const { data } = await client.get<Raw[]>(
+      `/repos/${ref.owner}/${ref.name}/contents/.github/ISSUE_TEMPLATE`,
+    );
+    if (!Array.isArray(data) || data.length === 0) return null;
+    return `https://github.com/${ref.owner}/${ref.name}/tree/HEAD/.github/ISSUE_TEMPLATE`;
   } catch (error) {
     rethrowFatal(error);
     return null;
