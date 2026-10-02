@@ -265,11 +265,11 @@ the report.
 
 No database or paid service is needed. The app fits the free tier.
 
-## Licence
+## Contributing
 
-Copyright © 2026 Gati Varshney. All rights reserved. The source is published so it can be
-read and evaluated; it is not open source. Copying, redistributing, modifying or
-deploying it requires written permission. See [`LICENSE`](LICENSE).
+Contributions are welcome. [`CONTRIBUTING.md`](CONTRIBUTING.md) covers setup, where
+things live and what makes a change easy to merge. The most useful bug report is a figure
+that disagrees with what GitHub shows.
 
 ## Roadmap
 
@@ -279,3 +279,19 @@ deploying it requires written permission. See [`LICENSE`](LICENSE).
 - Detect a project's own starter labels instead of only GitHub's defaults
 - Tag-based release detection when GitHub Releases are not used
 - Shareable, versioned report snapshots
+
+## Author
+
+Built by [Gati Varshney](https://gativarshney.github.io/), a
+[Google Summer of Code 2026](https://summerofcode.withgoogle.com/programs/2026/projects/k0bZOR1y)
+contributor at OpenPrinting, The Linux Foundation. RepoInsight is an independent project
+and is not part of that programme; it grew out of the questions that come up before a
+first pull request to an unfamiliar project.
+
+[GitHub](https://github.com/gativarshney) ·
+[LinkedIn](https://www.linkedin.com/in/gativarshney/)
+
+## Licence
+
+[MIT](LICENSE) © 2026 Gati Varshney. Use it, change it and deploy it; keep the copyright
+notice.

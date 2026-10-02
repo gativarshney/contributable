@@ -29,6 +29,17 @@ export function SiteFooter() {
           <p className="display mt-2 text-[clamp(1.75rem,4vw,2.5rem)]">
             Gati <em>Varshney</em>
           </p>
+          <p className="text-ink-2 mt-3 text-sm">
+            <a
+              href="https://summerofcode.withgoogle.com/programs/2026/projects/k0bZOR1y"
+              target="_blank"
+              rel="noreferrer"
+              className="link"
+            >
+              Google Summer of Code 2026 contributor
+            </a>{" "}
+            at OpenPrinting, The Linux Foundation
+          </p>
           <ul className="mt-5 flex flex-wrap gap-2">
             {LINKS.map((link) => (
               <li key={link.label}>
@@ -69,8 +80,19 @@ export function SiteFooter() {
             >
               Source
             </a>
+            <a
+              href="https://github.com/gativarshney/repoinsight/blob/main/CONTRIBUTING.md"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-ink transition-colors"
+            >
+              Contribute
+            </a>
           </nav>
-          <p>© 2026 Gati Varshney. All rights reserved. Not affiliated with GitHub.</p>
+          <p>
+            Open source under the MIT licence. An independent project, not affiliated with
+            GitHub or Google.
+          </p>
         </div>
       </div>
     </footer>
