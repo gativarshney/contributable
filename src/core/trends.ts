@@ -62,7 +62,8 @@ export function weeklySeries(pulls: readonly PullSummary[], now: Date): WeekPoin
   return points;
 }
 
-export type TrendFlag = "got-faster" | "slowed-down" | "went-quiet" | "steady" | "unknown";
+export type TrendFlag =
+  "got-faster" | "slowed-down" | "went-quiet" | "steady" | "unknown";
 
 export interface Trend {
   flag: TrendFlag;
@@ -80,9 +81,14 @@ function replyMedian(pulls: readonly PullSummary[], now: number): number | null 
   if (pulls.length < MIN_SAMPLE) return null;
   const observations: Observation[] = pulls.map((p) =>
     p.firstResponseAt !== null
-      ? { hours: (Date.parse(p.firstResponseAt) - Date.parse(p.createdAt)) / HOUR_MS, observed: true }
+      ? {
+          hours: (Date.parse(p.firstResponseAt) - Date.parse(p.createdAt)) / HOUR_MS,
+          observed: true,
+        }
       : {
-          hours: ((p.closedAt ? Date.parse(p.closedAt) : now) - Date.parse(p.createdAt)) / HOUR_MS,
+          hours:
+            ((p.closedAt ? Date.parse(p.closedAt) : now) - Date.parse(p.createdAt)) /
+            HOUR_MS,
           observed: false,
         },
   );
@@ -118,8 +124,14 @@ export function trend(pulls: readonly PullSummary[], now: Date): Trend {
   if (lastWeeks === 0 && before > 0) flag = "went-quiet";
   else if (recentMedianHours !== null && previousMedianHours !== null) {
     const floor = 1; // treat anything under an hour as an hour, so tiny medians do not swing the ratio
-    const ratio = Math.max(recentMedianHours, floor) / Math.max(previousMedianHours, floor);
-    flag = ratio >= TREND_RATIO ? "slowed-down" : ratio <= 1 / TREND_RATIO ? "got-faster" : "steady";
+    const ratio =
+      Math.max(recentMedianHours, floor) / Math.max(previousMedianHours, floor);
+    flag =
+      ratio >= TREND_RATIO
+        ? "slowed-down"
+        : ratio <= 1 / TREND_RATIO
+          ? "got-faster"
+          : "steady";
   } else if (previousMedianHours !== null && recent.length >= MIN_SAMPLE) {
     // Enough recent pull requests, yet fewer than half answered: slower than before.
     flag = "slowed-down";

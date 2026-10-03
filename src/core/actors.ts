@@ -93,7 +93,8 @@ export function isBot(actor: Actor): boolean {
   if (actor.typename === "Bot") return true;
   const login = actor.login?.toLowerCase();
   if (!login) return false;
-  if (login.endsWith("[bot]") || login.endsWith("-bot") || login.endsWith("_bot")) return true;
+  if (login.endsWith("[bot]") || login.endsWith("-bot") || login.endsWith("_bot"))
+    return true;
   return AUTOMATION_ACCOUNTS.has(login);
 }
 

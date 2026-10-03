@@ -1,6 +1,11 @@
 import { kaplanMeier, median, quantile, shareWithin, type Observation } from "./km";
 import type { IssueSummary, PullSummary } from "./schema";
-import { starterClassOf, starterState, type StarterLabelClass, type StarterState } from "./starter";
+import {
+  starterClassOf,
+  starterState,
+  type StarterLabelClass,
+  type StarterState,
+} from "./starter";
 
 /** Below this many items a number is withheld and shown as "Not enough data". */
 export const MIN_SAMPLE = 5;
@@ -62,7 +67,12 @@ export interface RepoMetrics {
     year: MergeOutcome;
   };
   pullFirstResponse: ResponseTiming;
-  timeToMerge: { n: number; merged: number; medianHours: number | null; evidence: number[] };
+  timeToMerge: {
+    n: number;
+    merged: number;
+    medianHours: number | null;
+    evidence: number[];
+  };
   issueFirstResponse: ResponseTiming;
   starter: {
     counts: Record<StarterState, number>;
@@ -78,7 +88,12 @@ export interface RepoMetrics {
   activeMaintainers: number;
 }
 
-function inAgeRange(createdAt: string, now: number, minDays: number, maxDays: number): boolean {
+function inAgeRange(
+  createdAt: string,
+  now: number,
+  minDays: number,
+  maxDays: number,
+): boolean {
   const age = now - Date.parse(createdAt);
   return age >= minDays * DAY_MS && age < maxDays * DAY_MS;
 }
@@ -96,7 +111,11 @@ function mergeOutcome(pulls: readonly PullSummary[]): MergeOutcome {
     open: open.length,
     mergeRate: rate(merged.length, decided),
     openShare: rate(open.length, pulls.length),
-    evidence: { merged: proof(merged), closedUnmerged: proof(closedUnmerged), open: proof(open) },
+    evidence: {
+      merged: proof(merged),
+      closedUnmerged: proof(closedUnmerged),
+      open: proof(open),
+    },
   };
 }
 
@@ -115,7 +134,10 @@ function responseTiming(items: readonly Awaiting[], now: number): ResponseTiming
   const observations: Observation[] = items.map((item) => {
     if (item.firstResponseAt !== null) {
       return {
-        hours: Math.max(0, hoursBetween(item.createdAt, Date.parse(item.firstResponseAt))),
+        hours: Math.max(
+          0,
+          hoursBetween(item.createdAt, Date.parse(item.firstResponseAt)),
+        ),
         observed: true,
       };
     }
@@ -134,7 +156,9 @@ function responseTiming(items: readonly Awaiting[], now: number): ResponseTiming
     p75Hours: enough ? quantile(curve, 0.75) : null,
     within48h: enough ? shareWithin(curve, 48) : null,
     within7d: enough ? shareWithin(curve, 168) : null,
-    curve: enough ? curve.steps.map((s) => ({ hours: s.hours, waiting: s.survival })) : [],
+    curve: enough
+      ? curve.steps.map((s) => ({ hours: s.hours, waiting: s.survival }))
+      : [],
     evidence: {
       answered: answered.slice(0, EVIDENCE_LIMIT).map((i) => i.n),
       waiting: waiting.slice(0, EVIDENCE_LIMIT).map((i) => i.n),
@@ -149,7 +173,10 @@ function responseTiming(items: readonly Awaiting[], now: number): ResponseTiming
 function timeToMerge(pulls: readonly PullSummary[], now: number) {
   const observations: Observation[] = pulls.map((p) =>
     p.mergedAt !== null
-      ? { hours: Math.max(0, hoursBetween(p.createdAt, Date.parse(p.mergedAt))), observed: true }
+      ? {
+          hours: Math.max(0, hoursBetween(p.createdAt, Date.parse(p.mergedAt))),
+          observed: true,
+        }
       : { hours: Math.max(0, hoursBetween(p.createdAt, now)), observed: false },
   );
   const merged = pulls.filter((p) => p.mergedAt !== null);
@@ -175,7 +202,9 @@ export function hourOfWeek(iso: string): number {
 export function firstTimerNumbers(pulls: readonly PullSummary[]): Set<number> {
   const seen = new Set<string>();
   const first = new Set<number>();
-  const ordered = [...pulls].sort((a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt));
+  const ordered = [...pulls].sort(
+    (a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt),
+  );
   for (const pull of ordered) {
     if (pull.author === null) continue;
     if (!seen.has(pull.author) && pull.cls === "outside") first.add(pull.n);
@@ -194,13 +223,18 @@ export function computeMetrics(
     [...items].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
 
   const outside = newestFirst(pulls.filter((p) => p.cls === "outside"));
-  const cohort = outside.filter((p) => inAgeRange(p.createdAt, t, COHORT_MIN_DAYS, COHORT_MAX_DAYS));
-  const year = outside.filter((p) => inAgeRange(p.createdAt, t, COHORT_MIN_DAYS, YEAR_DAYS));
+  const cohort = outside.filter((p) =>
+    inAgeRange(p.createdAt, t, COHORT_MIN_DAYS, COHORT_MAX_DAYS),
+  );
+  const year = outside.filter((p) =>
+    inAgeRange(p.createdAt, t, COHORT_MIN_DAYS, YEAR_DAYS),
+  );
   const firstTimers = firstTimerNumbers(pulls);
 
   const cohortIssues = newestFirst(
     issues.filter(
-      (i) => i.cls !== "bot" && inAgeRange(i.createdAt, t, COHORT_MIN_DAYS, COHORT_MAX_DAYS),
+      (i) =>
+        i.cls !== "bot" && inAgeRange(i.createdAt, t, COHORT_MIN_DAYS, COHORT_MAX_DAYS),
     ),
   );
 

@@ -12,7 +12,8 @@ import {
 } from "./starter";
 
 const NOW = new Date("2026-10-01T00:00:00Z");
-const daysAgo = (days: number) => new Date(NOW.getTime() - days * 86_400_000).toISOString();
+const daysAgo = (days: number) =>
+  new Date(NOW.getTime() - days * 86_400_000).toISOString();
 
 const facts = fc.record({
   assignees: fc.integer({ min: 0, max: 3 }),
@@ -132,7 +133,8 @@ describe("starterState", () => {
       fc.property(facts, fc.integer({ min: 1, max: 200 }), (f, days) => {
         fc.pre(f.lastClaimAt === null);
         const later = new Date(NOW.getTime() + days * 86_400_000);
-        if (starterState(f, NOW) === "stale") expect(starterState(f, later)).toBe("stale");
+        if (starterState(f, NOW) === "stale")
+          expect(starterState(f, later)).toBe("stale");
       }),
     );
   });

@@ -44,9 +44,18 @@ export interface GsocOrg {
 }
 
 const GITHUB = /github\.com\/([A-Za-z0-9_.-]+)(?:\/([A-Za-z0-9_.-]+))?/i;
-const NOT_OWNERS = new Set(["orgs", "topics", "sponsors", "about", "features", "settings"]);
+const NOT_OWNERS = new Set([
+  "orgs",
+  "topics",
+  "sponsors",
+  "about",
+  "features",
+  "settings",
+]);
 
-export function parseGithub(url: string | null | undefined): { owner: string; repo: string | null } | null {
+export function parseGithub(
+  url: string | null | undefined,
+): { owner: string; repo: string | null } | null {
   if (!url) return null;
   const orgsPath = /github\.com\/orgs\/([A-Za-z0-9_.-]+)/i.exec(url);
   if (orgsPath) return { owner: orgsPath[1], repo: null };
@@ -66,7 +75,9 @@ function hostOf(url: string | null | undefined): string | null {
 }
 
 async function fetchYear(year: number): Promise<z.infer<typeof apiOrg>[]> {
-  const response = await fetch(`https://summerofcode.withgoogle.com/api/program/${year}/organizations/`);
+  const response = await fetch(
+    `https://summerofcode.withgoogle.com/api/program/${year}/organizations/`,
+  );
   if (!response.ok) throw new Error(`GSoC ${year}: HTTP ${response.status}`);
   return z.array(apiOrg).parse(await response.json());
 }
@@ -95,8 +106,12 @@ export async function buildGsocUniverse(years = GSOC_YEARS): Promise<GsocOrg[]> 
       entry.years.push(year);
       entry.website = org.website_url ?? entry.website;
       entry.source = org.source_code ?? entry.source;
-      entry.tech = [...new Set([...entry.tech, ...org.tech_tags.map((t) => t.toLowerCase())])];
-      entry.topics = [...new Set([...entry.topics, ...org.topic_tags.map((t) => t.toLowerCase())])];
+      entry.tech = [
+        ...new Set([...entry.tech, ...org.tech_tags.map((t) => t.toLowerCase())]),
+      ];
+      entry.topics = [
+        ...new Set([...entry.topics, ...org.topic_tags.map((t) => t.toLowerCase())]),
+      ];
       bySlug.set(org.slug, entry);
     }
   }
@@ -129,10 +144,15 @@ export async function buildGsocUniverse(years = GSOC_YEARS): Promise<GsocOrg[]> 
 
 async function main() {
   const orgs = await buildGsocUniverse();
-  writeFileSync(join(ROOT, "universe/gsoc.json"), `${JSON.stringify(orgs, null, 1)}
-`);
+  writeFileSync(
+    join(ROOT, "universe/gsoc.json"),
+    `${JSON.stringify(orgs, null, 1)}
+`,
+  );
   const mapped = orgs.filter((o) => !o.unmappable).length;
-  console.log(`${orgs.length} organisations, ${mapped} mapped, ${orgs.length - mapped} marked unmappable`);
+  console.log(
+    `${orgs.length} organisations, ${mapped} mapped, ${orgs.length - mapped} marked unmappable`,
+  );
 }
 
 if (require.main === module) {

@@ -7,7 +7,11 @@ const ago = (days: number, hours = 0) =>
   new Date(NOW.getTime() - days * 86_400_000 + hours * 3_600_000).toISOString();
 
 let counter = 0;
-function pull(daysAgo: number, replyAfterHours: number | null, over: Partial<PullSummary> = {}): PullSummary {
+function pull(
+  daysAgo: number,
+  replyAfterHours: number | null,
+  over: Partial<PullSummary> = {},
+): PullSummary {
   counter += 1;
   return {
     n: counter,
@@ -29,9 +33,16 @@ const many = (count: number, daysAgo: number, reply: number | null) =>
 
 describe("weeklySeries", () => {
   it("returns 52 points, oldest first, with the newest week last", () => {
-    const series = weeklySeries([pull(1, 2, { mergedAt: ago(0.5) }), pull(360, null)], NOW);
+    const series = weeklySeries(
+      [pull(1, 2, { mergedAt: ago(0.5) }), pull(360, null)],
+      NOW,
+    );
     expect(series).toHaveLength(SERIES_WEEKS);
-    expect(series[SERIES_WEEKS - 1]).toMatchObject({ opened: 1, merged: 1, answered7d: 1 });
+    expect(series[SERIES_WEEKS - 1]).toMatchObject({
+      opened: 1,
+      merged: 1,
+      answered7d: 1,
+    });
     expect(series[0].opened).toBe(1);
     expect(series[0].week < series[1].week).toBe(true);
   });
@@ -56,7 +67,9 @@ describe("trend", () => {
   });
 
   it("flags slower when recent pull requests are mostly unanswered", () => {
-    expect(trend([...many(6, 10, null), ...many(6, 40, 10)], NOW).flag).toBe("slowed-down");
+    expect(trend([...many(6, 10, null), ...many(6, 40, 10)], NOW).flag).toBe(
+      "slowed-down",
+    );
   });
 
   it("reports steady for small changes", () => {

@@ -52,7 +52,9 @@ describe("computeMetrics", () => {
   it("measures the outside merge rate on the 30 to 120 day cohort only", () => {
     const pulls = [
       // In the cohort: 6 merged, 2 closed without merge, 2 still open.
-      ...Array.from({ length: 6 }, () => pull({ daysAgo: 60, mergedAt: ago(58), closedAt: ago(58) })),
+      ...Array.from({ length: 6 }, () =>
+        pull({ daysAgo: 60, mergedAt: ago(58), closedAt: ago(58) }),
+      ),
       ...Array.from({ length: 2 }, () => pull({ daysAgo: 70, closedAt: ago(50) })),
       ...Array.from({ length: 2 }, () => pull({ daysAgo: 45 })),
       // Outside the cohort or not outside authors: ignored.
@@ -74,7 +76,12 @@ describe("computeMetrics", () => {
 
   it("withholds numbers under the minimum sample", () => {
     const pulls = Array.from({ length: MIN_SAMPLE - 1 }, () =>
-      pull({ daysAgo: 60, mergedAt: ago(59), closedAt: ago(59), firstResponseAt: ago(60, 2) }),
+      pull({
+        daysAgo: 60,
+        mergedAt: ago(59),
+        closedAt: ago(59),
+        firstResponseAt: ago(60, 2),
+      }),
     );
     const metrics = computeMetrics(pulls, [], NOW);
     expect(metrics.outsidePulls.cohort.mergeRate).toBeNull();
@@ -107,8 +114,18 @@ describe("computeMetrics", () => {
   });
 
   it("separates first-time authors using the stored history", () => {
-    const returning = pull({ daysAgo: 300, author: "x", mergedAt: ago(299), closedAt: ago(299) });
-    const again = pull({ daysAgo: 60, author: "x", mergedAt: ago(59), closedAt: ago(59) });
+    const returning = pull({
+      daysAgo: 300,
+      author: "x",
+      mergedAt: ago(299),
+      closedAt: ago(299),
+    });
+    const again = pull({
+      daysAgo: 60,
+      author: "x",
+      mergedAt: ago(59),
+      closedAt: ago(59),
+    });
     const fresh = pull({ daysAgo: 60, author: "y" });
     const first = firstTimerNumbers([again, fresh, returning]);
     expect(first.has(returning.n)).toBe(true);
@@ -126,7 +143,11 @@ describe("computeMetrics", () => {
       issue({ daysAgo: 10, labels: ["good first issue"], closedAt: ago(2) }),
       issue({ daysAgo: 10, labels: ["bug"] }),
     ];
-    const { counts, helpWantedAvailable, issues: listed } = computeMetrics([], issues, NOW).starter;
+    const {
+      counts,
+      helpWantedAvailable,
+      issues: listed,
+    } = computeMetrics([], issues, NOW).starter;
     expect(counts).toEqual({ available: 1, claimed: 1, "in-progress": 1, stale: 1 });
     expect(helpWantedAvailable).toBe(1);
     expect(listed).toHaveLength(5);

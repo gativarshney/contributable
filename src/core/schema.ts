@@ -73,7 +73,16 @@ export const repoFacts = z.object({
     cla: z.enum(["cla", "dco", "none", "unknown"]),
     channels: z.array(
       z.object({
-        kind: z.enum(["discord", "slack", "zulip", "matrix", "mailing-list", "gitter", "irc", "forum"]),
+        kind: z.enum([
+          "discord",
+          "slack",
+          "zulip",
+          "matrix",
+          "mailing-list",
+          "gitter",
+          "irc",
+          "forum",
+        ]),
         url: z.string(),
       }),
     ),

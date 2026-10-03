@@ -3,7 +3,14 @@
   "sktime": { "github": ["sktime"] },
   "sagemath": { "github": ["sagemath"] },
   "openastronomy": {
-    "github": ["OpenAstronomy", "astropy", "sunpy", "glue-viz", "StingraySoftware", "radis"]
+    "github": [
+      "OpenAstronomy",
+      "astropy",
+      "sunpy",
+      "glue-viz",
+      "StingraySoftware",
+      "radis"
+    ]
   },
   "the-freebsd-project": { "github": ["freebsd"] },
   "open-genome-informatics": { "github": ["GMOD"] },

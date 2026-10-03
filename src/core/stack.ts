@@ -91,7 +91,9 @@ const KNOWN: Record<string, string> = {
 function safeJson(text: string): Record<string, unknown> | null {
   try {
     const parsed: unknown = JSON.parse(text);
-    return parsed && typeof parsed === "object" ? (parsed as Record<string, unknown>) : null;
+    return parsed && typeof parsed === "object"
+      ? (parsed as Record<string, unknown>)
+      : null;
   } catch {
     return null;
   }
@@ -114,7 +116,8 @@ export function dependencyNames(files: ManifestFiles): string[] {
     );
   }
   const composer = files.composer ? safeJson(files.composer) : null;
-  if (composer) names.push(...keysOf(composer.require), ...keysOf(composer["require-dev"]));
+  if (composer)
+    names.push(...keysOf(composer.require), ...keysOf(composer["require-dev"]));
 
   const lineNames = (text: string | null | undefined, pattern: RegExp) => {
     if (!text) return;
@@ -146,7 +149,8 @@ export function detectFrameworks(files: ManifestFiles): string[] {
     }
     for (const [key, label] of Object.entries(KNOWN)) {
       if (key.includes(".") || key.includes("/")) {
-        if (name === key || name.startsWith(`${key}.`) || name.startsWith(`${key}/`)) found.add(label);
+        if (name === key || name.startsWith(`${key}.`) || name.startsWith(`${key}/`))
+          found.add(label);
       }
     }
   }
@@ -154,28 +158,35 @@ export function detectFrameworks(files: ManifestFiles): string[] {
 }
 
 export type ChannelKind =
-  | "discord"
-  | "slack"
-  | "zulip"
-  | "matrix"
-  | "mailing-list"
-  | "gitter"
-  | "irc"
-  | "forum";
+  "discord" | "slack" | "zulip" | "matrix" | "mailing-list" | "gitter" | "irc" | "forum";
 
 const CHANNELS: [ChannelKind, RegExp][] = [
-  ["discord", /https?:\/\/(?:www\.)?(?:discord\.gg|discord\.com\/invite|discordapp\.com\/invite)\/[A-Za-z0-9-]+/i],
-  ["slack", /https?:\/\/[A-Za-z0-9.-]*slack\.com\/[^\s)"'<>\]]*|https?:\/\/[^\s)"'<>\]]*slack[^\s)"'<>\]]*invite[^\s)"'<>\]]*/i],
+  [
+    "discord",
+    /https?:\/\/(?:www\.)?(?:discord\.gg|discord\.com\/invite|discordapp\.com\/invite)\/[A-Za-z0-9-]+/i,
+  ],
+  [
+    "slack",
+    /https?:\/\/[A-Za-z0-9.-]*slack\.com\/[^\s)"'<>\]]*|https?:\/\/[^\s)"'<>\]]*slack[^\s)"'<>\]]*invite[^\s)"'<>\]]*/i,
+  ],
   ["zulip", /https?:\/\/[A-Za-z0-9.-]*zulip(?:chat)?\.(?:com|org)[^\s)"'<>\]]*/i],
   ["matrix", /https?:\/\/matrix\.to\/#\/[^\s)"'<>\]]+/i],
   ["gitter", /https?:\/\/(?:app\.)?gitter\.im\/[^\s)"'<>\]]+/i],
-  ["mailing-list", /https?:\/\/(?:groups\.google\.com|lists\.[A-Za-z0-9.-]+|[A-Za-z0-9.-]+\/mailman)[^\s)"'<>\]]*/i],
+  [
+    "mailing-list",
+    /https?:\/\/(?:groups\.google\.com|lists\.[A-Za-z0-9.-]+|[A-Za-z0-9.-]+\/mailman)[^\s)"'<>\]]*/i,
+  ],
   ["irc", /https?:\/\/(?:web\.)?libera\.chat\/[^\s)"'<>\]]*|ircs?:\/\/[^\s)"'<>\]]+/i],
-  ["forum", /https?:\/\/(?:discuss|discourse|forum|community)\.[A-Za-z0-9.-]+[^\s)"'<>\]]*/i],
+  [
+    "forum",
+    /https?:\/\/(?:discuss|discourse|forum|community)\.[A-Za-z0-9.-]+[^\s)"'<>\]]*/i,
+  ],
 ];
 
 /** The first link of each kind found in the given documents, in document order. */
-export function detectChannels(...documents: (string | null | undefined)[]): { kind: ChannelKind; url: string }[] {
+export function detectChannels(
+  ...documents: (string | null | undefined)[]
+): { kind: ChannelKind; url: string }[] {
   const text = documents.filter(Boolean).join("\n");
   const channels: { kind: ChannelKind; url: string }[] = [];
   for (const [kind, pattern] of CHANNELS) {
@@ -193,12 +204,25 @@ export function detectSignOff(input: {
 }): "cla" | "dco" | "none" | "unknown" {
   const text = input.documents.filter(Boolean).join("\n");
   const bots = input.botLogins.map((login) => login.toLowerCase());
-  if (bots.some((login) => /(?:^|[-_])cla(?:[-_]|assistant|bot|$)|easycla|claassistant/.test(login))) {
+  if (
+    bots.some((login) =>
+      /(?:^|[-_])cla(?:[-_]|assistant|bot|$)|easycla|claassistant/.test(login),
+    )
+  ) {
     return "cla";
   }
-  if (/contributor licen[sc]e agreement|\bsign (?:the|our|a) cla\b|\bCLA\b/.test(text)) return "cla";
-  if (input.hasDcoConfig || bots.some((login) => login === "dco" || login.startsWith("dco["))) return "dco";
-  if (/developer certificate of origin|\bDCO\b|signed-off-by|git commit (?:-s\b|--signoff)/i.test(text)) {
+  if (/contributor licen[sc]e agreement|\bsign (?:the|our|a) cla\b|\bCLA\b/.test(text))
+    return "cla";
+  if (
+    input.hasDcoConfig ||
+    bots.some((login) => login === "dco" || login.startsWith("dco["))
+  )
+    return "dco";
+  if (
+    /developer certificate of origin|\bDCO\b|signed-off-by|git commit (?:-s\b|--signoff)/i.test(
+      text,
+    )
+  ) {
     return "dco";
   }
   return text.length > 0 ? "none" : "unknown";

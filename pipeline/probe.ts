@@ -52,9 +52,16 @@ function recordingFetch(sink: Recorded[]): typeof fetch {
     const response = await fetch(input, init);
     const clone = response.clone();
     try {
-      const request = JSON.parse(String(init?.body ?? "{}")) as { query: string; variables: unknown };
+      const request = JSON.parse(String(init?.body ?? "{}")) as {
+        query: string;
+        variables: unknown;
+      };
       const name = /query\s+(\w+)/.exec(request.query)?.[1] ?? "unknown";
-      sink.push({ query: name, variables: request.variables, response: await clone.json() });
+      sink.push({
+        query: name,
+        variables: request.variables,
+        response: await clone.json(),
+      });
     } catch {
       // A response that is not JSON is not worth keeping.
     }
@@ -87,7 +94,9 @@ query Association($q: String!) {
     question: "Does FIRST_TIME_CONTRIBUTOR survive on merged pull requests?",
     open: await tally(`is:pr is:open is:public created:>${since} sort:created-desc`),
     merged: await tally(`is:pr is:merged is:public created:>${since} sort:created-desc`),
-    closedUnmerged: await tally(`is:pr is:unmerged is:closed is:public created:>${since} sort:created-desc`),
+    closedUnmerged: await tally(
+      `is:pr is:unmerged is:closed is:public created:>${since} sort:created-desc`,
+    ),
     points: client.budget.spent,
   };
 }
@@ -115,14 +124,20 @@ async function main() {
       row.remaining = backfillClient.budget.last?.remaining ?? null;
 
       // Incremental refresh as the weekly sweep would see it: last sync seven days ago.
-      const weekAgo = { ...state, syncedAt: new Date(Date.now() - 7 * DAY_MS).toISOString() };
+      const weekAgo = {
+        ...state,
+        syncedAt: new Date(Date.now() - 7 * DAY_MS).toISOString(),
+      };
       const weekly = createClient({ token });
       await fetchRepo(weekly, owner, name, { hashKey: HASH_KEY }, weekAgo);
       row.weeklyPoints = weekly.budget.spent;
       row.weeklyCalls = weekly.budget.calls;
 
       // And as the two-day Tier 1 refresh would see it.
-      const twoDays = { ...state, syncedAt: new Date(Date.now() - 2 * DAY_MS).toISOString() };
+      const twoDays = {
+        ...state,
+        syncedAt: new Date(Date.now() - 2 * DAY_MS).toISOString(),
+      };
       const frequent = createClient({ token });
       await fetchRepo(frequent, owner, name, { hashKey: HASH_KEY }, twoDays);
       row.twoDayPoints = frequent.budget.spent;
@@ -141,13 +156,22 @@ async function main() {
       const recorded: Recorded[] = [];
       const recorder = createClient({ token, fetchImpl: recordingFetch(recorded) });
       const recordedAt = new Date();
-      await fetchRepo(recorder, owner, name, { hashKey: HASH_KEY, now: recordedAt, maxPages: 2 });
+      await fetchRepo(recorder, owner, name, {
+        hashKey: HASH_KEY,
+        now: recordedAt,
+        maxPages: 2,
+      });
       writeFileSync(
         join(out, "fixtures", `${owner}__${name}.json`),
-        JSON.stringify({ repo: full, recordedAt: recordedAt.toISOString(), calls: recorded }),
+        JSON.stringify({
+          repo: full,
+          recordedAt: recordedAt.toISOString(),
+          calls: recorded,
+        }),
       );
     } catch (error) {
-      row.error = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
+      row.error =
+        error instanceof Error ? `${error.name}: ${error.message}` : String(error);
     }
     rows.push(row);
     console.log(JSON.stringify(row));
@@ -167,7 +191,10 @@ async function main() {
     rows,
   };
   writeFileSync(join(out, "summary.json"), JSON.stringify(summary, null, 1));
-  writeFileSync(join(out, "association.json"), JSON.stringify(await associationExperiment(token), null, 1));
+  writeFileSync(
+    join(out, "association.json"),
+    JSON.stringify(await associationExperiment(token), null, 1),
+  );
   console.log(
     `mean points: backfill ${summary.meanBackfillPoints}, weekly ${summary.meanWeeklyPoints}, two-day ${summary.meanTwoDayPoints}`,
   );

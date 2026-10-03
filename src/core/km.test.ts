@@ -1,6 +1,13 @@
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
-import { kaplanMeier, median, quantile, shareWithin, survivalAt, type Observation } from "./km";
+import {
+  kaplanMeier,
+  median,
+  quantile,
+  shareWithin,
+  survivalAt,
+  type Observation,
+} from "./km";
 
 const observation = fc.record({
   hours: fc.double({ min: 0, max: 5000, noNaN: true }),
@@ -88,13 +95,17 @@ describe("kaplanMeier", () => {
 
   it("never looks faster when waiting items are kept than when they are dropped", () => {
     fc.assert(
-      fc.property(observations, fc.double({ min: 0, max: 5000, noNaN: true }), (items, at) => {
-        const withCensored = kaplanMeier(items);
-        const dropped = kaplanMeier(items.filter((o) => o.observed));
-        expect(shareWithin(withCensored, at)).toBeLessThanOrEqual(
-          shareWithin(dropped, at) + 1e-9,
-        );
-      }),
+      fc.property(
+        observations,
+        fc.double({ min: 0, max: 5000, noNaN: true }),
+        (items, at) => {
+          const withCensored = kaplanMeier(items);
+          const dropped = kaplanMeier(items.filter((o) => o.observed));
+          expect(shareWithin(withCensored, at)).toBeLessThanOrEqual(
+            shareWithin(dropped, at) + 1e-9,
+          );
+        },
+      ),
     );
   });
 

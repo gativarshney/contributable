@@ -69,12 +69,17 @@ export function createClient(options: Options): GraphQLClient {
       });
 
       const retryAfter = Number(response.headers.get("retry-after")) || null;
-      const transient = response.status >= 500 || response.status === 403 || response.status === 429;
+      const transient =
+        response.status >= 500 || response.status === 403 || response.status === 429;
       if (transient && attempt < retries) {
         const reset = Number(response.headers.get("x-ratelimit-reset"));
         const remaining = response.headers.get("x-ratelimit-remaining");
         if (remaining === "0" && reset) {
-          throw new GitHubError("primary rate limit reached", "rate-limited", Math.max(1, reset - Date.now() / 1000));
+          throw new GitHubError(
+            "primary rate limit reached",
+            "rate-limited",
+            Math.max(1, reset - Date.now() / 1000),
+          );
         }
         const backoff = retryAfter !== null ? retryAfter * 1000 : 2 ** attempt * 2000;
         await sleep(backoff + Math.random() * 1000);
