@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
+import { PaletteButton } from "./CommandPalette";
 import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
@@ -29,6 +30,7 @@ export function SiteHeader() {
               </li>
             ))}
           </ul>
+          <PaletteButton />
           <ThemeToggle />
         </nav>
       </div>

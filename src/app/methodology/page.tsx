@@ -60,6 +60,65 @@ const contributorSignals = [
   ],
 ];
 
+const definitions = [
+  [
+    "Outside contributor",
+    "The author of a pull request whom GitHub does not mark as owner, member or collaborator of the repository, and who is not a bot. Everyone GitHub marks that way is counted as the core team.",
+  ],
+  [
+    "The cohort",
+    "Pull requests opened 30 to 120 days ago. Newer ones have not had time to be answered or merged, so including them would make every project look worse than it is.",
+  ],
+  [
+    "Outside merge rate",
+    "Merged, divided by merged plus closed without merging, for outside pull requests in the cohort. Pull requests still open are counted separately and shown next to it.",
+  ],
+  [
+    "First-time contributors",
+    "The same merge rate for pull requests that are their author's first in the stored year of history.",
+  ],
+  [
+    "First reply time",
+    "Hours from opening to the first comment, review or review comment by a person other than the author. Bots never count. A pull request nobody answered stays in the calculation as still waiting, so the median and the shares within 48 hours and 7 days get worse when pull requests are ignored. If more than half were never answered there is no median.",
+  ],
+  [
+    "Time to merge",
+    "The median time from opening to merging. A pull request closed without merging counts as never merged rather than being dropped.",
+  ],
+  [
+    "Starter issue states",
+    "For open issues with a beginner label. In progress: an open pull request is linked. Claimed: someone is assigned, or a comment in the last 14 days asks to take it. Stale: no activity for 60 days. Available: none of those.",
+  ],
+  [
+    "Reply hours",
+    "Replies by core team members over 90 days, counted by weekday and hour, all people together. It is not published when fewer than 3 people replied, because it would then describe one person.",
+  ],
+  [
+    "Trend",
+    "Median first reply over the last four weeks against the four weeks before. Got faster or slowed down needs a change of at least 1.5 times and 5 pull requests in each period. Went quiet means no pull request and no core reply for four weeks.",
+  ],
+  [
+    "GSoC ranking",
+    "An organisation's figure pools its measured repositories, weighted by their number of outside pull requests. Organisations are ordered by the share answered within 7 days, then by outside merge rate. Fewer than 5 pull requests means no rank.",
+  ],
+  [
+    "Which repositories",
+    "For every GSoC organisation from 2024 to 2026 that is on GitHub: up to 8 of its most starred repositories that are not forks, archives or mirrors, had a push in the last 180 days and have at least 5 pull requests.",
+  ],
+  [
+    "Sample size",
+    "Every figure shows the number of pull requests or issues behind it. Under 5 it reads Not enough data. Each figure links to the pull requests it counted.",
+  ],
+];
+
+const indexLimits = [
+  "GitHub only marks someone as a member when their membership is public. A core developer with private membership is counted as an outside contributor, which makes a project look more open to outsiders than it is.",
+  "A reply from another outside contributor counts as a human reply. It is still an answer, but it is not a maintainer's.",
+  "Projects that review on a mailing list, Gerrit or GitLab look silent here. Organisations that do not work on GitHub are listed as not measured instead of being ranked last.",
+  "Claims are detected from comment wording, in English. A claim written differently is missed and the issue shows as available.",
+  "At most 25 comments and 25 reviews are read per pull request. A first reply always falls within those; later ones matter only for reply hours.",
+];
+
 const limitations = [
   "Only public data is visible. Private forks, internal trackers and chat never show up.",
   "Commit metrics cover the default branch. Long-lived release branches are not included.",
@@ -130,6 +189,62 @@ export default function MethodologyPage() {
           These follow published research on newcomer barriers, pull request abandonment
           and first-response times. Sources are listed in the project README.
         </p>
+      </Block>
+
+      <Block title="The index: every definition">
+        <dl className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
+          {definitions.map(([term, detail]) => (
+            <div key={term}>
+              <dt className="font-medium">{term}</dt>
+              <dd className="text-ink-2 mt-1 text-[15px]">{detail}</dd>
+            </div>
+          ))}
+        </dl>
+        <h3 className="mt-10 font-medium">Where the index can be wrong</h3>
+        <ul className="text-ink-2 mt-3 space-y-3 text-[15px]">
+          {indexLimits.map((item) => (
+            <li key={item} className="flex gap-4">
+              <span
+                className="bg-ink-3 mt-[0.6em] size-1 shrink-0 rounded-full"
+                aria-hidden="true"
+              />
+              {item}
+            </li>
+          ))}
+        </ul>
+      </Block>
+
+      <Block title="Data, API and credits">
+        <div className="text-ink-2 max-w-2xl space-y-4 text-[15px]">
+          <p>
+            Source: the GitHub GraphQL API, public data only, read by a scheduled job in
+            the project&apos;s own repository. The list of organisations comes from the
+            Google Summer of Code programme site. The index refreshes every hour, stalest
+            repositories first; see{" "}
+            <Link href="/status" className="link">
+              status
+            </Link>
+            .
+          </p>
+          <p>
+            Open dataset: every published file is on the{" "}
+            <a
+              href="https://github.com/gativarshney/contributable/tree/data"
+              className="link"
+              target="_blank"
+              rel="noreferrer"
+            >
+              data branch
+            </a>{" "}
+            under CC BY 4.0. Read-only API: <code>/api/v1/repos</code> takes the same
+            filters as Explore, <code>/api/v1/repos/owner/name</code> returns one
+            repository and <code>/api/v1/status</code> the freshness.
+          </p>
+          <p>
+            The reply-time estimate uses the Kaplan-Meier method, the standard way to
+            measure a wait when some of the waiting has not ended yet.
+          </p>
+        </div>
       </Block>
 
       <Block title="Limitations">

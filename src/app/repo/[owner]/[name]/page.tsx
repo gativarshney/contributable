@@ -10,6 +10,7 @@ import {
 import { RepoCard } from "@/components/data/RepoList";
 import { ReplyHours } from "@/components/data/ReplyHours";
 import { ReportLoader } from "@/components/report/ReportLoader";
+import { CopyButton } from "@/components/site/CopyButton";
 import type { StarterIssue } from "@/core/metrics";
 import type { IndexRow, RepoDetail } from "@/core/published";
 import { getIndex, getRepoDetail } from "@/lib/data";
@@ -28,6 +29,8 @@ import { verdict, verdictLine } from "@/lib/repo/verdict";
 type Props = { params: Promise<{ owner: string; name: string }> };
 
 export const revalidate = 900;
+
+const SITE = "https://contributable.vercel.app";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { owner, name } = await params;
@@ -508,6 +511,46 @@ export default async function RepoPage({ params }: Props) {
               {framework}
             </Link>
           ))}
+        </div>
+      </Section>
+
+      <Section
+        id="share"
+        title="Badge and feed"
+        note="For maintainers: show these figures in your README. For contributors: follow new starter issues in a feed reader."
+      >
+        <div className="max-w-3xl space-y-4">
+          {(["reply", "merge"] as const).map((metric) => {
+            const markdown = `[![${metric === "reply" ? "First reply" : "Outside PRs merged"}](${SITE}/badge/${id}?metric=${metric})](${SITE}/repo/${id})`;
+            return (
+              <div key={metric} className="flex flex-wrap items-center gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/badge/${id}?metric=${metric}`}
+                  alt={
+                    metric === "reply" ? "First reply badge" : "Outside PRs merged badge"
+                  }
+                  height={20}
+                  className="h-5"
+                />
+                <code className="bg-bg-3 text-ink-2 min-w-0 flex-1 basis-64 truncate rounded-md px-2.5 py-1.5 text-xs">
+                  {markdown}
+                </code>
+                <CopyButton text={markdown} label="Copy Markdown" />
+              </div>
+            );
+          })}
+          <p className="text-sm">
+            <a href={`/feed/repo/${id}`} className="link">
+              Atom feed of available starter issues
+            </a>{" "}
+            <span className="text-ink-3">
+              · JSON at{" "}
+              <a href={`/api/v1/repos/${id}`} className="link">
+                /api/v1/repos/{id}
+              </a>
+            </span>
+          </p>
         </div>
       </Section>
 

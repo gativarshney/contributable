@@ -65,9 +65,18 @@ export function SiteFooter() {
         </div>
         <div className="text-ink-3 flex flex-col gap-3 text-sm md:items-end">
           <Logo className="text-ink" />
-          <nav aria-label="Footer" className="flex gap-5">
-            <Link href="/sample" className="hover:text-ink transition-colors">
-              Example
+          <nav
+            aria-label="Footer"
+            className="flex flex-wrap gap-x-5 gap-y-2 md:justify-end"
+          >
+            <Link href="/guide" className="hover:text-ink transition-colors">
+              Guide
+            </Link>
+            <Link href="/about" className="hover:text-ink transition-colors">
+              About
+            </Link>
+            <Link href="/status" className="hover:text-ink transition-colors">
+              Status
             </Link>
             <Link href="/methodology" className="hover:text-ink transition-colors">
               How it works

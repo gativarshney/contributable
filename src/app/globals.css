@@ -492,3 +492,19 @@ body {
     animation: none;
   }
 }
+
+/* The Ctrl+K box. */
+.palette {
+  width: min(36rem, calc(100vw - 2rem));
+  margin: 12svh auto auto;
+  padding: 0;
+  border: 1px solid var(--hair-strong);
+  border-radius: 16px;
+  background: var(--bg);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+
+.palette::backdrop {
+  background: oklch(0% 0 0 / 0.45);
+}
