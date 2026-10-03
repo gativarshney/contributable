@@ -199,11 +199,13 @@ export function Field() {
       <p className="text-ink-2 mt-4 min-h-6 text-center text-sm" aria-live="polite">
         {!data
           ? "Loading the index"
-          : query.length === 0
-            ? `${data.points.length.toLocaleString("en-US")} repositories, each a point. Type a language to light yours up.`
-            : matched.length === 0
-              ? `No measured repository uses "${stack}" yet.`
-              : `${matched.length.toLocaleString("en-US")} ${matched.length === 1 ? "repository uses" : "repositories use"} ${stack}.`}
+          : data.points.length === 0
+            ? "The index is being prepared. Points appear here as repositories are measured."
+            : query.length === 0
+              ? `${data.points.length.toLocaleString("en-US")} repositories, each a point. Type a language to light yours up.`
+              : matched.length === 0
+                ? `No measured repository uses "${stack}" yet.`
+                : `${matched.length.toLocaleString("en-US")} ${matched.length === 1 ? "repository uses" : "repositories use"} ${stack}.`}
       </p>
 
       <div className="relative mx-auto mt-3 max-w-4xl">
