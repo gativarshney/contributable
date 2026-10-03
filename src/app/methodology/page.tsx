@@ -79,7 +79,7 @@ const definitions = [
   ],
   [
     "First reply time",
-    "Hours from opening to the first comment, review or review comment by a person other than the author. Bots never count. A pull request nobody answered stays in the calculation as still waiting, so the median and the shares within 48 hours and 7 days get worse when pull requests are ignored. If more than half were never answered there is no median.",
+    "Hours from opening to the first comment, review or review comment by a person other than the author, or to a merge by someone else if that comes first. Bots never count. A pull request nobody answered stays in the calculation as still waiting, so the median and the shares within 48 hours and 7 days get worse when pull requests are ignored. If more than half were never answered there is no median.",
   ],
   [
     "Time to merge",
@@ -112,6 +112,7 @@ const definitions = [
 ];
 
 const indexLimits = [
+  "Bots are recognised by account type, by name, and by behaviour: an account that answers within a minute on most pull requests, or comments on over 60% of them within 15 minutes, is treated as automation. A bot that fits none of these still counts as a person and makes a project look faster than it is.",
   "GitHub only marks someone as a member when their membership is public. A core developer with private membership is counted as an outside contributor, which makes a project look more open to outsiders than it is.",
   "A reply from another outside contributor counts as a human reply. It is still an answer, but it is not a maintainer's.",
   "Projects that review on a mailing list, Gerrit or GitLab look silent here. Organisations that do not work on GitHub are listed as not measured instead of being ranked last.",

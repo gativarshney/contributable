@@ -11,7 +11,7 @@
  *
  * Paths are lower case so a URL in any casing finds its file.
  */
-import { mkdir, readdir, readFile, rename, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { gunzipSync, gzipSync } from "node:zlib";
 import { createClient, GitHubError } from "../src/core/github/client";
@@ -48,6 +48,8 @@ const RESERVE_BACKFILL = 160;
 const DATA_DIR = process.env.DATA_DIR ?? "out/data";
 const MAX_MINUTES = Number(process.env.SWEEP_MINUTES ?? 40);
 const MAX_REPOS = Number(process.env.SWEEP_MAX_REPOS ?? Infinity);
+/** Repositories read at the same time. GitHub asks clients to keep concurrency low. */
+const WORKERS = Number(process.env.SWEEP_WORKERS ?? 6);
 
 interface UniverseFile {
   v: number;
@@ -166,6 +168,18 @@ async function main() {
     );
   }
 
+  // Maintainers can ask for a repository or a whole account to be left out. The list
+  // holds "owner" or "owner/name"; anything on it is neither fetched nor published.
+  const optedOut = new Set(
+    ((await readJson<string[]>("universe/opt-out.json")) ?? []).map((entry) =>
+      entry.toLowerCase(),
+    ),
+  );
+  universe.repos = universe.repos.filter(
+    (repo) =>
+      !optedOut.has(repo.owner.toLowerCase()) && !optedOut.has(idOf(repo).toLowerCase()),
+  );
+
   // 2. The queue: never indexed first (newest programme year first), then stalest.
   const failures = (await readJson<Failures>(join(DATA_DIR, "failures.json"))) ?? {};
   const known = new Map(
@@ -197,18 +211,37 @@ async function main() {
   let refreshed = 0;
   let failed = 0;
   let stoppedBy: SweepStatus["lastRun"]["stoppedBy"] = "done";
-  for (const { repo, updatedAt } of queue) {
-    if (refreshed + failed >= MAX_REPOS) break;
-    if (outOfTime()) {
-      stoppedBy = "time";
-      break;
+  let next = 0;
+  // Several repositories are read at once; each worker takes the next one in the queue.
+  const worker = async () => {
+    for (;;) {
+      if (stoppedBy !== "done" || next >= queue.length) return;
+      if (refreshed + failed >= MAX_REPOS) return;
+      if (outOfTime()) {
+        stoppedBy = "time";
+        return;
+      }
+      // Every worker may be in the middle of a large first read, so the reserve
+      // is kept per worker.
+      const reserve =
+        (queue[next].updatedAt === null ? RESERVE_BACKFILL : RESERVE_REFRESH) * WORKERS;
+      if (remaining() < reserve) {
+        stoppedBy = "budget";
+        return;
+      }
+      const { repo } = queue[next];
+      next += 1;
+      const outcome = await refreshOne(repo);
+      if (outcome === "limited") {
+        stoppedBy = "budget";
+        return;
+      }
+      if (outcome === "ok") refreshed += 1;
+      else failed += 1;
     }
-    if (remaining() < (updatedAt === null ? RESERVE_BACKFILL : RESERVE_REFRESH)) {
-      stoppedBy = "budget";
-      break;
-    }
+  };
+  const refreshOne = async (repo: UniverseRepo): Promise<"ok" | "failed" | "limited"> => {
     const id = idOf(repo).toLowerCase();
-    const before = client.budget.spent;
     try {
       const now = new Date();
       const previous = await readState(id);
@@ -222,33 +255,36 @@ async function main() {
       await writeAtomic(pathOf("state", id), gzipSync(JSON.stringify(state)));
       await writeAtomic(pathOf("repos", id), JSON.stringify(toDetail(state, repo, now)));
       delete failures[id];
-      refreshed += 1;
       console.log(
-        `ok ${id} ${previous ? "refresh" : "backfill"} ${client.budget.spent - before} points, ` +
+        `ok ${id} ${previous ? "refresh" : "backfill"}, ` +
           `${state.pulls.length} pulls, ${state.issues.length} issues`,
       );
+      return "ok";
     } catch (error) {
-      if (error instanceof GitHubError && error.kind === "rate-limited") {
-        stoppedBy = "budget";
-        break;
-      }
+      if (error instanceof GitHubError && error.kind === "rate-limited") return "limited";
       const reason =
         error instanceof GitHubError
           ? error.kind
           : (error as Error).message.slice(0, 120);
       failures[id] = { reason, at: new Date().toISOString() };
-      failed += 1;
       console.log(`fail ${id} ${reason}`);
+      return "failed";
     }
-  }
+  };
+  await Promise.all(Array.from({ length: WORKERS }, worker));
   await writeAtomic(join(DATA_DIR, "failures.json"), JSON.stringify(failures));
 
   // 4. Publish. Only repositories still in the universe are listed.
   const finishedAt = new Date();
   const inUniverse = new Map(universe.repos.map((r) => [idOf(r).toLowerCase(), r]));
-  const details = (await listDetails()).filter((d) =>
-    inUniverse.has(idOf(d).toLowerCase()),
-  );
+  const everything = await listDetails();
+  const details = everything.filter((d) => inUniverse.has(idOf(d).toLowerCase()));
+  // Opted out or dropped from the universe: remove what was published about it.
+  for (const gone of everything.filter((d) => !inUniverse.has(idOf(d).toLowerCase()))) {
+    const id = idOf(gone).toLowerCase();
+    await rm(pathOf("repos", id), { force: true });
+    await rm(pathOf("state", id), { force: true });
+  }
   const rows: IndexRow[] = details
     .map((detail) => ({
       ...detail,

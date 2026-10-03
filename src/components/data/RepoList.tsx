@@ -4,7 +4,9 @@ import {
   compact,
   date,
   duration,
+  firstReply,
   NOT_ENOUGH,
+  UNANSWERED,
   percent,
   replySpeed,
   TREND_LABEL,
@@ -38,7 +40,7 @@ function Figure({
   note: string;
   className?: string;
 }) {
-  const missing = value === NOT_ENOUGH;
+  const missing = value === NOT_ENOUGH || value === UNANSWERED;
   return (
     <div>
       <dt className="text-ink-3 text-xs">{label}</dt>
@@ -72,7 +74,7 @@ export function RepoCard({ row }: { row: IndexRow }) {
       <dl className="mt-4 grid grid-cols-3 gap-3">
         <Figure
           label="First reply"
-          value={duration(row.replyHours)}
+          value={firstReply(row.replyHours, row.replyN)}
           note={`${row.replyN} outside PRs`}
           className={SPEED_CLASS[replySpeed(row.replyHours)]}
         />
@@ -152,7 +154,11 @@ export function RepoTable({ rows }: { rows: IndexRow[] }) {
                 className={`right num ${SPEED_CLASS[replySpeed(row.replyHours)]}`}
                 title={`${row.replyN} outside pull requests`}
               >
-                {row.replyHours === null ? "n/a" : duration(row.replyHours)}
+                {row.replyHours !== null
+                  ? duration(row.replyHours)
+                  : row.replyN >= 5
+                    ? "rare"
+                    : "n/a"}
               </td>
               <td className="right num">
                 {row.within48h === null ? "n/a" : percent(row.within48h)}
@@ -180,7 +186,9 @@ export function RepoTable({ rows }: { rows: IndexRow[] }) {
         </tbody>
       </table>
       <p className="text-ink-3 px-3 py-2 text-xs">
-        n/a means fewer than 5 pull requests in the sample, so no figure is shown.
+        n/a means fewer than 5 pull requests in the sample, so no figure is shown. A first
+        reply of &quot;rare&quot; means more than half of outside pull requests got no
+        reply.
       </p>
     </div>
   );

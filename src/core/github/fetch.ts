@@ -91,10 +91,68 @@ interface ReplySummary {
   coreActors: string[];
 }
 
+const NO_BOTS: ReadonlySet<string> = new Set();
+
+/** Seconds within which only a machine replies to a new pull request. */
+const INSTANT_SECONDS = 60;
+const INSTANT_MIN_PULLS = 5;
+/** An account on this share of all pull requests, this quickly, is a pipeline. */
+const BLANKET_SHARE = 0.6;
+const BLANKET_MIN_PULLS = 20;
+const BLANKET_MEDIAN_MINUTES = 15;
+
+/**
+ * Finds automation that runs under an ordinary user account, from behaviour alone.
+ * Two patterns, both far outside what a person does:
+ *  - the account's first comment lands within a minute of the pull request opening,
+ *    on at least 5 pull requests and at least half of those it comments on;
+ *  - the account comments on at least 60% of all pull requests (20 or more), with a
+ *    median delay of 15 minutes or less.
+ * Returns lower-case logins.
+ */
+export function detectAutomation(
+  pulls: readonly {
+    createdAt: string;
+    author: { login: string } | null;
+    comments: { nodes: RawReply[] };
+    reviews: { nodes: RawReply[] };
+  }[],
+): string[] {
+  const delays = new Map<string, number[]>();
+  for (const pull of pulls) {
+    const opened = Date.parse(pull.createdAt);
+    const firstBy = new Map<string, number>();
+    for (const reply of [...pull.comments.nodes, ...pull.reviews.nodes]) {
+      const at = reply.createdAt ?? reply.submittedAt;
+      const login = reply.author?.login.toLowerCase();
+      if (!at || !login || login === pull.author?.login.toLowerCase()) continue;
+      const delay = (Date.parse(at) - opened) / 1000;
+      if (!firstBy.has(login) || delay < firstBy.get(login)!) firstBy.set(login, delay);
+    }
+    for (const [login, delay] of firstBy) {
+      delays.set(login, [...(delays.get(login) ?? []), delay]);
+    }
+  }
+  const found: string[] = [];
+  for (const [login, list] of delays) {
+    const instant = list.filter((d) => d <= INSTANT_SECONDS).length;
+    const sorted = [...list].sort((a, b) => a - b);
+    const median = sorted[Math.floor(sorted.length / 2)];
+    const instantly = instant >= INSTANT_MIN_PULLS && instant / list.length >= 0.5;
+    const blanket =
+      pulls.length >= BLANKET_MIN_PULLS &&
+      list.length / pulls.length >= BLANKET_SHARE &&
+      median <= BLANKET_MEDIAN_MINUTES * 60;
+    if (instantly || blanket) found.push(login);
+  }
+  return found.sort();
+}
+
 function summariseReplies(
   replies: RawReply[],
   author: string | null,
   hash: (login: string) => string,
+  bots: ReadonlySet<string> = NO_BOTS,
 ): ReplySummary {
   let first: string | null = null;
   const coreReplyAt: string[] = [];
@@ -103,6 +161,7 @@ function summariseReplies(
     const at = reply.createdAt ?? reply.submittedAt;
     if (!at) continue;
     const actor = toActor(reply.author, reply.authorAssociation);
+    if (actor.login && bots.has(actor.login.toLowerCase())) continue;
     if (!isHumanResponse(actor, author)) continue;
     if (first === null || at < first) first = at;
     if (classify(actor) === "core" && actor.login) {
@@ -120,17 +179,31 @@ function summariseReplies(
 export function toPullSummary(
   raw: RawPull,
   hash: (login: string) => string,
+  bots: ReadonlySet<string> = NO_BOTS,
 ): PullSummary {
   const author = raw.author?.login ?? null;
   const replies = summariseReplies(
     [...raw.comments.nodes, ...raw.reviews.nodes],
     author,
     hash,
+    bots,
   );
   const actors = new Set(replies.coreActors);
   // Merging needs write access, so a human who merged someone else's work counts as core.
-  if (raw.mergedBy && !isBot(toActor(raw.mergedBy)) && raw.mergedBy.login !== author) {
-    actors.add(hash(raw.mergedBy.login));
+  const mergedByPerson =
+    raw.mergedBy !== null &&
+    !isBot(toActor(raw.mergedBy)) &&
+    !bots.has(raw.mergedBy.login.toLowerCase()) &&
+    raw.mergedBy.login !== author;
+  if (mergedByPerson) {
+    actors.add(hash(raw.mergedBy!.login));
+    // A maintainer who merges without a word has still answered.
+    if (
+      raw.mergedAt !== null &&
+      (replies.firstResponseAt === null || raw.mergedAt < replies.firstResponseAt)
+    ) {
+      replies.firstResponseAt = raw.mergedAt;
+    }
   }
   return {
     n: raw.number,
@@ -149,9 +222,10 @@ export function toPullSummary(
 export function toIssueSummary(
   raw: RawIssue,
   hash: (login: string) => string,
+  bots: ReadonlySet<string> = NO_BOTS,
 ): IssueSummary {
   const author = raw.author?.login ?? null;
-  const replies = summariseReplies(raw.comments.nodes, author, hash);
+  const replies = summariseReplies(raw.comments.nodes, author, hash, bots);
   return {
     n: raw.number,
     title: raw.title.slice(0, 160),
@@ -355,18 +429,24 @@ export async function fetchRepo(
     maxPages,
   );
 
+  // Accounts that behave like automation, remembered between refreshes because a
+  // refresh only sees the pull requests that changed.
+  const bots = new Set([...(previous?.bots ?? []), ...detectAutomation(pulls.items)]);
+
   const pullMap = new Map<number, PullSummary>(
     (previous?.pulls ?? []).map((p) => [p.n, p]),
   );
   for (const raw of pulls.items) {
     if (raw.updatedAt >= since || !pullMap.has(raw.number)) {
-      pullMap.set(raw.number, toPullSummary(raw, hash));
+      pullMap.set(raw.number, toPullSummary(raw, hash, bots));
     }
   }
   const issueMap = new Map<number, IssueSummary>(
     (previous?.issues ?? []).map((i) => [i.n, i]),
   );
-  for (const raw of issues.items) issueMap.set(raw.number, toIssueSummary(raw, hash));
+  for (const raw of issues.items) {
+    issueMap.set(raw.number, toIssueSummary(raw, hash, bots));
+  }
 
   // Starter signals are re-read every time: a claim or a linked pull request can
   // appear without the label list changing.
@@ -383,7 +463,7 @@ export async function fetchRepo(
     for (const raw of starters.items) {
       seen.add(raw.number);
       // An old open issue untouched for a year is not in the main list; add it here.
-      const issue = issueMap.get(raw.number) ?? toIssueSummary(raw, hash);
+      const issue = issueMap.get(raw.number) ?? toIssueSummary(raw, hash, bots);
       issueMap.set(raw.number, { ...issue, ...starterSignals(raw) });
     }
     for (const issue of issueMap.values()) {
@@ -408,5 +488,6 @@ export async function fetchRepo(
     issues: [...issueMap.values()].filter(keepIssue).sort((a, b) => b.n - a.n),
     syncedAt: now.toISOString(),
     coveredSince: previous?.coveredSince ?? horizon,
+    bots: [...bots].sort(),
   };
 }

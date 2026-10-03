@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { IndexRow } from "@/core/published";
 import { getIndex } from "@/lib/data";
-import { compact, date, duration, percent } from "@/lib/format";
+import { compact, date, firstReply, percent } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "How to pick an organisation",
@@ -42,7 +42,7 @@ function Example({ title, row }: { title: string; row: IndexRow }) {
         <dt className="text-ink-2">Reply within 48 h</dt>
         <dd className="text-right">{percent(row.within48h)}</dd>
         <dt className="text-ink-2">Median first reply</dt>
-        <dd className="text-right">{duration(row.replyHours)}</dd>
+        <dd className="text-right">{firstReply(row.replyHours, row.replyN)}</dd>
         <dt className="text-ink-2">Outside PRs merged</dt>
         <dd className="text-right">
           {row.mergeRate === null ? "n/a" : percent(row.mergeRate)}

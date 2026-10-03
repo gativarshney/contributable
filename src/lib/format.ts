@@ -14,6 +14,18 @@ export function duration(hours: number | null): string {
   return `${Math.round(days / 30)} months`;
 }
 
+/** Shown when most pull requests in a large enough sample never got a reply. */
+export const UNANSWERED = "Mostly unanswered";
+
+/**
+ * Median first reply. With enough pull requests but no median, more than half were
+ * never answered: that is a finding, not missing data, and it is said plainly.
+ */
+export function firstReply(hours: number | null, sample: number): string {
+  if (hours !== null) return duration(hours);
+  return sample >= 5 ? UNANSWERED : NOT_ENOUGH;
+}
+
 export function percent(share: number | null): string {
   return share === null ? NOT_ENOUGH : `${Math.round(share * 100)}%`;
 }

@@ -4,7 +4,7 @@ import { FilterForm } from "@/components/explore/FilterForm";
 import type { IndexRow } from "@/core/published";
 import { getAvailableIssues, getIndex } from "@/lib/data";
 import { facet, matchesText } from "@/lib/explore/query";
-import { count, date, duration, percent } from "@/lib/format";
+import { count, date, firstReply, percent } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Good first issues that are actually available",
@@ -199,7 +199,9 @@ export default async function IssuesPage({
               <p className="text-ink-3 num mt-1.5 text-xs">
                 This repository: first reply{" "}
                 <span className="text-ink-2">
-                  {repo.replyHours === null ? "n/a" : duration(repo.replyHours)}
+                  {repo.replyHours === null && repo.replyN < 5
+                    ? "n/a"
+                    : firstReply(repo.replyHours, repo.replyN).toLowerCase()}
                 </span>
                 , outside PRs merged{" "}
                 <span className="text-ink-2">

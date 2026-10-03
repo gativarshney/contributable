@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /** Bumped whenever a stored or published shape changes in a way readers must handle. */
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export const authorClass = z.enum(["core", "outside", "bot"]);
 
@@ -100,5 +100,7 @@ export const repoState = z.object({
   syncedAt: isoDate,
   /** Earliest creation date the stored history is complete from. */
   coveredSince: isoDate,
+  /** Accounts found to be automation from their behaviour, as lower-case logins. */
+  bots: z.array(z.string()).default([]),
 });
 export type RepoState = z.infer<typeof repoState>;

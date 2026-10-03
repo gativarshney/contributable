@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Sparkline } from "@/components/data/Sparkline";
 import type { IndexRow } from "@/core/published";
 import { getIndex } from "@/lib/data";
-import { compact, date, duration, percent, TREND_LABEL } from "@/lib/format";
+import { compact, date, duration, firstReply, percent, TREND_LABEL } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Compare repositories",
@@ -28,7 +28,8 @@ const LINES: {
   {
     label: "First reply to outside PRs",
     note: "median",
-    value: (r) => na(r.replyHours === null ? null : duration(r.replyHours)),
+    value: (r) =>
+      r.replyHours === null && r.replyN < 5 ? "n/a" : firstReply(r.replyHours, r.replyN),
     score: (r) => r.replyHours,
     better: "low",
   },

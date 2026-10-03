@@ -3,7 +3,7 @@ import type { RepoFacts } from "./schema";
 import type { Trend, TrendFlag, WeekPoint } from "./trends";
 
 /** Bumped when a published file changes shape. Readers ignore versions they do not know. */
-export const PUBLISHED_VERSION = 1;
+export const PUBLISHED_VERSION = 2;
 
 export interface ProgramEntry {
   program: "gsoc";

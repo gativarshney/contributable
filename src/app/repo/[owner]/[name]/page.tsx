@@ -20,7 +20,9 @@ import {
   date,
   dateTime,
   duration,
+  firstReply,
   NOT_ENOUGH,
+  UNANSWERED,
   percent,
   TREND_LABEL,
 } from "@/lib/format";
@@ -96,7 +98,7 @@ function Tile({
   sample: string;
   children?: React.ReactNode;
 }) {
-  const missing = value === NOT_ENOUGH;
+  const missing = value === NOT_ENOUGH || value === UNANSWERED;
   return (
     <div className="card p-5">
       <h3 className="text-ink-2 text-sm">{label}</h3>
@@ -267,7 +269,7 @@ export default async function RepoPage({ params }: Props) {
         </Tile>
         <Tile
           label="First human reply"
-          value={duration(reply.medianHours)}
+          value={firstReply(reply.medianHours, reply.n)}
           sample={`median of ${reply.n} outside PRs, ${reply.waiting} unanswered`}
         >
           <PositionStrip

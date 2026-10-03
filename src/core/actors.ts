@@ -82,6 +82,12 @@ export const AUTOMATION_ACCOUNTS: ReadonlySet<string> = new Set([
   "apache-mynewt-bot",
   "asfgit",
   "hadoop-yetus",
+  "apachespark",
+  "sparkqa",
+  "amplabjenkins",
+  "asf-ci",
+  "jenkins",
+  "ci-jenkins",
   "codacy-bot",
   "deepsource-autofix",
   "lgtm-com",
@@ -95,6 +101,9 @@ export function isBot(actor: Actor): boolean {
   if (!login) return false;
   if (login.endsWith("[bot]") || login.endsWith("-bot") || login.endsWith("_bot"))
     return true;
+  // "flinkbot", "llvmbot", "k8s-ci-robot": project bots that are ordinary user accounts.
+  // The length floor keeps short surnames such as "abbot" out.
+  if (login.length >= 7 && login.endsWith("bot")) return true;
   return AUTOMATION_ACCOUNTS.has(login);
 }
 
