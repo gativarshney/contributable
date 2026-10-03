@@ -1,0 +1,85 @@
+name: Probe
+
+# Manual run of the fetcher against the live API: cost per repository, the
+# authorAssociation experiment and recorded fixtures. Results are attached to the
+# rolling "probe" prerelease so they can be read without signing in.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: probe
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out
+        run: git clone --depth 1 "https://github.com/${GITHUB_REPOSITORY}.git" . && git log -1 --format=%H
+
+      - name: Install
+        run: npm ci --no-audit --no-fund
+
+      - name: Run probe
+        env:
+          SWEEP_GITHUB_TOKEN: ${{ secrets.SWEEP_GITHUB_TOKEN }}
+        run: npx tsx pipeline/probe.ts
+
+      - name: Summarise
+        if: always()
+        run: |
+          {
+            echo "### Probe"
+            if [ -f out/probe/summary.json ]; then
+              node -e '
+                const s = require("./out/probe/summary.json");
+                console.log(`Mean points: backfill ${s.meanBackfillPoints?.toFixed(1)}, weekly ${s.meanWeeklyPoints?.toFixed(1)}, two-day ${s.meanTwoDayPoints?.toFixed(1)}`);
+                console.log("");
+                console.log("| repo | backfill | weekly | two-day | pulls | issues | error |");
+                console.log("|---|---|---|---|---|---|---|");
+                for (const r of s.rows) console.log(`| ${r.repo} | ${r.backfillPoints ?? ""} | ${r.weeklyPoints ?? ""} | ${r.twoDayPoints ?? ""} | ${r.pulls ?? ""} | ${r.issues ?? ""} | ${r.error ?? ""} |`);
+              '
+            else
+              echo "No summary was produced."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Scan results for secrets
+        if: always()
+        run: |
+          set -eu
+          [ -d out/probe ] || exit 0
+          curl -fsSL -o gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+          echo "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  gitleaks.tar.gz" | sha256sum -c -
+          mkdir -p "$RUNNER_TEMP/gitleaks" && tar -xzf gitleaks.tar.gz -C "$RUNNER_TEMP/gitleaks" gitleaks
+          "$RUNNER_TEMP/gitleaks/gitleaks" dir out/probe --redact --no-banner
+          touch out/.scanned
+
+      - name: Publish results
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eu
+          [ -d out/probe ] || exit 0
+          [ -f out/.scanned ] || { echo "results were not scanned; not publishing"; exit 1; }
+          tar -czf probe.tar.gz -C out probe
+          api="https://api.github.com/repos/${GITHUB_REPOSITORY}"
+          auth="authorization: bearer ${GITHUB_TOKEN}"
+          id=$(curl -fsS -H "$auth" "$api/releases/tags/probe" | node -pe 'JSON.parse(require("fs").readFileSync(0,"utf8")).id' 2>/dev/null || true)
+          if [ -z "${id:-}" ]; then
+            id=$(curl -fsS -X POST -H "$auth" "$api/releases" \
+              -d '{"tag_name":"probe","name":"Probe results","prerelease":true,"body":"Fetcher cost measurements and recorded fixtures. Overwritten by each probe run."}' \
+              | node -pe 'JSON.parse(require("fs").readFileSync(0,"utf8")).id')
+          fi
+          old=$(curl -fsS -H "$auth" "$api/releases/$id/assets" | node -pe 'JSON.parse(require("fs").readFileSync(0,"utf8")).filter(a=>a.name==="probe.tar.gz").map(a=>a.id).join(" ")')
+          for asset in $old; do curl -fsS -X DELETE -H "$auth" "$api/releases/assets/$asset"; done
+          curl -fsS -X POST -H "$auth" -H "content-type: application/gzip" \
+            --data-binary @probe.tar.gz \
+            "https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/$id/assets?name=probe.tar.gz" > /dev/null
+          echo "published probe.tar.gz"
