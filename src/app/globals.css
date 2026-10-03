@@ -6,7 +6,7 @@
   --bg-3: oklch(92.5% 0.005 95);
   --ink: oklch(19% 0.01 240);
   --ink-2: oklch(42% 0.012 240);
-  --ink-3: oklch(54% 0.01 240);
+  --ink-3: oklch(50% 0.01 240);
   --hair: oklch(19% 0.01 240 / 0.1);
   --hair-strong: oklch(19% 0.01 240 / 0.2);
   --accent: oklch(46% 0.085 195);
@@ -26,7 +26,7 @@
   --bg-3: oklch(22% 0.007 240);
   --ink: oklch(95% 0.004 95);
   --ink-2: oklch(72% 0.008 240);
-  --ink-3: oklch(57% 0.008 240);
+  --ink-3: oklch(64% 0.008 240);
   --hair: oklch(94% 0 0 / 0.08);
   --hair-strong: oklch(94% 0 0 / 0.16);
   --accent: oklch(82% 0.1 190);
@@ -362,14 +362,14 @@ body {
   --fast: oklch(52% 0.13 160);
   --slow: oklch(58% 0.16 45);
   --merged: oklch(50% 0.14 262);
-  --stale: oklch(56% 0.01 240);
+  --stale: oklch(50% 0.01 240);
 }
 
 :root[data-theme="dark"] {
   --fast: oklch(78% 0.14 162);
   --slow: oklch(76% 0.14 55);
   --merged: oklch(74% 0.12 262);
-  --stale: oklch(60% 0.01 240);
+  --stale: oklch(66% 0.01 240);
 }
 
 @theme inline {

@@ -34,17 +34,14 @@ export default async function HomePage() {
       <section className="relative overflow-hidden">
         <div className="hero-glow" aria-hidden="true" />
         <div className="shell relative pt-[clamp(1.5rem,5svh,4rem)] pb-10 text-center">
-          <h1 className="display rise mx-auto max-w-4xl text-[clamp(2.3rem,min(7vw,9svh),4.75rem)]">
+          <h1 className="display mx-auto max-w-4xl text-[clamp(2.3rem,min(7vw,9svh),4.75rem)]">
             Find a project that <em>answers newcomers.</em>
           </h1>
-          <p
-            className="text-ink-2 rise mx-auto mt-4 max-w-xl text-balance"
-            style={{ animationDelay: "70ms" }}
-          >
+          <p className="text-ink-2 mx-auto mt-4 max-w-xl text-balance">
             We measure how open source projects treat people outside their team: how fast
             they reply, and how often they merge.
           </p>
-          <div className="rise mt-7" style={{ animationDelay: "140ms" }}>
+          <div className="mt-7">
             <Field />
           </div>
         </div>
