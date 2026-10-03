@@ -1,0 +1,71 @@
+name: Sweep
+
+# Refreshes the index. Every hour it spends that hour's GitHub budget on the stalest
+# repositories and publishes the result to the "data" branch, which the site reads.
+# The branch always holds a single commit, so the repository does not grow with history.
+
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "pipeline/**"
+      - "src/core/**"
+      - "universe/**"
+      - ".github/workflows/sweep.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sweep
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 58
+    steps:
+      - name: Check out code and data
+        run: |
+          set -eu
+          git clone --depth 1 "https://github.com/${GITHUB_REPOSITORY}.git" app
+          if git ls-remote --exit-code --heads "https://github.com/${GITHUB_REPOSITORY}.git" data > /dev/null; then
+            git clone --depth 1 --branch data "https://github.com/${GITHUB_REPOSITORY}.git" data
+          else
+            mkdir data && git -C data init -q
+          fi
+
+      - name: Install
+        working-directory: app
+        run: npm ci --no-audit --no-fund
+
+      - name: Sweep
+        working-directory: app
+        env:
+          SWEEP_GITHUB_TOKEN: ${{ secrets.SWEEP_GITHUB_TOKEN }}
+          SWEEP_HASH_KEY: ${{ secrets.SWEEP_HASH_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DATA_DIR: ../data
+          SWEEP_MINUTES: "40"
+        run: npx tsx pipeline/sweep.ts
+
+      - name: Publish
+        if: always()
+        working-directory: data
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eu
+          [ -f index.json ] || { echo "nothing to publish"; exit 0; }
+          # The site's host must not try to build this branch.
+          printf '{ "git": { "deploymentEnabled": false } }\n' > vercel.json
+          printf '# Contributable data\n\nPublished by the sweep in the main branch. Files are described in the methodology page. Licensed CC BY 4.0.\n' > README.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          tree=$(git write-tree)
+          commit=$(git commit-tree "$tree" -m "Data snapshot $(date -u +%Y-%m-%dT%H:%MZ)")
+          git push --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$commit:refs/heads/data"
