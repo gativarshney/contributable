@@ -22,7 +22,7 @@ function resolveSiteUrl(): string {
 
 const siteUrl = resolveSiteUrl();
 const description =
-  "Contributable tells open source contributors what to expect from a repository: where to start, who maintains it, how fast people reply and whether outside pull requests get merged, with the evidence behind every answer.";
+  "Contributable measures how open source projects treat people outside their team: how fast they reply to a first pull request and how often they merge it. Search thousands of repositories and every GSoC organisation.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

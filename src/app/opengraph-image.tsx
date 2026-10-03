@@ -1,48 +1,23 @@
-import { ImageResponse } from "next/og";
+import { getIndex } from "@/lib/data";
+import { count } from "@/lib/format";
+import { GSOC_ORGS } from "@/lib/gsoc/orgs";
+import { OG_SIZE, ogCard } from "@/lib/og";
 
-export const alt = "Contributable";
-export const size = { width: 1200, height: 630 };
+export const alt = "Contributable: find a project that answers newcomers";
+export const size = OG_SIZE;
 export const contentType = "image/png";
+export const revalidate = 3600;
 
-export default function OpenGraphImage() {
-  return new ImageResponse(
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        padding: 72,
-        background: "#0f1215",
-        color: "#f1efea",
-      }}
-    >
-      <div style={{ display: "flex", fontSize: 30, letterSpacing: 6, color: "#6fd3cf" }}>
-        CONTRIBUTABLE
-      </div>
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <div
-          style={{ display: "flex", fontSize: 76, lineHeight: 1.05, letterSpacing: -2 }}
-        >
-          Know a repository
-        </div>
-        <div
-          style={{
-            display: "flex",
-            fontSize: 76,
-            lineHeight: 1.05,
-            letterSpacing: -2,
-            color: "#6fd3cf",
-          }}
-        >
-          before your first pull request.
-        </div>
-      </div>
-      <div style={{ display: "flex", fontSize: 28, color: "#a3a8ae" }}>
-        For open source contributors · evidence from public GitHub data
-      </div>
-    </div>,
-    size,
-  );
+export default async function OpenGraphImage() {
+  const index = await getIndex();
+  return ogCard({
+    eyebrow: "contributable.vercel.app",
+    title: "Find a project that answers newcomers.",
+    stats: [
+      { value: count(index.rows.length), label: "repositories measured" },
+      { value: count(GSOC_ORGS.length), label: "GSoC organisations" },
+    ],
+    footer:
+      "Reply times and merge rates for outside contributors, from public GitHub data",
+  });
 }

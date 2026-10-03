@@ -14,12 +14,25 @@ const SHOWN = 12;
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const input = parseMatch(await searchParams);
   const stack = input.stack.slice(0, 4).join(", ");
+  const image = `/api/og/match?${new URLSearchParams({
+    stack: input.stack.join(","),
+    level: input.level,
+    goal: input.goal,
+    hours: String(input.hours),
+    tz: String(input.tz),
+  })}`;
   return {
     title: stack ? `Projects for ${stack}` : "Find my project",
     description: stack
       ? `Open source projects that use ${stack}, ordered by how quickly they answer outside contributors.`
       : "Tell us your stack, level and goal. Get a shortlist of projects ordered by how they treat newcomers, with the reason for each pick.",
     robots: stack ? { index: false, follow: true } : undefined,
+    ...(stack
+      ? {
+          openGraph: { images: [image] },
+          twitter: { card: "summary_large_image" as const, images: [image] },
+        }
+      : {}),
   };
 }
 
