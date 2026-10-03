@@ -192,6 +192,7 @@ export default async function RepoPage({ params }: Props) {
   const totalBytes = Object.values(facts.languages).reduce((a, b) => a + b, 0);
   const languages = Object.entries(facts.languages)
     .sort((a, b) => b[1] - a[1])
+    .filter(([, bytes]) => bytes / totalBytes >= 0.01)
     .slice(0, 6);
   const trendLabel = TREND_LABEL[detail.trend.flag];
   const alike = similar(index.rows, detail);
@@ -357,7 +358,9 @@ export default async function RepoPage({ params }: Props) {
             : "Outside pull requests opened each week, and how many of them have been merged."
         }
       >
-        <WeeklyBars series={detail.series} />
+        <div className="max-w-3xl">
+          <WeeklyBars series={detail.series} />
+        </div>
       </Section>
 
       <Section

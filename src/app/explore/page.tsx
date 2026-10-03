@@ -314,7 +314,7 @@ export default async function ExplorePage({
             ) : query.view === "table" ? (
               <RepoTable rows={result.rows} />
             ) : (
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2">
                 {result.rows.map((row) => (
                   <RepoCard key={row.id} row={row} />
                 ))}

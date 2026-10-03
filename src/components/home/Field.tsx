@@ -137,10 +137,10 @@ export function Field() {
             ctx.arc(x, y, 3 + 7 * t, 0, Math.PI * 2);
             ctx.fill();
           }
-          ctx.globalAlpha = t > 0.02 ? 0.35 + 0.65 * t : searching ? 0.14 : 0.4;
+          ctx.globalAlpha = t > 0.02 ? 0.4 + 0.6 * t : searching ? 0.18 : 0.6;
           ctx.fillStyle = t > 0.5 ? colour.accent : colour.dot;
           ctx.beginPath();
-          ctx.arc(x, y, 1.6 + 1.6 * t, 0, Math.PI * 2);
+          ctx.arc(x, y, 2.2 + 1.8 * t, 0, Math.PI * 2);
           ctx.fill();
         }
       }

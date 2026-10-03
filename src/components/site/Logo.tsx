@@ -22,7 +22,9 @@ export function Logo({ className = "" }: { className?: string }) {
         />
         <rect x="14.5" y="1" width="4.5" height="18" rx="1.2" className="fill-accent" />
       </svg>
-      <span className="text-[15px] font-medium tracking-tight">Contributable</span>
+      <span className="text-[15px] font-medium tracking-tight max-[420px]:sr-only">
+        Contributable
+      </span>
     </span>
   );
 }

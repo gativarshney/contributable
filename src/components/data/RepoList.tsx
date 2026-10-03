@@ -47,8 +47,8 @@ function Figure({
       <dd
         className={
           missing
-            ? "text-ink-3 mt-1 text-sm"
-            : `num mt-0.5 text-xl font-medium ${className}`
+            ? "text-ink-3 mt-1 text-xs leading-tight"
+            : `num mt-0.5 text-lg font-medium whitespace-nowrap ${className}`
         }
       >
         {value}
@@ -71,7 +71,7 @@ export function RepoCard({ row }: { row: IndexRow }) {
       <p className="text-ink-2 mt-1.5 line-clamp-2 min-h-[2.5rem] text-sm">
         {row.d || "No description."}
       </p>
-      <dl className="mt-4 grid grid-cols-3 gap-3">
+      <dl className="mt-4 grid grid-cols-[1.2fr_1fr_1fr] gap-3">
         <Figure
           label="First reply"
           value={firstReply(row.replyHours, row.replyN)}
@@ -79,15 +79,11 @@ export function RepoCard({ row }: { row: IndexRow }) {
           className={SPEED_CLASS[replySpeed(row.replyHours)]}
         />
         <Figure
-          label="Outside PRs merged"
+          label="Merged"
           value={percent(row.mergeRate)}
-          note={`${row.decided} decided`}
+          note={`of ${row.decided} decided`}
         />
-        <Figure
-          label="Starter issues"
-          value={String(row.available)}
-          note="available now"
-        />
+        <Figure label="Starter issues" value={String(row.available)} note="available" />
       </dl>
       <div className="mt-4 flex flex-wrap items-center gap-1.5">
         {row.lang.map((l) => (
