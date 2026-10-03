@@ -1,0 +1,6727 @@
+[
+ {
+  "slug": "52north-spatial-information-research-gmbh",
+  "name": "52°North Spatial Information Research GmbH",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://52north.org/",
+  "tech": [
+   "javascript",
+   "android",
+   "java",
+   "web services",
+   "ogc standards"
+  ],
+  "topics": [
+   "citizen science",
+   "spatial information infrastructures",
+   "open standards",
+   "data analytics",
+   "geoinformation"
+  ],
+  "orgs": [
+   "52North"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "aboutcode",
+  "name": "AboutCode",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://aboutcode.org",
+  "tech": [
+   "python",
+   "javascript",
+   "django+postgresql",
+   "c/rust/go"
+  ],
+  "topics": [
+   "dependencies",
+   "vulnerabilities",
+   "softwarecompositionanalysis",
+   "license",
+   "sbom"
+  ],
+  "orgs": [
+   "aboutcode-org"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "accord-project",
+  "name": "Accord Project",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://accordproject.org",
+  "tech": [
+   "python",
+   "javascript",
+   "json",
+   "react",
+   "artificial intelligence"
+  ],
+  "topics": [
+   "natural language processing",
+   "data modeling",
+   "legal technology",
+   "contract management",
+   "document assembly"
+  ],
+  "orgs": [
+   "accordproject"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "aflplusplus",
+  "name": "AFLplusplus",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://aflplus.plus",
+  "tech": [
+   "llvm",
+   "rust",
+   "fuzzing",
+   "qemu"
+  ],
+  "topics": [
+   "fuzzing",
+   "ci"
+  ],
+  "orgs": [
+   "AFLplusplus"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "alaska",
+  "name": "Alaska",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.uaa.alaska.edu/research",
+  "tech": [
+   "python",
+   "mysql",
+   "java",
+   "matlab",
+   "dicom"
+  ],
+  "topics": [
+   "deep learning",
+   "neuroscience",
+   "radiology",
+   "heathcare",
+   "polar science"
+  ],
+  "orgs": [],
+  "repos": [
+   "uaanchorage/GSoC"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "ankidroid",
+  "name": "AnkiDroid",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://github.com/ankidroid/Anki-Android",
+  "tech": [
+   "android",
+   "rust",
+   "kotlin",
+   "mobile"
+  ],
+  "topics": [
+   "education",
+   "mobile",
+   "android",
+   "user generated content",
+   "flashcards"
+  ],
+  "orgs": [],
+  "repos": [
+   "ankidroid/Anki-Android"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "aossie",
+  "name": "AOSSIE",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.aossie.org",
+  "tech": [
+   "python",
+   "javascript",
+   "flutter",
+   "blockchain",
+   "solidity"
+  ],
+  "topics": [
+   "web",
+   "artificial intelligence",
+   "communication",
+   "mobile",
+   "blockchain"
+  ],
+  "orgs": [
+   "AOSSIE-Org"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "apache-datafusion",
+  "name": "Apache DataFusion",
+  "years": [
+   2025
+  ],
+  "website": "https://datafusion.apache.org/",
+  "tech": [
+   "python",
+   "rust",
+   "sql",
+   "arrow"
+  ],
+  "topics": [
+   "databases",
+   "big data",
+   "olap"
+  ],
+  "orgs": [],
+  "repos": [
+   "apache/datafusion"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "apache-software-foundation",
+  "name": "Apache Software Foundation",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://apache.org",
+  "tech": [
+   "c",
+   "java",
+   "c++"
+  ],
+  "topics": [
+   "big data",
+   "cloud",
+   "libraries",
+   "other"
+  ],
+  "orgs": [
+   "apache"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "apertium",
+  "name": "Apertium",
+  "years": [
+   2024
+  ],
+  "website": "https://apertium.org/",
+  "tech": [
+   "python",
+   "javascript",
+   "c++",
+   "xml",
+   "bash"
+  ],
+  "topics": [
+   "natural language processing",
+   "machine translation",
+   "language technology",
+   "less-resources languages"
+  ],
+  "orgs": [
+   "apertium"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "api-dash",
+  "name": "API Dash",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://apidash.dev",
+  "tech": [
+   "python",
+   "react",
+   "flutter",
+   "typescript",
+   "ai"
+  ],
+  "topics": [
+   "api",
+   "developer tools",
+   "ai",
+   "agents",
+   "mcp"
+  ],
+  "orgs": [],
+  "repos": [
+   "foss42/apidash"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "ardupilot",
+  "name": "ArduPilot",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://ardupilot.org/",
+  "tech": [
+   "python",
+   "lua",
+   "c++",
+   "pixhawk"
+  ],
+  "topics": [
+   "robotics",
+   "ai",
+   "drone",
+   "autonomous vehicle",
+   "unmanned vehicle"
+  ],
+  "orgs": [
+   "ArduPilot"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "asyncapi",
+  "name": "AsyncAPI",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://www.asyncapi.com/",
+  "tech": [
+   "javascript",
+   "java",
+   "go",
+   "typescript",
+   "raml"
+  ],
+  "topics": [
+   "web",
+   "api",
+   "cloud",
+   "architectures"
+  ],
+  "orgs": [
+   "asyncapi"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "beagleboardorg",
+  "name": "BeagleBoard.org",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://www.beagleboard.org",
+  "tech": [
+   "linux",
+   "fpga",
+   "risc-v",
+   "dsp",
+   "zephyr rtos"
+  ],
+  "topics": [
+   "robotics",
+   "iot",
+   "ai",
+   "software defined radio",
+   "personal server"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (openbeagle.org)."
+ },
+ {
+  "slug": "blender-foundation",
+  "name": "Blender Foundation",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.blender.org",
+  "tech": [
+   "c",
+   "python",
+   "opengl",
+   "c++",
+   "vulkan"
+  ],
+  "topics": [
+   "games",
+   "graphics",
+   "3d",
+   "rendering",
+   "animation"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (projects.blender.org)."
+ },
+ {
+  "slug": "boa",
+  "name": "Boa",
+  "years": [
+   2026
+  ],
+  "website": "https://boajs.dev/",
+  "tech": [
+   "javascript",
+   "rust"
+  ],
+  "topics": [
+   "compilers",
+   "web",
+   "performance",
+   "interpreters"
+  ],
+  "orgs": [],
+  "repos": [
+   "boa-dev/boa"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "brl-cad",
+  "name": "BRL-CAD",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://opencax.github.io/",
+  "tech": [
+   "python",
+   "c/c++",
+   "opengl",
+   "opencl",
+   "scripting"
+  ],
+  "topics": [
+   "geometry",
+   "2d/3d graphics",
+   "ray tracing",
+   "high-performance computing",
+   "deep neural net rendering"
+  ],
+  "orgs": [],
+  "repos": [
+   "BRL-CAD/brlcad"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "c2si",
+  "name": "C2SI",
+  "years": [
+   2024,
+   2026
+  ],
+  "website": "https://c2si.org/",
+  "tech": [
+   "python",
+   "java",
+   "go",
+   "nodejs",
+   "tensorflow"
+  ],
+  "topics": [
+   "security",
+   "cloud",
+   "ai",
+   "mobile",
+   "software"
+  ],
+  "orgs": [
+   "c2siorg"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "camicroscope",
+  "name": "caMicroscope",
+  "years": [
+   2024
+  ],
+  "website": "https://camicroscope.github.io",
+  "tech": [
+   "python",
+   "javascript",
+   "mongodb",
+   "opencv",
+   "node"
+  ],
+  "topics": [
+   "data visualization",
+   "image analysis",
+   "ai/ml",
+   "microscopy",
+   "dicom pathology"
+  ],
+  "orgs": [
+   "camicroscope"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "cbioportal-for-cancer-genomics",
+  "name": "cBioPortal for Cancer Genomics",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.cbioportal.org/",
+  "tech": [
+   "mysql",
+   "javascript",
+   "java",
+   "react",
+   "typescript"
+  ],
+  "topics": [
+   "genomics",
+   "cancer",
+   "bioinformatics",
+   "big data",
+   "precision medicine"
+  ],
+  "orgs": [
+   "cBioPortal"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "ccextractor-development",
+  "name": "CCExtractor Development",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.ccextractor.org",
+  "tech": [
+   "c",
+   "linux",
+   "rust",
+   "flutter"
+  ],
+  "topics": [
+   "vr",
+   "linux",
+   "video",
+   "subtitles",
+   "mobile"
+  ],
+  "orgs": [
+   "CCExtractor"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "center-for-translational-data-science",
+  "name": "Center for Translational Data Science",
+  "years": [
+   2025
+  ],
+  "website": "https://ctds.uchicago.edu",
+  "tech": [
+   "golang",
+   "docker",
+   "postgres",
+   "gpu",
+   "llms"
+  ],
+  "topics": [
+   "machine learning",
+   "artificial intelligence",
+   "devops",
+   "mlops",
+   "data meshes"
+  ],
+  "orgs": [
+   "uc-cdis"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "ceph",
+  "name": "Ceph",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://ceph.io/en/",
+  "tech": [
+   "python",
+   "javascript",
+   "c++"
+  ],
+  "topics": [
+   "distributed systems",
+   "software-defined-storage"
+  ],
+  "orgs": [
+   "ceph"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "cern-hsf",
+  "name": "CERN-HSF",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "http://hepsoftwarefoundation.org/activities/gsoc.html",
+  "tech": [
+   "python",
+   "c/c++",
+   "data analysis",
+   "artificial intelligence",
+   "container orchestration"
+  ],
+  "topics": [
+   "machine learning",
+   "big data",
+   "algorithmics",
+   "particle physics",
+   "performance optimisation"
+  ],
+  "orgs": [
+   "HSF"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "cgal-project",
+  "name": "CGAL Project",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.cgal.org",
+  "tech": [
+   "c++",
+   "qt"
+  ],
+  "topics": [
+   "geometry",
+   "mesh processing",
+   "computation geometry",
+   "geometry processing"
+  ],
+  "orgs": [],
+  "repos": [
+   "CGAL/cgal"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "chaoss",
+  "name": "CHAOSS",
+  "years": [
+   2025
+  ],
+  "website": "https://chaoss.community",
+  "tech": [
+   "python",
+   "postgresql",
+   "javascript",
+   "machine learning",
+   "metrics"
+  ],
+  "topics": [
+   "open source software metrics",
+   "software sustainability",
+   "community building",
+   "security and software bill of materials"
+  ],
+  "orgs": [],
+  "repos": [
+   "chaoss/augur"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "checker-framework",
+  "name": "Checker Framework",
+  "years": [
+   2025
+  ],
+  "website": "https://checkerframework.org/",
+  "tech": [
+   "java",
+   "compilers",
+   "verification",
+   "formal methods",
+   "type systems"
+  ],
+  "topics": [
+   "software engineering",
+   "verification",
+   "bug finding",
+   "programmer productivity",
+   "type systems"
+  ],
+  "orgs": [
+   "typetools"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "checkstyle",
+  "name": "checkstyle",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://checkstyle.org",
+  "tech": [
+   "java",
+   "antlr",
+   "artificial-intelligence"
+  ],
+  "topics": [
+   "static code analysis‎",
+   "code review tool",
+   "coding standards",
+   "coding conventions",
+   "artificial-intelligence"
+  ],
+  "orgs": [
+   "checkstyle"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "chips-alliance",
+  "name": "CHIPS Alliance",
+  "years": [
+   2024
+  ],
+  "website": "https://chipsalliance.org/",
+  "tech": [
+   "fpga",
+   "chisel",
+   "risc-v",
+   "systemverilog",
+   "asic"
+  ],
+  "topics": [
+   "soc",
+   "ip cores",
+   "asic design",
+   "hdl",
+   "chiplets"
+  ],
+  "orgs": [
+   "chipsalliance"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "chromium-lj",
+  "name": "Chromium",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://chromium.org",
+  "tech": [
+   "python",
+   "javascript",
+   "java",
+   "c++",
+   "git"
+  ],
+  "topics": [
+   "web",
+   "browser",
+   "operating-system"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (chromium.googlesource.com)."
+ },
+ {
+  "slug": "circuitverseorg",
+  "name": "CircuitVerse.org",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "http://circuitverse.org/",
+  "tech": [
+   "javascript",
+   "ruby",
+   "rails",
+   "canvas",
+   "vue"
+  ],
+  "topics": [
+   "education",
+   "web",
+   "simulation",
+   "pedagogy",
+   "digital logic design"
+  ],
+  "orgs": [
+   "circuitverse"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "city-of-boston",
+  "name": "City of Boston",
+  "years": [
+   2024
+  ],
+  "website": "https://boston.gov/departments/innovation-and-technology",
+  "tech": [
+   "python",
+   "javascript"
+  ],
+  "topics": [
+   "machine learning",
+   "computer vision",
+   "gis",
+   "civic tech",
+   "analytics"
+  ],
+  "orgs": [
+   "cityofboston"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "cloudcv",
+  "name": "CloudCV",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://eval.ai/",
+  "tech": [
+   "python",
+   "django",
+   "docker",
+   "angularjs",
+   "aws"
+  ],
+  "topics": [
+   "machine learning",
+   "artificial intelligence",
+   "computer vision",
+   "deep learning",
+   "ai/ml"
+  ],
+  "orgs": [
+   "Cloud-CV"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "cncf",
+  "name": "CNCF",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://cncf.io",
+  "tech": [
+   "prometheus",
+   "kubernetes",
+   "opentelemetry",
+   "envoy"
+  ],
+  "topics": [
+   "cloud",
+   "cloud native",
+   "observability"
+  ],
+  "orgs": [
+   "cncf"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "creative-commons",
+  "name": "Creative Commons",
+  "years": [
+   2024
+  ],
+  "website": "https://opensource.creativecommons.org/",
+  "tech": [
+   "python",
+   "javascript",
+   "php",
+   "css",
+   "wordpress"
+  ],
+  "topics": [
+   "web",
+   "nonprofit",
+   "copyleft",
+   "creative commons",
+   "legal"
+  ],
+  "orgs": [
+   "creativecommons"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "criu",
+  "name": "CRIU",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://criu.org",
+  "tech": [
+   "c",
+   "python",
+   "linux",
+   "go"
+  ],
+  "topics": [
+   "cloud",
+   "containers",
+   "checkpoint/restore"
+  ],
+  "orgs": [],
+  "repos": [
+   "checkpoint-restore/criu"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "cuneiform-digital-library-initiative-cdli",
+  "name": "Cuneiform Digital Library Initiative (CDLI)",
+  "years": [
+   2026
+  ],
+  "website": "https://cdli.earth",
+  "tech": [
+   "mysql",
+   "javascript",
+   "docker",
+   "php",
+   "scss"
+  ],
+  "topics": [
+   "data",
+   "linguistics",
+   "history",
+   "culture",
+   "assyriology"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gitlab.com)."
+ },
+ {
+  "slug": "cvat",
+  "name": "CVAT",
+  "years": [
+   2024
+  ],
+  "website": "https://www.cvat.ai",
+  "tech": [
+   "python",
+   "django",
+   "react",
+   "kubernetes",
+   "typescript"
+  ],
+  "topics": [
+   "machine learning",
+   "computer vision",
+   "ai",
+   "deep learning",
+   "data"
+  ],
+  "orgs": [],
+  "repos": [
+   "cvat-ai/cvat"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "d-language-foundation",
+  "name": "D Language Foundation",
+  "years": [
+   2025,
+   2026
+  ],
+  "website": "https://dlang.org/",
+  "tech": [
+   "linux",
+   "make",
+   "d",
+   "windows",
+   "c\\c++"
+  ],
+  "topics": [
+   "operating systems",
+   "programming languages",
+   "algorithms",
+   "data structures",
+   "optimizations"
+  ],
+  "orgs": [
+   "dlang"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "dart",
+  "name": "Dart",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://dart.dev",
+  "tech": [
+   "flutter",
+   "dart"
+  ],
+  "topics": [
+   "programming languages",
+   "mobile apps"
+  ],
+  "orgs": [
+   "dart-lang"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "data-for-the-common-good",
+  "name": "Data for the Common Good",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://commons.cri.uchicago.edu",
+  "tech": [
+   "python",
+   "javascript",
+   "kubernetes",
+   "reactjs",
+   "terraform"
+  ],
+  "topics": [
+   "web",
+   "health",
+   "data",
+   "infrastructure",
+   "software"
+  ],
+  "orgs": [
+   "chicagopcdc"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "datenlord-6z",
+  "name": "DatenLord",
+  "years": [
+   2024
+  ],
+  "website": "https://datenlord.github.io/",
+  "tech": [
+   "rust",
+   "kubernetes",
+   "distributed key-value store",
+   "fault tolerant",
+   "metadata management"
+  ],
+  "topics": [
+   "cloud",
+   "open source",
+   "storage",
+   "data infrastructure"
+  ],
+  "orgs": [],
+  "repos": [
+   "xline-kv/Xline"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "dbpedia",
+  "name": "DBpedia",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.dbpedia.org/",
+  "tech": [
+   "python",
+   "javascript",
+   "java",
+   "scala",
+   "rdf"
+  ],
+  "topics": [
+   "machine learning",
+   "semantic web",
+   "linked data",
+   "knowledge graph",
+   "largelanguagemodel"
+  ],
+  "orgs": [
+   "dbpedia"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "debian",
+  "name": "Debian",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://debian.org",
+  "tech": [
+   "python",
+   "java",
+   "perl",
+   "c++",
+   "rust"
+  ],
+  "topics": [
+   "ai",
+   "ci/cd",
+   "autopkgtest",
+   "raspberrypi_builds",
+   "mobian"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (salsa.debian.org)."
+ },
+ {
+  "slug": "deepchem",
+  "name": "DeepChem",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.deepchem.io",
+  "tech": [
+   "python",
+   "numpy",
+   "pytorch",
+   "huggingface"
+  ],
+  "topics": [
+   "artificial intelligence",
+   "chemistry",
+   "biology",
+   "materials science",
+   "drug discovery"
+  ],
+  "orgs": [],
+  "repos": [
+   "deepchem/deepchem"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "department-of-biomedical-informatics-emory-university",
+  "name": "Department of Biomedical Informatics, Emory University",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://med.emory.edu/departments/biomedical-informatics/",
+  "tech": [
+   "python",
+   "javascript",
+   "java",
+   "bash",
+   "colab"
+  ],
+  "topics": [
+   "cloud",
+   "data integration",
+   "workflows",
+   "data security",
+   "ml/al"
+  ],
+  "orgs": [],
+  "repos": [
+   "NISYSLAB/Emory-BMI-GSoC"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "django-software-foundation-8o",
+  "name": "Django Software Foundation",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.djangoproject.com",
+  "tech": [
+   "python",
+   "django"
+  ],
+  "topics": [
+   "web",
+   "python"
+  ],
+  "orgs": [],
+  "repos": [
+   "django/django"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "dora-rs-tb",
+  "name": "dora-rs",
+  "years": [
+   2025,
+   2026
+  ],
+  "website": "https://dora-rs.ai",
+  "tech": [
+   "python",
+   "ros",
+   "c++",
+   "rust"
+  ],
+  "topics": [
+   "middleware",
+   "embodied ai",
+   "python robotics",
+   "autonomous drive",
+   "robot dataflow"
+  ],
+  "orgs": [
+   "dora-rs"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "drupal-association",
+  "name": "Drupal Association",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://drupal.org",
+  "tech": [
+   "mysql",
+   "javascript",
+   "html",
+   "php",
+   "symfony"
+  ],
+  "topics": [
+   "web",
+   "cloud",
+   "dxp",
+   "massive community",
+   "inclusive"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (git.drupalcode.org)."
+ },
+ {
+  "slug": "eclipse-foundation",
+  "name": "Eclipse Foundation",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.eclipse.org/",
+  "tech": [
+   "java",
+   "rtos",
+   "eclipsejavaide",
+   "jakartaee",
+   "softwaredefinedvehicles"
+  ],
+  "topics": [
+   "robotics",
+   "automotive",
+   "tools",
+   "cloud native java",
+   "iot & edge"
+  ],
+  "orgs": [
+   "eclipse"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "electron",
+  "name": "Electron",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://electronjs.org",
+  "tech": [
+   "javascript",
+   "node.js",
+   "c++",
+   "typescript",
+   "chromium"
+  ],
+  "topics": [
+   "desktop",
+   "framework",
+   "javascript"
+  ],
+  "orgs": [],
+  "repos": [
+   "electron/electron"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "erofs-filesystem",
+  "name": "EROFS filesystem",
+  "years": [
+   2026
+  ],
+  "website": "https://erofs.docs.kernel.org",
+  "tech": [
+   "c",
+   "android",
+   "linux kernel",
+   "containerd",
+   "gvisor"
+  ],
+  "topics": [
+   "operating system",
+   "containers",
+   "android",
+   "filesystems",
+   "agent sandbox"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (git.kernel.org)."
+ },
+ {
+  "slug": "eunomia-bpf",
+  "name": "eunomia-bpf",
+  "years": [
+   2024
+  ],
+  "website": "https://eunomia.dev/",
+  "tech": [
+   "linux",
+   "llvm",
+   "ebpf",
+   "webassembly"
+  ],
+  "topics": [
+   "cloud",
+   "os",
+   "runtime"
+  ],
+  "orgs": [
+   "eunomia-bpf"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "fedora-project",
+  "name": "Fedora Project",
+  "years": [
+   2025
+  ],
+  "website": "https://getfedora.org/",
+  "tech": [
+   "python",
+   "bash",
+   "rpm",
+   "security",
+   "container"
+  ],
+  "topics": [
+   "platform",
+   "ai",
+   "operating system",
+   "llm",
+   "networkmanager"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (src.fedoraproject.org)."
+ },
+ {
+  "slug": "ffmpeg",
+  "name": "FFmpeg",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://ffmpeg.org/",
+  "tech": [
+   "c",
+   "git",
+   "asm"
+  ],
+  "topics": [
+   "audio",
+   "video",
+   "subtitles",
+   "multimedia"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (git.ffmpeg.org)."
+ },
+ {
+  "slug": "flare",
+  "name": "FLARE",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://cloud.google.com/security/flare",
+  "tech": [
+   "python",
+   "sandbox",
+   "ida-pro"
+  ],
+  "topics": [
+   "emulation",
+   "disassembly",
+   "decompilation",
+   "malware-analysis",
+   "reverse-engineering"
+  ],
+  "orgs": [
+   "search"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "fortran-lang",
+  "name": "Fortran-lang",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://fortran-lang.org",
+  "tech": [
+   "python",
+   "c++",
+   "fortran"
+  ],
+  "topics": [
+   "compilers",
+   "programming languages",
+   "build systems",
+   "libraries",
+   "fortran"
+  ],
+  "orgs": [
+   "fortran-lang"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "fossasia-bg",
+  "name": "FOSSASIA",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://fossasia.org",
+  "tech": [
+   "c",
+   "python",
+   "javascript",
+   "django",
+   "android"
+  ],
+  "topics": [
+   "web",
+   "hardware",
+   "event solutions",
+   "android",
+   "firmware"
+  ],
+  "orgs": [
+   "fossasia"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "fossology",
+  "name": "FOSSology",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://fossology.org",
+  "tech": [
+   "python",
+   "postgresql",
+   "c/c++",
+   "go",
+   "php"
+  ],
+  "topics": [
+   "automation",
+   "spdx",
+   "license compliance",
+   "nlp",
+   "compliance automation"
+  ],
+  "orgs": [],
+  "repos": [
+   "fossology/fossology"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "free-and-open-source-silicon-foundation",
+  "name": "Free and Open Source Silicon Foundation",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.fossi-foundation.org",
+  "tech": [
+   "verilog",
+   "vhdl",
+   "risc-v",
+   "compiler"
+  ],
+  "topics": [
+   "hardware",
+   "debug",
+   "simulation",
+   "electronic design tools"
+  ],
+  "orgs": [
+   "fossi-foundation"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "freecad",
+  "name": "FreeCAD",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://freecad.org",
+  "tech": [
+   "python",
+   "c++",
+   "qt",
+   "opencascade",
+   "openinventor"
+  ],
+  "topics": [
+   "engineering",
+   "graphics",
+   "cad",
+   "3d",
+   "architecture",
+   "bim",
+   "cam"
+  ],
+  "orgs": [],
+  "repos": [
+   "freecad/freecad"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "freetype",
+  "name": "FreeType",
+  "years": [
+   2024
+  ],
+  "website": "https://freetype.org",
+  "tech": [
+   "c",
+   "autotools",
+   "meson"
+  ],
+  "topics": [
+   "library",
+   "rendering",
+   "fonts",
+   "opentype",
+   "truetype"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gitlab.freedesktop.org)."
+ },
+ {
+  "slug": "freifunk",
+  "name": "freifunk",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://freifunk.net/en",
+  "tech": [
+   "c",
+   "python",
+   "javascript",
+   "rust",
+   "openwrt"
+  ],
+  "topics": [
+   "security",
+   "embedded systems",
+   "routing",
+   "wireless networks",
+   "federation"
+  ],
+  "orgs": [
+   "freifunk"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "gambit-the-package-for-computation-in-game-theory",
+  "name": "Gambit: The package for computation in game theory",
+  "years": [
+   2026
+  ],
+  "website": "https://www.gambit-project.org",
+  "tech": [
+   "python",
+   "c++",
+   "wxwidgets",
+   "visualization"
+  ],
+  "topics": [
+   "algorithms",
+   "game theory",
+   "mathematical optimizaton"
+  ],
+  "orgs": [],
+  "repos": [
+   "gambitproject/gambit"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "gemini-cli",
+  "name": "Gemini CLI",
+  "years": [
+   2026
+  ],
+  "website": "https://geminicli.com",
+  "tech": [
+   "typescript",
+   "genai",
+   "mcp",
+   "software agent",
+   "a2a"
+  ],
+  "topics": [
+   "developer tools",
+   "genai"
+  ],
+  "orgs": [],
+  "repos": [
+   "google-gemini/gemini-cli"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "genome-assembly-and-annotation",
+  "name": "Genome Assembly and Annotation",
+  "years": [
+   2026
+  ],
+  "website": "https://www.ebi.ac.uk/",
+  "tech": [
+   "python",
+   "mysql",
+   "docker",
+   "pytorch",
+   "nextflow"
+  ],
+  "topics": [
+   "machine learning",
+   "genomics",
+   "big data",
+   "cloud",
+   "hpc"
+  ],
+  "orgs": [
+   "Ensembl"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "geomscale",
+  "name": "GeomScale",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://geomscale.github.io",
+  "tech": [
+   "python",
+   "c++",
+   "r",
+   "jupyter",
+   "github-actions"
+  ],
+  "topics": [
+   "mathematics",
+   "data science",
+   "computational biology",
+   "computational geometry",
+   "statistics"
+  ],
+  "orgs": [
+   "GeomScale"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "german-center-for-open-source-ai",
+  "name": "German Center for Open Source AI",
+  "years": [
+   2026
+  ],
+  "website": "https://gcos.ai/",
+  "tech": [
+   "python",
+   "pytorch",
+   "scikit-learn"
+  ],
+  "topics": [
+   "machine learning",
+   "time-series",
+   "causal inference"
+  ],
+  "orgs": [],
+  "repos": [
+   "gc-os-ai/.github"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "git",
+  "name": "Git",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://git-scm.com/",
+  "tech": [
+   "shell script",
+   "git",
+   "c language"
+  ],
+  "topics": [
+   "version control",
+   "dvcs"
+  ],
+  "orgs": [],
+  "repos": [
+   "git/git"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "gitlab",
+  "name": "GitLab",
+  "years": [
+   2025
+  ],
+  "website": "https://about.gitlab.com/community/",
+  "tech": [
+   "javascript",
+   "ruby on rails",
+   "go",
+   "ruby",
+   "vue"
+  ],
+  "topics": [
+   "cloud",
+   "ai",
+   "devops",
+   "git",
+   "devsecops"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gitlab.com)."
+ },
+ {
+  "slug": "global-alliance-for-genomics-and-health",
+  "name": "Global Alliance for Genomics and Health",
+  "years": [
+   2024,
+   2026
+  ],
+  "website": "https://ga4gh.org",
+  "tech": [
+   "python",
+   "postgresql",
+   "java",
+   "react",
+   "rust"
+  ],
+  "topics": [
+   "security",
+   "genomics",
+   "bioinformatics",
+   "genetics",
+   "standards"
+  ],
+  "orgs": [
+   "ga4gh"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "gnome-foundation",
+  "name": "GNOME Foundation",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://gnome.org",
+  "tech": [
+   "c",
+   "linux",
+   "rust",
+   "gtk",
+   "flatpak"
+  ],
+  "topics": [
+   "operating systems",
+   "desktop",
+   "graphics",
+   "open source",
+   "apps"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gitlab.gnome.org)."
+ },
+ {
+  "slug": "gnss-sdr",
+  "name": "GNSS-SDR",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://gnss-sdr.org/",
+  "tech": [
+   "c",
+   "c++",
+   "sdr"
+  ],
+  "topics": [
+   "gnss",
+   "geolocation",
+   "navigation",
+   "software defined radio",
+   "communications"
+  ],
+  "orgs": [],
+  "repos": [
+   "gnss-sdr/gnss-sdr"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "gnu-compiler-collection-gcc",
+  "name": "GNU Compiler Collection (GCC)",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://gcc.gnu.org/",
+  "tech": [
+   "c/c++",
+   "gnu make",
+   "gnu autotools"
+  ],
+  "topics": [
+   "compilers",
+   "developer tools",
+   "toolchain",
+   "openmp",
+   "link time optimization"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gcc.gnu.org)."
+ },
+ {
+  "slug": "gnu-image-manipulation-program",
+  "name": "GNU Image Manipulation Program",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.gimp.org/",
+  "tech": [
+   "c",
+   "gegl"
+  ],
+  "topics": [
+   "graphics",
+   "design",
+   "photography",
+   "illustration"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gitlab.gnome.org)."
+ },
+ {
+  "slug": "gnu-mailman",
+  "name": "GNU Mailman",
+  "years": [
+   2026
+  ],
+  "website": "https://www.list.org",
+  "tech": [
+   "python",
+   "django",
+   "rest",
+   "sqlalchemy",
+   "zope"
+  ],
+  "topics": [
+   "email",
+   "archives",
+   "list management"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gitlab.com)."
+ },
+ {
+  "slug": "gnu-octave",
+  "name": "GNU Octave",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.octave.org",
+  "tech": [
+   "c++",
+   "hg"
+  ],
+  "topics": [
+   "mathematics",
+   "scientific computing",
+   "numerical computation",
+   "numerical methods",
+   "matlab"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (hg.savannah.gnu.org)."
+ },
+ {
+  "slug": "gnu-project",
+  "name": "GNU Project",
+  "years": [
+   2024
+  ],
+  "website": "https://www.gnu.org",
+  "tech": [
+   "c",
+   "c++",
+   "gcc",
+   "autotools"
+  ],
+  "topics": [
+   "tools",
+   "toolchain",
+   "command line",
+   "os",
+   "binary tools"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (savannah.gnu.org)."
+ },
+ {
+  "slug": "gnu-project-av",
+  "name": "GNU Project",
+  "years": [
+   2026
+  ],
+  "website": "https://www.gnu.org",
+  "tech": [
+   "c",
+   "c++",
+   "gcc",
+   "autotools",
+   "gnu"
+  ],
+  "topics": [
+   "compilers",
+   "operating system",
+   "toolchain",
+   "command line",
+   "os"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (savannah.gnu.org)."
+ },
+ {
+  "slug": "gnu-radio",
+  "name": "GNU Radio",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.gnuradio.org",
+  "tech": [
+   "python",
+   "c++",
+   "qt",
+   "simd"
+  ],
+  "topics": [
+   "real-time",
+   "dsp",
+   "communications engineering",
+   "cybersecurity",
+   "software-defined radio"
+  ],
+  "orgs": [],
+  "repos": [
+   "gnuradio/gnuradio"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "google-deepmind-sq",
+  "name": "Google DeepMind",
+  "years": [
+   2025
+  ],
+  "website": "https://github.com/google-deepmind",
+  "tech": [
+   "python",
+   "javascript",
+   "typescript",
+   "jax",
+   "gemma"
+  ],
+  "topics": [
+   "python",
+   "jax",
+   "ai,",
+   "gemma"
+  ],
+  "orgs": [
+   "google-deepmind"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "gprmax",
+  "name": "gprMax",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.gprmax.com",
+  "tech": [
+   "python",
+   "cuda",
+   "openmp",
+   "mpi",
+   "opencl"
+  ],
+  "topics": [
+   "science",
+   "engineering",
+   "geophysics",
+   "electromagnetics",
+   "ground penetrating radar"
+  ],
+  "orgs": [],
+  "repos": [
+   "gprMax/gprMax"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "grame",
+  "name": "GRAME",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://faust.grame.fr",
+  "tech": [
+   "c",
+   "javascript",
+   "c++",
+   "rust",
+   "typescript"
+  ],
+  "topics": [
+   "audio",
+   "compiler",
+   "digital signal processing",
+   "function programming language"
+  ],
+  "orgs": [],
+  "repos": [
+   "grame-cncm/faust"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "graphite",
+  "name": "Graphite",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://graphite.art",
+  "tech": [
+   "rust",
+   "vulkan",
+   "webgpu"
+  ],
+  "topics": [
+   "compilers",
+   "programming languages",
+   "graphics",
+   "computational geometry",
+   "fonts"
+  ],
+  "orgs": [],
+  "repos": [
+   "GraphiteEditor/Graphite"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "haiku",
+  "name": "Haiku",
+  "years": [
+   2024,
+   2026
+  ],
+  "website": "https://www.haiku-os.org",
+  "tech": [
+   "c++",
+   "posix",
+   "unix"
+  ],
+  "topics": [
+   "desktop",
+   "kernel",
+   "network",
+   "media",
+   "gui"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (haiku-os.org)."
+ },
+ {
+  "slug": "haskellorg",
+  "name": "Haskell.org",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://haskell.org/",
+  "tech": [
+   "haskell",
+   "ghc"
+  ],
+  "topics": [
+   "compilers",
+   "programming languages",
+   "functional programming",
+   "programming tools"
+  ],
+  "orgs": [
+   "haskell"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "humanai",
+  "name": "HumanAI",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "http://humanai.foundation",
+  "tech": [
+   "python",
+   "machine learning",
+   "c++",
+   "data analysis",
+   "artificial intelligence"
+  ],
+  "topics": [
+   "machine learning",
+   "artificial intelligence",
+   "ai",
+   "arts",
+   "humanities"
+  ],
+  "orgs": [
+   "humanai-foundation"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "incf",
+  "name": "INCF",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.incf.org",
+  "tech": [
+   "python",
+   "javascript",
+   "java",
+   "c++",
+   "gpu"
+  ],
+  "topics": [
+   "machine learning",
+   "data visualization",
+   "neuroscience",
+   "brain modelling",
+   "neuroimage processing"
+  ],
+  "orgs": [
+   "INCF"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "inkscape",
+  "name": "Inkscape",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://inkscape.org",
+  "tech": [
+   "python",
+   "c++",
+   "svg"
+  ],
+  "topics": [
+   "web",
+   "graphics",
+   "design"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gitlab.com)."
+ },
+ {
+  "slug": "international-catrobat-association",
+  "name": "International Catrobat Association",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.catrobat.org",
+  "tech": [
+   "python",
+   "javascript",
+   "swift",
+   "kotlin",
+   "flutter"
+  ],
+  "topics": [
+   "education",
+   "visual programming",
+   "mobile programming",
+   "game engines",
+   "creativity tools"
+  ],
+  "orgs": [
+   "Catrobat"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "internet-archive",
+  "name": "Internet Archive",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "http://archive.org",
+  "tech": [
+   "python",
+   "javascript",
+   "go",
+   "elasticsearch",
+   "hadoop"
+  ],
+  "topics": [
+   "library",
+   "media",
+   "archiving"
+  ],
+  "orgs": [
+   "internetarchive"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "internet-health-report",
+  "name": "Internet Health Report",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://ihr.iijlab.net",
+  "tech": [
+   "python",
+   "javascript",
+   "apache kafka",
+   "vuejs"
+  ],
+  "topics": [
+   "networking",
+   "routing",
+   "communication",
+   "internet",
+   "data analytics"
+  ],
+  "orgs": [
+   "InternetHealthReport"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "invesalius",
+  "name": "Invesalius",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://invesalius.github.io/",
+  "tech": [
+   "python",
+   "cython",
+   "numpy",
+   "dicom",
+   "vtk"
+  ],
+  "topics": [
+   "ehealth",
+   "medical imaging",
+   "3d reconstruction",
+   "3d printing",
+   "neuronavigation"
+  ],
+  "orgs": [],
+  "repos": [
+   "invesalius/invesalius3"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "ioos",
+  "name": "IOOS",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://ioos.noaa.gov/",
+  "tech": [
+   "python",
+   "java",
+   "r",
+   "zarr",
+   "netcdf"
+  ],
+  "topics": [
+   "open data",
+   "open science",
+   "data management",
+   "oceanography",
+   "marine biodiversity"
+  ],
+  "orgs": [
+   "ioos"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "jabref-ev",
+  "name": "JabRef e.V.",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.jabref.org/",
+  "tech": [
+   "java",
+   "javafx",
+   "ai",
+   "bibtex"
+  ],
+  "topics": [
+   "science",
+   "library",
+   "literature",
+   "latex",
+   "bibliography"
+  ],
+  "orgs": [],
+  "repos": [
+   "JabRef/jabref"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "jax-and-keras",
+  "name": "JAX and Keras",
+  "years": [
+   2025
+  ],
+  "website": "https://docs.jax.dev/",
+  "tech": [
+   "python",
+   "machine learning",
+   "ai"
+  ],
+  "topics": [
+   "machine learning",
+   "jax",
+   "keras",
+   "python library"
+  ],
+  "orgs": [],
+  "repos": [
+   "jax-ml/jax"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "jboss-community",
+  "name": "JBoss Community",
+  "years": [
+   2026
+  ],
+  "website": "http://www.jboss.org/",
+  "tech": [
+   "java",
+   "react",
+   "golang",
+   "cloud"
+  ],
+  "topics": [
+   "artificial intelligence",
+   "iot",
+   "cloud",
+   "microservices",
+   "kubernetes"
+  ],
+  "orgs": [
+   "jbossas"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "jderobot",
+  "name": "JdeRobot",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "http://jderobot.github.io",
+  "tech": [
+   "python",
+   "ros",
+   "gazebo",
+   "opencv",
+   "tensorflow"
+  ],
+  "topics": [
+   "education",
+   "artificial intelligence",
+   "robotics",
+   "computer vision",
+   "developer tools"
+  ],
+  "orgs": [
+   "jderobot"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "jenkins-wp",
+  "name": "Jenkins",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://jenkins.io",
+  "tech": [
+   "javascript",
+   "java",
+   "go",
+   "docker",
+   "kubernetes"
+  ],
+  "topics": [
+   "developer tools",
+   "automation",
+   "continuous integration",
+   "continuous delivery",
+   "devops"
+  ],
+  "orgs": [
+   "jenkinsci"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "jitsi",
+  "name": "Jitsi",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://jitsi.org",
+  "tech": [
+   "javascript",
+   "java",
+   "react",
+   "kotlin",
+   "webrtc"
+  ],
+  "topics": [
+   "video",
+   "multimedia",
+   "video conferencing",
+   "webrtc"
+  ],
+  "orgs": [
+   "jitsi"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "joomla",
+  "name": "Joomla!",
+  "years": [
+   2025,
+   2026
+  ],
+  "website": "https://www.joomla.org/",
+  "tech": [
+   "mysql",
+   "javascript",
+   "html",
+   "php",
+   "ai"
+  ],
+  "topics": [
+   "web",
+   "programming languages",
+   "web development",
+   "web applications",
+   "cms"
+  ],
+  "orgs": [],
+  "repos": [
+   "joomla/joomla-cms"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "joplin",
+  "name": "Joplin",
+  "years": [
+   2024,
+   2026
+  ],
+  "website": "https://github.com/laurent22/joplin",
+  "tech": [
+   "javascript",
+   "react",
+   "typescript",
+   "electron",
+   "react-native"
+  ],
+  "topics": [
+   "security",
+   "search",
+   "synchronisation",
+   "note-taking",
+   "ai/ml"
+  ],
+  "orgs": [],
+  "repos": [
+   "laurent22/joplin"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "json-schema",
+  "name": "JSON Schema",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://json-schema.org/",
+  "tech": [
+   "python",
+   "javascript",
+   "typescript",
+   ".net",
+   "json schema"
+  ],
+  "topics": [
+   "web",
+   "apis",
+   "standards",
+   "data validation",
+   "developer tooling"
+  ],
+  "orgs": [
+   "json-schema-org"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "kde-community",
+  "name": "KDE Community",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://kde.org/",
+  "tech": [
+   "c++",
+   "qt",
+   "qml",
+   "data structures"
+  ],
+  "topics": [
+   "education",
+   "science",
+   "applications",
+   "desktop environment"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (invent.kde.org)."
+ },
+ {
+  "slug": "keploy",
+  "name": "Keploy",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://keploy.io",
+  "tech": [
+   "python",
+   "golang",
+   "node",
+   "ai",
+   "mern"
+  ],
+  "topics": [
+   "ai/ml",
+   "api testing",
+   "dev tool",
+   "functional testing",
+   "ai testing agent"
+  ],
+  "orgs": [],
+  "repos": [
+   "keploy/keploy"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "kiwix",
+  "name": "Kiwix",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.kiwix.org",
+  "tech": [
+   "python",
+   "c++",
+   "nodejs",
+   "kotlin",
+   "vue.js"
+  ],
+  "topics": [
+   "offline",
+   "browser",
+   "compression"
+  ],
+  "orgs": [
+   "kiwix"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "kolibrios-project-team",
+  "name": "KolibriOS Project Team",
+  "years": [
+   2024,
+   2026
+  ],
+  "website": "https://kolibrios.org",
+  "tech": [
+   "c",
+   "assembly",
+   "asm",
+   "fasm",
+   "pci"
+  ],
+  "topics": [
+   "kernel",
+   "operating system",
+   "drivers",
+   "os",
+   "low-level"
+  ],
+  "orgs": [
+   "KolibriOS"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "konflux",
+  "name": "Konflux",
+  "years": [
+   2026
+  ],
+  "website": "https://konflux-ci.dev/",
+  "tech": [
+   "python",
+   "go",
+   "docker",
+   "kubernetes",
+   "tekton"
+  ],
+  "topics": [
+   "cloud-native",
+   "ci/cd",
+   "tekton",
+   "slsa",
+   "supplychain"
+  ],
+  "orgs": [
+   "konflux-ci"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "kornia",
+  "name": "Kornia",
+  "years": [
+   2025,
+   2026
+  ],
+  "website": "https://docs.rs/kornia",
+  "tech": [
+   "cuda",
+   "rust",
+   "deep learning",
+   "data science",
+   "spatial ai"
+  ],
+  "topics": [
+   "machine learning",
+   "artificial intelligence",
+   "robotics",
+   "computer vision",
+   "3d geometry"
+  ],
+  "orgs": [],
+  "repos": [
+   "kornia/kornia-rs"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "kotlin-foundation",
+  "name": "Kotlin Foundation",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://kotlinfoundation.org/",
+  "tech": [
+   "kotlin",
+   "jvm",
+   "ai",
+   "parsers & compilers",
+   "multiplatform"
+  ],
+  "topics": [
+   "compilers",
+   "programming languages",
+   "software development",
+   "libraries",
+   "programming & build tools"
+  ],
+  "orgs": [],
+  "repos": [
+   "jetbrains/kotlin"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "kro-kube-resource-orchestrator",
+  "name": "kro | Kube Resource Orchestrator",
+  "years": [
+   2025
+  ],
+  "website": "https://kro.run/",
+  "tech": [
+   "prometheus",
+   "golang",
+   "kubernetes",
+   "controller-runtime",
+   "cel"
+  ],
+  "topics": [
+   "automation",
+   "kubernetes",
+   "configuration management",
+   "cloud native"
+  ],
+  "orgs": [
+   "kro-run"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "kubeflow",
+  "name": "Kubeflow",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://kubeflow.org",
+  "tech": [
+   "python",
+   "go",
+   "kubernetes",
+   "typescript",
+   "yaml"
+  ],
+  "topics": [
+   "machine learning",
+   "kubernetes",
+   "ai/ml",
+   "generative ai"
+  ],
+  "orgs": [
+   "kubeflow"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "kubevirt",
+  "name": "KubeVirt",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://kubevirt.io",
+  "tech": [
+   "golang",
+   "grpc"
+  ],
+  "topics": [
+   "virtualization",
+   "containers",
+   "kubernetes"
+  ],
+  "orgs": [
+   "kubevirt"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "lablua",
+  "name": "LabLua",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "http://www.lua.inf.puc-rio.br",
+  "tech": [
+   "lua",
+   "luarocks",
+   "kernel",
+   "lunatik",
+   "pallene"
+  ],
+  "topics": [
+   "compilers",
+   "scripting languages",
+   "kernel scripting",
+   "statically-typed languages"
+  ],
+  "orgs": [
+   "labluapucrio"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "lappis",
+  "name": "LAPPIS",
+  "years": [
+   2024
+  ],
+  "website": "https://www.lappis.rocks",
+  "tech": [
+   "python",
+   "machine learning",
+   "ruby on rails",
+   "jupyter hub"
+  ],
+  "topics": [
+   "web development",
+   "devops",
+   "innovation",
+   "social participation",
+   "mentoring"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gitlab.com)."
+ },
+ {
+  "slug": "learning-equality",
+  "name": "Learning Equality",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://learningequality.org/",
+  "tech": [
+   "python",
+   "javascript",
+   "django",
+   "vue.js"
+  ],
+  "topics": [
+   "education",
+   "distributed databases",
+   "offline",
+   "learning"
+  ],
+  "orgs": [],
+  "repos": [
+   "learningequality/kolibri"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "learning-unlimited",
+  "name": "Learning Unlimited",
+  "years": [
+   2026
+  ],
+  "website": "https://www.learningu.org/",
+  "tech": [
+   "python",
+   "javascript",
+   "django",
+   "html",
+   "css"
+  ],
+  "topics": [
+   "education",
+   "web",
+   "full stack",
+   "outreach"
+  ],
+  "orgs": [
+   "learning-unlimited"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "librecube-initiative",
+  "name": "LibreCube Initiative",
+  "years": [
+   2024,
+   2026
+  ],
+  "website": "https://librecube.org",
+  "tech": [
+   "python",
+   "rust",
+   "docker",
+   "raspberry pi",
+   "micropython"
+  ],
+  "topics": [
+   "robotics",
+   "automation",
+   "space"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gitlab.com)."
+ },
+ {
+  "slug": "librehealth",
+  "name": "LibreHealth",
+  "years": [
+   2026
+  ],
+  "website": "https://librehealth.io",
+  "tech": [
+   "python",
+   "javascript",
+   "android",
+   "java",
+   "dart/flutter"
+  ],
+  "topics": [
+   "web",
+   "deep learning",
+   "hfoss",
+   "radiology",
+   "mobile apps"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gitlab.com)."
+ },
+ {
+  "slug": "libreoffice",
+  "name": "LibreOffice",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.libreoffice.org/",
+  "tech": [
+   "python",
+   "java",
+   "c++"
+  ],
+  "topics": [
+   "office suite",
+   "desktop application",
+   "end user application"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (libreoffice.org)."
+ },
+ {
+  "slug": "libssh",
+  "name": "libssh",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.libssh.org/",
+  "tech": [
+   "c",
+   "git",
+   "ci",
+   "ssh",
+   "sftp"
+  ],
+  "topics": [
+   "security",
+   "cryptography"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (git.libssh.org)."
+ },
+ {
+  "slug": "libvirt",
+  "name": "libvirt",
+  "years": [
+   2024
+  ],
+  "website": "https://libvirt.org/",
+  "tech": [
+   "kvm",
+   "hypervisor",
+   "qemu",
+   "lxc"
+  ],
+  "topics": [
+   "virtualization",
+   "library"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gitlab.com)."
+ },
+ {
+  "slug": "liquid-galaxy-project",
+  "name": "Liquid Galaxy project",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.liquidgalaxy.eu",
+  "tech": [
+   "linux",
+   "android",
+   "nodejs",
+   "flutter",
+   "google earth"
+  ],
+  "topics": [
+   "visualization",
+   "artificial intelligence",
+   "networking",
+   "maps",
+   "ux"
+  ],
+  "orgs": [
+   "LiquidGalaxyLAB"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "llvm-compiler-infrastructure",
+  "name": "LLVM Compiler Infrastructure",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "http://www.llvm.org",
+  "tech": [
+   "llvm",
+   "c++",
+   "clang",
+   "mlir"
+  ],
+  "topics": [
+   "compilers",
+   "development tools",
+   "libraries"
+  ],
+  "orgs": [],
+  "repos": [
+   "llvm/llvm-project"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "machine-learning-for-science-ml4sci",
+  "name": "Machine Learning for Science (ML4SCI)",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://ml4sci.org/",
+  "tech": [
+   "python",
+   "machine learning",
+   "c++",
+   "data analysis",
+   "artificial intelligence"
+  ],
+  "topics": [
+   "machine learning",
+   "science and medicine",
+   "algorithms",
+   "physics",
+   "astronomy"
+  ],
+  "orgs": [
+   "ML4SCI"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "malariagen",
+  "name": "MalariaGEN",
+  "years": [
+   2026
+  ],
+  "website": "https://www.malariagen.net/",
+  "tech": [
+   "python",
+   "gcs"
+  ],
+  "topics": [
+   "machine learning",
+   "genomics",
+   "big data",
+   "cloud",
+   "analytics"
+  ],
+  "orgs": [
+   "malariagen"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "mariadb",
+  "name": "MariaDB",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://mariadb.org",
+  "tech": [
+   "python",
+   "c/c++",
+   "perl",
+   "databases"
+  ],
+  "topics": [
+   "database engines",
+   "sql features"
+  ],
+  "orgs": [],
+  "repos": [
+   "MariaDB/server"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "mautic",
+  "name": "Mautic",
+  "years": [
+   2024
+  ],
+  "website": "https://www.mautic.org",
+  "tech": [
+   "mysql",
+   "php",
+   "symfony"
+  ],
+  "topics": [
+   "ai",
+   "dxp",
+   "marketing",
+   "marketing automation",
+   "digital marketing"
+  ],
+  "orgs": [],
+  "repos": [
+   "mautic/mautic"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "mbdyn",
+  "name": "MBDyn",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "http://www.mbdyn.org/",
+  "tech": [
+   "python",
+   "c++"
+  ],
+  "topics": [
+   "robotics",
+   "scientific computing",
+   "multibody dynamics",
+   "aeroelasticity",
+   "structural engineering"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (public.gitlab.polimi.it)."
+ },
+ {
+  "slug": "mdanalysis",
+  "name": "MDAnalysis",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.mdanalysis.org",
+  "tech": [
+   "python",
+   "cython",
+   "c/c++"
+  ],
+  "topics": [
+   "science",
+   "computational-chemistry",
+   "high-performance-computing",
+   "molecular-simulation",
+   "machine-learning"
+  ],
+  "orgs": [],
+  "repos": [
+   "MDAnalysis/mdanalysis"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "meshery",
+  "name": "Meshery",
+  "years": [
+   2025,
+   2026
+  ],
+  "website": "https://meshery.io",
+  "tech": [
+   "javascript",
+   "golang",
+   "kubernetes",
+   "ai",
+   "visual design"
+  ],
+  "topics": [
+   "collaboration",
+   "devops",
+   "platform engineering",
+   "cloud native infrastructure",
+   "infrastructure as design"
+  ],
+  "orgs": [
+   "meshery"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "metabrainz-foundation-inc",
+  "name": "MetaBrainz Foundation Inc",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://metabrainz.org",
+  "tech": [
+   "python",
+   "machine learning",
+   "perl",
+   "postgres",
+   "spark"
+  ],
+  "topics": [
+   "machine learning",
+   "open data",
+   "music",
+   "books",
+   "music social network"
+  ],
+  "orgs": [
+   "metabrainz"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "metacall",
+  "name": "MetaCall",
+  "years": [
+   2024,
+   2026
+  ],
+  "website": "https://metacall.io",
+  "tech": [
+   "python",
+   "c++",
+   "rust",
+   "nodejs",
+   "docker"
+  ],
+  "topics": [
+   "cloud",
+   "polyglot",
+   "faas",
+   "languages",
+   "ffi"
+  ],
+  "orgs": [
+   "metacall"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "metaflow",
+  "name": "Metaflow",
+  "years": [
+   2026
+  ],
+  "website": "https://metaflow.org/",
+  "tech": [
+   "python",
+   "javascript",
+   "kubernetes"
+  ],
+  "topics": [
+   "machine learning",
+   "data science",
+   "ml ops",
+   "orchestrator"
+  ],
+  "orgs": [],
+  "repos": [
+   "Netflix/metaflow"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "metasploit",
+  "name": "Metasploit",
+  "years": [
+   2026
+  ],
+  "website": "https://metasploit.com",
+  "tech": [
+   "c",
+   "python",
+   "postgresql",
+   "ruby",
+   "assembly"
+  ],
+  "topics": [
+   "security",
+   "penetration testing",
+   "offensive security",
+   "exploitation"
+  ],
+  "orgs": [],
+  "repos": [
+   "rapid7/metasploit-framework"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "micro-electronics-research-lab-uitu",
+  "name": "Micro Electronics Research Lab - UITU",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://www.merledupk.org",
+  "tech": [
+   "riscv",
+   "processor",
+   "hardware",
+   "systemonchip",
+   "memory"
+  ],
+  "topics": [
+   "iot",
+   "embedded",
+   "processor",
+   "system on chip",
+   "risc-v"
+  ],
+  "orgs": [
+   "merledu"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "mit-app-inventor",
+  "name": "MIT App Inventor",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "http://appinventor.mit.edu",
+  "tech": [
+   "javascript",
+   "java",
+   "gwt",
+   "swift"
+  ],
+  "topics": [
+   "education",
+   "development tools",
+   "android",
+   "ios"
+  ],
+  "orgs": [],
+  "repos": [
+   "mit-cml/appinventor-sources"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "mixxx",
+  "name": "Mixxx",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://mixxx.org",
+  "tech": [
+   "javascript",
+   "c++",
+   "qt",
+   "pytorch",
+   "onnx"
+  ],
+  "topics": [
+   "music",
+   "dj",
+   "streaming"
+  ],
+  "orgs": [],
+  "repos": [
+   "mixxxdj/mixxx"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "mllam",
+  "name": "MLLAM",
+  "years": [
+   2026
+  ],
+  "website": "https://github.com/mllam",
+  "tech": [
+   "python",
+   "numpy",
+   "pytorch",
+   "xarray",
+   "zarr"
+  ],
+  "topics": [
+   "machine learning",
+   "ai",
+   "deep learning",
+   "earth science",
+   "weather forecasting"
+  ],
+  "orgs": [],
+  "repos": [
+   "mllam/neural-lam"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "mlpack",
+  "name": "mlpack",
+  "years": [
+   2024
+  ],
+  "website": "https://www.mlpack.org",
+  "tech": [
+   "c++",
+   "c++ template metaprogramming"
+  ],
+  "topics": [
+   "machine learning",
+   "embedded",
+   "ai",
+   "deep learning",
+   "neural networks"
+  ],
+  "orgs": [],
+  "repos": [
+   "mlpack/mlpack"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "mofa-org",
+  "name": "MoFA Org",
+  "years": [
+   2026
+  ],
+  "website": "https://mofa.ai",
+  "tech": [
+   "python",
+   "rust"
+  ],
+  "topics": [
+   "development framework",
+   "ai agent",
+   "compostion ai"
+  ],
+  "orgs": [
+   "mofa-org"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "moganlab",
+  "name": "MoganLab",
+  "years": [
+   2026
+  ],
+  "website": "https://mogan.app/en/",
+  "tech": [
+   "c++",
+   "qt",
+   "scheme"
+  ],
+  "topics": [
+   "editor",
+   "latex",
+   "ai for math"
+  ],
+  "orgs": [],
+  "repos": [
+   "XmacsLabs/mogan"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "moveit",
+  "name": "MoveIt",
+  "years": [
+   2024
+  ],
+  "website": "https://moveit.ros.org",
+  "tech": [
+   "python",
+   "ros",
+   "c++",
+   "rust"
+  ],
+  "topics": [
+   "robotics",
+   "motion planning",
+   "trajectory generation",
+   "kinematics"
+  ],
+  "orgs": [],
+  "repos": [
+   "ros-planning/moveit2"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "musescore",
+  "name": "MuseScore",
+  "years": [
+   2024
+  ],
+  "website": "https://musescore.org/",
+  "tech": [
+   "c++",
+   "qt",
+   "qml",
+   "cmake"
+  ],
+  "topics": [
+   "music",
+   "midi",
+   "musicxml",
+   "sheet music",
+   "music notation"
+  ],
+  "orgs": [],
+  "repos": [
+   "musescore/MuseScore"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "national-resource-for-network-biology-nrnb",
+  "name": "National Resource for Network Biology (NRNB)",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://nrnb.org",
+  "tech": [
+   "python",
+   "javascript",
+   "html",
+   "css",
+   "llm"
+  ],
+  "topics": [
+   "machine learning",
+   "web application",
+   "data science",
+   "scientific computing",
+   "network biology"
+  ],
+  "orgs": [
+   "nrnb"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "neovim",
+  "name": "Neovim",
+  "years": [
+   2025,
+   2026
+  ],
+  "website": "https://neovim.io/",
+  "tech": [
+   "c",
+   "lua",
+   "zig"
+  ],
+  "topics": [
+   "ai",
+   "editor",
+   "text-editor"
+  ],
+  "orgs": [],
+  "repos": [
+   "neovim/neovim"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "neuroinformatics-unit",
+  "name": "Neuroinformatics Unit",
+  "years": [
+   2025,
+   2026
+  ],
+  "website": "https://neuroinformatics.dev",
+  "tech": [
+   "python",
+   "numpy",
+   "pytorch",
+   "scipy",
+   "napari"
+  ],
+  "topics": [
+   "visualization",
+   "neuroscience",
+   "data-science",
+   "computer-vision",
+   "neuroanatomy"
+  ],
+  "orgs": [
+   "neuroinformatics-unit"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "neutralinojs",
+  "name": "Neutralinojs",
+  "years": [
+   2024,
+   2026
+  ],
+  "website": "https://neutralino.js.org",
+  "tech": [
+   "c",
+   "javascript",
+   "node.js",
+   "c++",
+   "typescript"
+  ],
+  "topics": [
+   "app development",
+   "framework",
+   "cross-platform",
+   "desktop app development",
+   "lightweight framework"
+  ],
+  "orgs": [
+   "neutralinojs"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "nightwatchjs",
+  "name": "Nightwatch.js",
+  "years": [
+   2024
+  ],
+  "website": "https://nightwatchjs.org",
+  "tech": [
+   "javascript",
+   "selenium",
+   "node.js",
+   "typescript",
+   "webdriver"
+  ],
+  "topics": [
+   "unit testing",
+   "functional testing",
+   "end-to-end testing",
+   "component testing",
+   "native mobile app testing"
+  ],
+  "orgs": [],
+  "repos": [
+   "nightwatchjs/nightwatch"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "nixos-foundation",
+  "name": "NixOS Foundation",
+  "years": [
+   2024,
+   2026
+  ],
+  "website": "https://nixos.org/",
+  "tech": [
+   "git",
+   "nix"
+  ],
+  "topics": [
+   "programming language",
+   "operating system",
+   "configuration management",
+   "build system",
+   "infrastructure as code"
+  ],
+  "orgs": [],
+  "repos": [
+   "nixos/nixpkgs"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "numfocus",
+  "name": "NumFOCUS",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://numfocus.org",
+  "tech": [
+   "python",
+   "c++",
+   "r",
+   "julia"
+  ],
+  "topics": [
+   "data science",
+   "graphics",
+   "ai",
+   "scientific computing",
+   "numerical computation"
+  ],
+  "orgs": [],
+  "repos": [
+   "numfocus/gsoc"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "omegaup",
+  "name": "omegaUp",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://omegaup.org",
+  "tech": [
+   "python",
+   "mysql",
+   "php",
+   "typescript",
+   "vue.js"
+  ],
+  "topics": [
+   "education",
+   "web",
+   "cloud",
+   "edtech",
+   "ux/ui"
+  ],
+  "orgs": [
+   "omegaup"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "open-chemistry",
+  "name": "Open Chemistry",
+  "years": [
+   2024
+  ],
+  "website": "https://openchemistry.org/",
+  "tech": [
+   "python",
+   "javascript",
+   "opengl",
+   "c++",
+   "c++14"
+  ],
+  "topics": [
+   "data science",
+   "graphics",
+   "scientific visualization",
+   "cheminformatics",
+   "quantum chemistry"
+  ],
+  "orgs": [
+   "openchemistry"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "open-chromosome-collective",
+  "name": "Open Chromosome Collective",
+  "years": [
+   2024
+  ],
+  "website": "https://open2c.github.io/",
+  "tech": [
+   "python",
+   "numpy",
+   "scikit-learn",
+   "pandas",
+   "hdf5"
+  ],
+  "topics": [
+   "machine learning",
+   "genomics",
+   "bioinformatics",
+   "data science",
+   "python"
+  ],
+  "orgs": [
+   "open2c"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "open-climate-fix",
+  "name": "Open Climate Fix",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://www.openclimatefix.org",
+  "tech": [
+   "python",
+   "pytorch"
+  ],
+  "topics": [
+   "forecasting",
+   "climate",
+   "renewables"
+  ],
+  "orgs": [
+   "openclimatefix"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "open-food-facts",
+  "name": "Open Food Facts",
+  "years": [
+   2025,
+   2026
+  ],
+  "website": "https://world.openfoodfacts.org/discover",
+  "tech": [
+   "python",
+   "javascript",
+   "machine learning",
+   "perl",
+   "flutter"
+  ],
+  "topics": [
+   "open data",
+   "health",
+   "environment",
+   "mobile",
+   "food"
+  ],
+  "orgs": [
+   "openfoodfacts"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "open-genome-informatics",
+  "name": "Open Genome Informatics",
+  "years": [
+   2026
+  ],
+  "website": "http://gmod.org/wiki/GSoC",
+  "tech": [
+   "python",
+   "react",
+   "r-project",
+   "graph",
+   "angular"
+  ],
+  "topics": [
+   "genomics",
+   "bioinformatics",
+   "biology",
+   "data discovery"
+  ],
+  "orgs": [
+   "GMOD"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "open-healthcare-network",
+  "name": "Open HealthCare Network",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://ohc.network/",
+  "tech": [
+   "python",
+   "django",
+   "react",
+   "typescript",
+   "nextjs"
+  ],
+  "topics": [
+   "electronic medical records",
+   "digital public goods",
+   "telemedicine and remote care",
+   "ai in health",
+   "hmis"
+  ],
+  "orgs": [
+   "ohcnetwork"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "open-robotics",
+  "name": "Open Robotics",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.openrobotics.org/",
+  "tech": [
+   "python",
+   "ros",
+   "gazebo",
+   "c++",
+   "bevy"
+  ],
+  "topics": [
+   "robotics",
+   "simulation",
+   "hardware control",
+   "fleet management",
+   "buildfarms"
+  ],
+  "orgs": [
+   "openrobotics"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "open-science-initiative-for-perfusion-imaging",
+  "name": "Open Science Initiative for Perfusion Imaging",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://osipi.ismrm.org/",
+  "tech": [
+   "python",
+   "github"
+  ],
+  "topics": [
+   "artificial intelligence",
+   "data visualization",
+   "data analysis",
+   "medical imaging",
+   "reproducible science"
+  ],
+  "orgs": [
+   "OSIPI"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "open-science-labs",
+  "name": "Open Science Labs",
+  "years": [
+   2025,
+   2026
+  ],
+  "website": "https://opensciencelabs.org",
+  "tech": [
+   "python",
+   "javascript",
+   "llvm",
+   "c++",
+   "docker"
+  ],
+  "topics": [
+   "web",
+   "ai",
+   "devops",
+   "devtools",
+   "open-science"
+  ],
+  "orgs": [
+   "OpenScienceLabs"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "open-technologies-alliance-gfoss",
+  "name": "Open Technologies Alliance - GFOSS",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "http://www.gfoss.eu",
+  "tech": [
+   "javascript",
+   "c/c++",
+   "nodejs",
+   "python 3",
+   "machine learning (ml)"
+  ],
+  "topics": [
+   "web",
+   "robotics",
+   "open hardware",
+   "c++",
+   "artificial inteligence"
+  ],
+  "orgs": [
+   "eellak"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "open-transit-software-foundation",
+  "name": "Open Transit Software Foundation",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://opentransitsoftwarefoundation.org",
+  "tech": [
+   "android",
+   "java",
+   "golang",
+   "docker",
+   "ios"
+  ],
+  "topics": [
+   "apps",
+   "transit",
+   "travel",
+   "bus"
+  ],
+  "orgs": [
+   "onebusaway"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "openafs",
+  "name": "OpenAFS",
+  "years": [
+   2025,
+   2026
+  ],
+  "website": "https://www.openafs.org",
+  "tech": [
+   "c",
+   "python",
+   "javascript",
+   "git",
+   "tcp/udp"
+  ],
+  "topics": [
+   "testing",
+   "kernel",
+   "network",
+   "storage",
+   "filesystems"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (git.openafs.org)."
+ },
+ {
+  "slug": "openastronomy",
+  "name": "OpenAstronomy",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://openastronomy.org/",
+  "tech": [
+   "c",
+   "python",
+   "c++",
+   "julia"
+  ],
+  "topics": [
+   "image processing",
+   "astronomy",
+   "data analysis",
+   "solar physics",
+   "high energy astrophysics"
+  ],
+  "orgs": [
+   "OpenAstronomy",
+   "astropy",
+   "sunpy",
+   "glue-viz",
+   "StingraySoftware",
+   "radis"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "opencv",
+  "name": "OpenCV",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://opencv.org/",
+  "tech": [
+   "python",
+   "c++",
+   "deep learning",
+   "ai"
+  ],
+  "topics": [
+   "robotics",
+   "computer vision",
+   "ai",
+   "deep learning"
+  ],
+  "orgs": [],
+  "repos": [
+   "opencv/opencv"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "openelis-global",
+  "name": "OpenELIS Global",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://openelis-global.org/",
+  "tech": [
+   "postgresql",
+   "javascript",
+   "java",
+   "react",
+   "spring"
+  ],
+  "topics": [
+   "health care",
+   "laboratory information system"
+  ],
+  "orgs": [],
+  "repos": [
+   "I-TECH-UW/OpenELIS-Global-2"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "openmrs",
+  "name": "OpenMRS",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://openmrs.org/",
+  "tech": [
+   "mysql",
+   "javascript",
+   "java",
+   "reactjs",
+   "fhir"
+  ],
+  "topics": [
+   "platform",
+   "frontend",
+   "electronic medical record system",
+   "qa automation"
+  ],
+  "orgs": [
+   "openmrs"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "openms",
+  "name": "OpenMS",
+  "years": [
+   2025
+  ],
+  "website": "https://openms.de",
+  "tech": [
+   "python",
+   "cython",
+   "c++",
+   "r",
+   "pytorch"
+  ],
+  "topics": [
+   "automation",
+   "deep learning",
+   "algorithms",
+   "webdev"
+  ],
+  "orgs": [
+   "OpenMS"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "openms-inc",
+  "name": "OpenMS Inc",
+  "years": [
+   2026
+  ],
+  "website": "https://OpenMS.org",
+  "tech": [
+   "python",
+   "cython",
+   "c++",
+   "pytorch",
+   "streamlit"
+  ],
+  "topics": [
+   "open science",
+   "deep learning",
+   "algorithms",
+   "mass spectrometry",
+   "webdev"
+  ],
+  "orgs": [],
+  "repos": [
+   "OpenMS/OpenMS"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "openrefine-j0",
+  "name": "OpenRefine",
+  "years": [
+   2024
+  ],
+  "website": "https://openrefine.org",
+  "tech": [
+   "javascript",
+   "java"
+  ],
+  "topics": [
+   "data-wrangling",
+   "reconcilation",
+   "data-mining"
+  ],
+  "orgs": [],
+  "repos": [
+   "OpenRefine/OpenRefine"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "openstreetmap",
+  "name": "OpenStreetMap",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.openstreetmap.org/",
+  "tech": [
+   "python",
+   "javascript",
+   "c++",
+   "docker",
+   "gltf"
+  ],
+  "topics": [
+   "databases",
+   "web",
+   "routing",
+   "ui",
+   "geodata"
+  ],
+  "orgs": [
+   "openstreetmap"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "opensuse-project",
+  "name": "openSUSE Project",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://get.opensuse.org/",
+  "tech": [
+   "python",
+   "c/c++",
+   "go",
+   "ruby",
+   "reactjs javascript"
+  ],
+  "topics": [
+   "aiml",
+   "operating system developer tools",
+   "containers kubernetes",
+   "security cryptography",
+   "systems management"
+  ],
+  "orgs": [
+   "openSUSE"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "openvino-toolkit",
+  "name": "OpenVINO Toolkit",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://docs.openvino.ai/",
+  "tech": [
+   "python",
+   "c++",
+   "arm",
+   "x86"
+  ],
+  "topics": [
+   "ai",
+   "inference",
+   "gen ai",
+   "agentic ai",
+   "model serving"
+  ],
+  "orgs": [
+   "openvinotoolkit"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "openwisp",
+  "name": "OpenWISP",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://openwisp.org",
+  "tech": [
+   "python",
+   "javascript",
+   "django",
+   "lua",
+   "openwrt"
+  ],
+  "topics": [
+   "networking",
+   "network management system",
+   "wifi",
+   "vpn",
+   "sdn"
+  ],
+  "orgs": [
+   "openwisp"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "oppia-foundation",
+  "name": "Oppia Foundation",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.oppia.org",
+  "tech": [
+   "python",
+   "google app engine",
+   "angular",
+   "typescript",
+   "apache beam"
+  ],
+  "topics": [
+   "education",
+   "web",
+   "ai",
+   "nonprofit",
+   "social impact"
+  ],
+  "orgs": [],
+  "repos": [
+   "oppia/oppia"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "organic-maps",
+  "name": "Organic Maps",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://organicmaps.app",
+  "tech": [
+   "android",
+   "java",
+   "c++",
+   "ios",
+   "openstreetmap"
+  ],
+  "topics": [
+   "privacy",
+   "maps",
+   "navigation",
+   "mobile",
+   "offline"
+  ],
+  "orgs": [],
+  "repos": [
+   "organicmaps/organicmaps"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "osgeo-open-source-geospatial-foundation",
+  "name": "OSGeo (Open Source Geospatial Foundation)",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.osgeo.org/",
+  "tech": [
+   "c",
+   "python",
+   "javascript",
+   "java",
+   "c++"
+  ],
+  "topics": [
+   "open science",
+   "gis",
+   "citizen science",
+   "geolocation",
+   "mapping"
+  ],
+  "orgs": [
+   "OSGeo"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "owasp-foundation",
+  "name": "OWASP Foundation",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://owasp.org",
+  "tech": [
+   "python",
+   "javascript",
+   "java",
+   "zap",
+   "juice shop"
+  ],
+  "topics": [
+   "web",
+   "cloud",
+   "application security",
+   "cybersecurity",
+   "devsecops"
+  ],
+  "orgs": [
+   "owasp"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "pal-robotics",
+  "name": "PAL Robotics",
+  "years": [
+   2025
+  ],
+  "website": "https://pal-robotics.com/",
+  "tech": [
+   "python",
+   "javascript",
+   "c++"
+  ],
+  "topics": [
+   "robotics",
+   "reinforcement learning",
+   "web tools"
+  ],
+  "orgs": [
+   "pal-robotics"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "pecan-project",
+  "name": "PEcAn Project",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://pecanproject.github.io/",
+  "tech": [
+   "r",
+   "docker",
+   "api",
+   "geospatial"
+  ],
+  "topics": [
+   "data science",
+   "ecosystem models",
+   "scientific visualization",
+   "climate science",
+   "ecological forecasting,"
+  ],
+  "orgs": [],
+  "repos": [
+   "pecanproject/pecan"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "pharo-consortium",
+  "name": "Pharo Consortium",
+  "years": [
+   2025,
+   2026
+  ],
+  "website": "https://pharo.org/",
+  "tech": [
+   "git",
+   "smalltalk",
+   "pharo",
+   "spec",
+   "sunit"
+  ],
+  "topics": [
+   "machine learning",
+   "programming languages",
+   "virtual machines",
+   "modelling",
+   "live music"
+  ],
+  "orgs": [],
+  "repos": [
+   "pharo-project/pharo"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "plone-foundation",
+  "name": "Plone Foundation",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://plone.org",
+  "tech": [
+   "python",
+   "javascript",
+   "react"
+  ],
+  "topics": [
+   "web",
+   "cms"
+  ],
+  "orgs": [
+   "plone"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "polypheny",
+  "name": "Polypheny",
+  "years": [
+   2024
+  ],
+  "website": "https://polypheny.org",
+  "tech": [
+   "javascript",
+   "java",
+   "sql",
+   "angular",
+   "llm"
+  ],
+  "topics": [
+   "database",
+   "big data",
+   "data science",
+   "cloud",
+   "ai"
+  ],
+  "orgs": [
+   "polypheny"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "postgresql",
+  "name": "PostgreSQL",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://postgresql.org",
+  "tech": [
+   "c",
+   "python",
+   "postgresql",
+   "javascript",
+   "go"
+  ],
+  "topics": [
+   "web",
+   "database",
+   "ui",
+   "sql",
+   "benchmark"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (git.postgresql.org)."
+ },
+ {
+  "slug": "precice",
+  "name": "preCICE",
+  "years": [
+   2026
+  ],
+  "website": "https://precice.org/",
+  "tech": [
+   "c",
+   "python",
+   "shell",
+   "c++"
+  ],
+  "topics": [
+   "scientific computing",
+   "simulation"
+  ],
+  "orgs": [
+   "precice"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "processing-foundation",
+  "name": "Processing Foundation",
+  "years": [
+   2025,
+   2026
+  ],
+  "website": "http://processingfoundation.org",
+  "tech": [
+   "javascript",
+   "java",
+   "typescript",
+   "webgl",
+   "github actions"
+  ],
+  "topics": [
+   "education",
+   "web",
+   "graphics",
+   "creative coding",
+   "design"
+  ],
+  "orgs": [
+   "processing"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "project-mesa",
+  "name": "Project Mesa",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://mesa.readthedocs.io/latest/",
+  "tech": [
+   "python",
+   "gis",
+   "object oriented programming",
+   "llms",
+   "network topology"
+  ],
+  "topics": [
+   "simulation",
+   "agent based models",
+   "generative science"
+  ],
+  "orgs": [],
+  "repos": [
+   "projectmesa/mesa"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "prometheus-operator",
+  "name": "Prometheus-Operator",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://prometheus-operator.dev/",
+  "tech": [
+   "prometheus",
+   "go",
+   "kubernetes",
+   "kubernetes operators"
+  ],
+  "topics": [
+   "monitoring",
+   "cloud",
+   "observability",
+   "kubernetes operator"
+  ],
+  "orgs": [],
+  "repos": [
+   "prometheus-operator/prometheus-operator"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "purr-data",
+  "name": "Purr Data",
+  "years": [
+   2024
+  ],
+  "website": "https://www.purrdata.net/",
+  "tech": [
+   "c",
+   "javascript",
+   "html5",
+   "emscripten"
+  ],
+  "topics": [
+   "web",
+   "graphics",
+   "audio",
+   "realtime"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (git.purrdata.net)."
+ },
+ {
+  "slug": "python-software-foundation",
+  "name": "Python Software Foundation",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://python-gsoc.org/",
+  "tech": [
+   "python",
+   "javascript"
+  ],
+  "topics": [
+   "security",
+   "visualization",
+   "compiler",
+   "modeling",
+   "backup"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Umbrella organisation: sub-organisations change every year and apply through python-gsoc.org."
+ },
+ {
+  "slug": "qc-devs",
+  "name": "QC-Devs",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://qcdevs.org/",
+  "tech": [
+   "python",
+   "github",
+   "c++",
+   "julia",
+   "jupyter"
+  ],
+  "topics": [
+   "data science",
+   "scientific visualization",
+   "quantum chemistry",
+   "computational science",
+   "numerical algorithms"
+  ],
+  "orgs": [
+   "theochem"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "qemu",
+  "name": "QEMU",
+  "years": [
+   2025,
+   2026
+  ],
+  "website": "https://qemu.org/",
+  "tech": [
+   "c",
+   "python",
+   "linux",
+   "rust"
+  ],
+  "topics": [
+   "systems programming",
+   "kernel",
+   "compiler",
+   "emulator",
+   "hypervisor"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gitlab.com)."
+ },
+ {
+  "slug": "qubes-os-f3",
+  "name": "Qubes OS",
+  "years": [
+   2026
+  ],
+  "website": "https://qubes-os.org",
+  "tech": [
+   "c",
+   "python",
+   "xen"
+  ],
+  "topics": [
+   "security",
+   "privacy",
+   "os"
+  ],
+  "orgs": [
+   "QubesOS"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "r-project-for-statistical-computing",
+  "name": "R project for statistical computing",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.r-project.org/",
+  "tech": [
+   "c",
+   "javascript",
+   "c++",
+   "r-project",
+   "fortran"
+  ],
+  "topics": [
+   "visualization",
+   "machine learning",
+   "data science",
+   "graphics",
+   "statistics"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Umbrella organisation: projects live in many unrelated repositories that change every year."
+ },
+ {
+  "slug": "red-hen-lab",
+  "name": "Red Hen Lab",
+  "years": [
+   2024
+  ],
+  "website": "http://www.redhenlab.org",
+  "tech": [
+   "python",
+   "machine learning",
+   "nlp",
+   "ai",
+   "data science"
+  ],
+  "topics": [
+   "data science",
+   "ai",
+   "language",
+   "multimodal communication",
+   "gesture"
+  ],
+  "orgs": [
+   "RedHenLab"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "rizin",
+  "name": "Rizin",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://rizin.re",
+  "tech": [
+   "c",
+   "python",
+   "go",
+   "c++",
+   "qt"
+  ],
+  "topics": [
+   "reverse engineering",
+   "computer security",
+   "debugging",
+   "emulation",
+   "disassembly"
+  ],
+  "orgs": [
+   "rizinorg"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "robolectric",
+  "name": "Robolectric",
+  "years": [
+   2024
+  ],
+  "website": "http://robolectric.org/",
+  "tech": [
+   "android",
+   "java",
+   "jvm",
+   "asm"
+  ],
+  "topics": [
+   "testing",
+   "mobile"
+  ],
+  "orgs": [],
+  "repos": [
+   "robolectric/robolectric"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "rocketchat",
+  "name": "rocket.chat",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://github.com/RocketChat",
+  "tech": [
+   "javascript",
+   "typescript",
+   "node",
+   "llm",
+   "generative ai"
+  ],
+  "topics": [
+   "communications",
+   "messaging",
+   "group chat",
+   "team collaboration",
+   "chat platform"
+  ],
+  "orgs": [],
+  "repos": [
+   "RocketChat/Rocket.Chat"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "rspamd",
+  "name": "Rspamd",
+  "years": [
+   2025
+  ],
+  "website": "https://www.rspamd.com",
+  "tech": [
+   "c",
+   "lua",
+   "c++",
+   "rust",
+   "clickhouse"
+  ],
+  "topics": [
+   "email",
+   "spam filtering"
+  ],
+  "orgs": [],
+  "repos": [
+   "rspamd/rspamd"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "rtems-project",
+  "name": "RTEMS Project",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.rtems.org/",
+  "tech": [
+   "python",
+   "c/c++",
+   "assembly",
+   "posix"
+  ],
+  "topics": [
+   "kernel",
+   "embedded",
+   "real-time",
+   "multicore",
+   "rtos"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gitlab.rtems.org)."
+ },
+ {
+  "slug": "ruby",
+  "name": "Ruby",
+  "years": [
+   2026
+  ],
+  "website": "https://www.ruby-lang.org/",
+  "tech": [
+   "c",
+   "java",
+   "ruby on rails",
+   "ruby",
+   "rubygems"
+  ],
+  "topics": [
+   "security",
+   "web",
+   "cloud",
+   "server",
+   "application"
+  ],
+  "orgs": [
+   "ruby"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "sagemath",
+  "name": "SageMath",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.sagemath.org",
+  "tech": [
+   "python",
+   "cython"
+  ],
+  "topics": [
+   "mathematics",
+   "education",
+   "research"
+  ],
+  "orgs": [
+   "sagemath"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "scala-center",
+  "name": "Scala Center",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://scala-lang.org/",
+  "tech": [
+   "jvm",
+   "functional programming",
+   "scala",
+   "scala.js",
+   "scala native"
+  ],
+  "topics": [
+   "education",
+   "compilers",
+   "web",
+   "tooling",
+   "gpu"
+  ],
+  "orgs": [
+   "scala"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "scalable-parallel-computing-laboratory",
+  "name": "Scalable Parallel Computing Laboratory",
+  "years": [
+   2024
+  ],
+  "website": "https://spcl.inf.ethz.ch/",
+  "tech": [
+   "python",
+   "c++",
+   "mpi",
+   "aws",
+   "serverless"
+  ],
+  "topics": [
+   "programming languages",
+   "high-performance computing",
+   "parallel computing",
+   "serverless computing",
+   "faas"
+  ],
+  "orgs": [
+   "spcl"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "scummvm",
+  "name": "ScummVM",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.scummvm.org/",
+  "tech": [
+   "python",
+   "opengl",
+   "c++",
+   "assembly",
+   "sdl"
+  ],
+  "topics": [
+   "games",
+   "game engines",
+   "software preservation",
+   "software archeology"
+  ],
+  "orgs": [
+   "scummvm"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "sktime",
+  "name": "sktime",
+  "years": [
+   2024
+  ],
+  "website": "https://gcos.ai",
+  "tech": [
+   "python",
+   "github",
+   "scikit-learn",
+   "torch"
+  ],
+  "topics": [
+   "data science",
+   "ai",
+   "time series",
+   "toolbox frameworks",
+   "ai/ml"
+  ],
+  "orgs": [
+   "sktime"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "society-for-arts-and-technology-sat",
+  "name": "Society for Arts and Technology (SAT)",
+  "years": [
+   2025
+  ],
+  "website": "https://sat.qc.ca",
+  "tech": [
+   "python",
+   "javascript",
+   "c++",
+   "qt",
+   "esp32"
+  ],
+  "topics": [
+   "computer vision",
+   "graphics",
+   "multimedia",
+   "telepresence",
+   "digital arts"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gitlab.com)."
+ },
+ {
+  "slug": "software-and-computational-systems-lab-at-lmu-munich",
+  "name": "Software and Computational Systems Lab at LMU Munich",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://www.sosy-lab.org/",
+  "tech": [
+   "python",
+   "javascript",
+   "java",
+   "grpc",
+   "quarkus"
+  ],
+  "topics": [
+   "cloud",
+   "software verification",
+   "benchmarking",
+   "program analysis",
+   "sat & smt solving"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gitlab.com)."
+ },
+ {
+  "slug": "sqlancer",
+  "name": "SQLancer",
+  "years": [
+   2025
+  ],
+  "website": "https://www.sqlancer.com",
+  "tech": [
+   "java",
+   "sql"
+  ],
+  "topics": [
+   "fuzzing",
+   "automated testing",
+   "logic bugs",
+   "database systems"
+  ],
+  "orgs": [],
+  "repos": [
+   "sqlancer/sqlancer"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "st-jude-childrens-research-hospital-ai",
+  "name": "St. Jude Children's Research Hospital",
+  "years": [
+   2025,
+   2026
+  ],
+  "website": "https://stjude.org",
+  "tech": [
+   "python",
+   "rust",
+   "simd",
+   "wdl"
+  ],
+  "topics": [
+   "programming languages",
+   "genomics",
+   "developer tools",
+   "cloud"
+  ],
+  "orgs": [
+   "stjude-rust-labs"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "stdlib",
+  "name": "stdlib",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://stdlib.io",
+  "tech": [
+   "c",
+   "javascript",
+   "node.js",
+   "typescript",
+   "webassembly"
+  ],
+  "topics": [
+   "mathematics",
+   "web",
+   "scientific computing",
+   "numerical computing",
+   "statistics"
+  ],
+  "orgs": [],
+  "repos": [
+   "stdlib-js/stdlib"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "stear-group",
+  "name": "Ste||ar group",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "http://stellar-group.org/",
+  "tech": [
+   "c++",
+   "hpc"
+  ],
+  "topics": [
+   "library",
+   "optimization",
+   "parallel algorithms",
+   "hpx",
+   "application"
+  ],
+  "orgs": [],
+  "repos": [
+   "STEllAR-GROUP/hpx"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "stichting-su2",
+  "name": "Stichting SU2",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://su2foundation.org",
+  "tech": [
+   "python",
+   "c++"
+  ],
+  "topics": [
+   "aerodynamics",
+   "computational fluid dynamics",
+   "multi-disciplinary optimization",
+   "adjoint design optimization",
+   "fluid dynamics"
+  ],
+  "orgs": [],
+  "repos": [
+   "su2code/SU2"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "stratosphere-laboratory-czech-technical-university-in-prague",
+  "name": "Stratosphere Laboratory, Czech Technical University in Prague",
+  "years": [
+   2024
+  ],
+  "website": "https://www.stratosphereips.org/",
+  "tech": [
+   "python",
+   "redis",
+   "docker",
+   "textual"
+  ],
+  "topics": [
+   "machine learning",
+   "network security",
+   "civil society",
+   "security defense"
+  ],
+  "orgs": [
+   "stratosphereips"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "submitty",
+  "name": "Submitty",
+  "years": [
+   2024,
+   2026
+  ],
+  "website": "https://submitty.org",
+  "tech": [
+   "python",
+   "postgresql",
+   "javascript",
+   "c++",
+   "php"
+  ],
+  "topics": [
+   "education",
+   "visualization",
+   "web",
+   "privacy/security",
+   "communication"
+  ],
+  "orgs": [
+   "Submitty"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "sugar-labs",
+  "name": "Sugar Labs",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://sugarlabs.org",
+  "tech": [
+   "python",
+   "gtk",
+   "typescript",
+   "javascipt",
+   "llm"
+  ],
+  "topics": [
+   "education",
+   "programming languages",
+   "games",
+   "desktop",
+   "generative ai"
+  ],
+  "orgs": [
+   "sugarlabs"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "sw360",
+  "name": "SW360",
+  "years": [
+   2025,
+   2026
+  ],
+  "website": "https://eclipse.dev/sw360/",
+  "tech": [
+   "java",
+   "react",
+   "couchdb",
+   "springboot"
+  ],
+  "topics": [
+   "license compliance",
+   "compliance automation",
+   "sbom",
+   "component repository",
+   "vulnerabilities management"
+  ],
+  "orgs": [],
+  "repos": [
+   "eclipse-sw360/sw360"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "swift",
+  "name": "Swift",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://swift.org",
+  "tech": [
+   "c++",
+   "cmake",
+   "swift"
+  ],
+  "topics": [
+   "compilers",
+   "cross-platform",
+   "packages",
+   "server development",
+   "standard libraries"
+  ],
+  "orgs": [],
+  "repos": [
+   "swiftlang/swift"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "sympy",
+  "name": "SymPy",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.sympy.org/",
+  "tech": [
+   "python",
+   "numpy",
+   "jupyter"
+  ],
+  "topics": [
+   "mathematics",
+   "physics",
+   "symbolic mathematics"
+  ],
+  "orgs": [],
+  "repos": [
+   "sympy/sympy"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "synfig",
+  "name": "Synfig",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://synfig.org",
+  "tech": [
+   "python",
+   "c++",
+   "gtk",
+   "gtkmm"
+  ],
+  "topics": [
+   "2d/3d graphics",
+   "animation",
+   "vector graphics"
+  ],
+  "orgs": [],
+  "repos": [
+   "synfig/synfig"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "tardis-rt-collaboration",
+  "name": "TARDIS RT Collaboration",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://tardis-sn.github.io",
+  "tech": [
+   "python",
+   "numba",
+   "numpy",
+   "jupyter",
+   "pandas"
+  ],
+  "topics": [
+   "visualization",
+   "big data",
+   "simulation",
+   "astrophysics"
+  ],
+  "orgs": [
+   "tardis-sn"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "the-enigma-team",
+  "name": "The ENIGMA Team",
+  "years": [
+   2024
+  ],
+  "website": "https://enigma-dev.org",
+  "tech": [
+   "opengl",
+   "c++",
+   "qt5",
+   "recursive-descent"
+  ],
+  "topics": [
+   "graphics",
+   "game development",
+   "compiler",
+   "programming",
+   "game design"
+  ],
+  "orgs": [],
+  "repos": [
+   "enigma-dev/enigma-dev"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "the-freebsd-project",
+  "name": "The FreeBSD Project",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.freebsd.org/",
+  "tech": [
+   "c",
+   "llvm",
+   "assembly",
+   "make",
+   "posix shell"
+  ],
+  "topics": [
+   "virtualization",
+   "operating system",
+   "embedded system"
+  ],
+  "orgs": [
+   "freebsd"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "the-honeynet-project",
+  "name": "The Honeynet Project",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://honeynet.org",
+  "tech": [
+   "python",
+   "javascript",
+   "django",
+   "go",
+   "docker"
+  ],
+  "topics": [
+   "honeypots",
+   "malware analysis",
+   "threat intelligence"
+  ],
+  "orgs": [
+   "honeynet"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "the-jpf-team-hg",
+  "name": "The JPF team",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://github.com/javapathfinder/jpf-core/wiki",
+  "tech": [
+   "android",
+   "java",
+   "distributed systems",
+   "jvm"
+  ],
+  "topics": [
+   "model checking",
+   "symbolic execution",
+   "verification of concurrent systems",
+   "program analysis",
+   "test input generation"
+  ],
+  "orgs": [],
+  "repos": [
+   "javapathfinder/jpf-core"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "the-julia-language",
+  "name": "The Julia Language",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://julialang.org",
+  "tech": [
+   "machine learning",
+   "julia",
+   "data science",
+   "compilers",
+   "garbage-collection"
+  ],
+  "topics": [
+   "math",
+   "artificial intelligence",
+   "science",
+   "data science",
+   "graphs"
+  ],
+  "orgs": [],
+  "repos": [
+   "JuliaLang/julia"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "the-libreswan-project",
+  "name": "The Libreswan Project",
+  "years": [
+   2026
+  ],
+  "website": "https://libreswan.org",
+  "tech": [
+   "c",
+   "kernel",
+   "nss",
+   "rfcs",
+   "libevent"
+  ],
+  "topics": [
+   "vpn",
+   "ipsec",
+   "ikev2"
+  ],
+  "orgs": [],
+  "repos": [
+   "libreswan/libreswan"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "the-linux-foundation",
+  "name": "The Linux Foundation",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "http://www.linuxfoundation.org/",
+  "tech": [
+   "c",
+   "linux",
+   "cups",
+   "ai",
+   "fuzz-testing"
+  ],
+  "topics": [
+   "kernel",
+   "automotive",
+   "printing",
+   "iio",
+   "zephyr"
+  ],
+  "orgs": [],
+  "repos": [
+   "LinuxFoundationGSoC/ProjectIdeas"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "the-mifos-initiative",
+  "name": "The Mifos Initiative",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://mifos.org",
+  "tech": [
+   "android",
+   "java",
+   "kotlin",
+   "spring",
+   "angular"
+  ],
+  "topics": [
+   "artificial intelligence",
+   "cloud",
+   "fintech",
+   "financial inclusion",
+   "mobile banking"
+  ],
+  "orgs": [
+   "openmf"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "the-netbsd-foundation",
+  "name": "The NetBSD Foundation",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.NetBSD.org/",
+  "tech": [
+   "c",
+   "shell script",
+   "make",
+   "unix",
+   "bsd"
+  ],
+  "topics": [
+   "kernel",
+   "packaging",
+   "userland",
+   "unix",
+   "bsd"
+  ],
+  "orgs": [
+   "NetBSD"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "the-ns-3-network-simulator-project",
+  "name": "The ns-3 Network Simulator Project",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.nsnam.org",
+  "tech": [
+   "python",
+   "django",
+   "c++"
+  ],
+  "topics": [
+   "computer networking",
+   "network simulation"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gitlab.com)."
+ },
+ {
+  "slug": "the-openroad-initiative",
+  "name": "The OpenROAD Initiative",
+  "years": [
+   2026
+  ],
+  "website": "https://www.openroadinitiative.org",
+  "tech": [
+   "python",
+   "verilog",
+   "c++",
+   "tcl",
+   "openroad"
+  ],
+  "topics": [
+   "asic design",
+   "openroad chip design",
+   "open eda",
+   "open-source design",
+   "llm chip design"
+  ],
+  "orgs": [],
+  "repos": [
+   "The-OpenROAD-Project/OpenROAD"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "the-p4-language-consortium",
+  "name": "The P4 Language Consortium",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://p4.org/",
+  "tech": [
+   "llvm",
+   "c++",
+   "linux kernel",
+   "mlir",
+   "ebpf"
+  ],
+  "topics": [
+   "networking",
+   "programming language",
+   "compiler",
+   "ai/ml networking",
+   "networking security"
+  ],
+  "orgs": [
+   "p4lang"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "the-palisadoes-foundation",
+  "name": "The Palisadoes Foundation",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://www.palisadoes.org",
+  "tech": [
+   "python",
+   "postgresql",
+   "flutter",
+   "graphql",
+   "typescript"
+  ],
+  "topics": [
+   "web",
+   "api",
+   "networking",
+   "ai",
+   "mobile"
+  ],
+  "orgs": [
+   "PalisadoesFoundation"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "the-rust-foundation",
+  "name": "The Rust Foundation",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.rust-lang.org",
+  "tech": [
+   "python",
+   "rust"
+  ],
+  "topics": [
+   "compilers",
+   "programming languages"
+  ],
+  "orgs": [],
+  "repos": [
+   "rust-lang/rust"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "the-tor-project",
+  "name": "The Tor Project",
+  "years": [
+   2025
+  ],
+  "website": "https://www.torproject.org/",
+  "tech": [
+   "c",
+   "python",
+   "web",
+   "rust"
+  ],
+  "topics": [
+   "security",
+   "privacy",
+   "anti-censorship",
+   "human rights",
+   "surveillance"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (gitlab.torproject.org)."
+ },
+ {
+  "slug": "tiled",
+  "name": "Tiled",
+  "years": [
+   2026
+  ],
+  "website": "https://www.mapeditor.org",
+  "tech": [
+   "c++",
+   "qt"
+  ],
+  "topics": [
+   "games",
+   "level editor"
+  ],
+  "orgs": [],
+  "repos": [
+   "mapeditor/tiled"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "typelevel",
+  "name": "Typelevel",
+  "years": [
+   2025,
+   2026
+  ],
+  "website": "https://typelevel.org",
+  "tech": [
+   "linux",
+   "node.js",
+   "jvm",
+   "scala",
+   "wasm"
+  ],
+  "topics": [
+   "web",
+   "functional programming",
+   "cloud",
+   "ai/ml",
+   "cats"
+  ],
+  "orgs": [
+   "typelevel"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "uc-ospo",
+  "name": "UC OSPO",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://ucsc-ospo.github.io/osre26/",
+  "tech": [
+   "python",
+   "javascript",
+   "c/c++",
+   "machine learning",
+   "pytorch"
+  ],
+  "topics": [
+   "education",
+   "bioinformatics",
+   "data science",
+   "ai/ml",
+   "research software"
+  ],
+  "orgs": [
+   "uccross"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "unicode-inc",
+  "name": "Unicode, Inc.",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://home.unicode.org",
+  "tech": [
+   "java",
+   "c++",
+   "rust",
+   "unicode"
+  ],
+  "topics": [
+   "compilers",
+   "linguistics",
+   "languages",
+   "internationalization"
+  ],
+  "orgs": [
+   "unicode-org"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "unikraft",
+  "name": "Unikraft",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://unikraft.org/",
+  "tech": [
+   "c",
+   "xen",
+   "golang",
+   "kvm",
+   "assembly language"
+  ],
+  "topics": [
+   "virtualization",
+   "cloud",
+   "software reuse",
+   "software configurability"
+  ],
+  "orgs": [
+   "unikraft"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "united-nations-office-of-information-communication-technology",
+  "name": "United Nations Office of Information Communication Technology",
+  "years": [
+   2026
+  ],
+  "website": "https://unite.un.org/en",
+  "tech": [
+   "python",
+   "javascript",
+   "css"
+  ],
+  "topics": [
+   "technology",
+   "innovation"
+  ],
+  "orgs": [],
+  "repos": [
+   "OSeMOSYS/MUIO"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "uramaki-lab",
+  "name": "Uramaki LAB",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://github.com/ruxailab",
+  "tech": [
+   "python",
+   "javascript",
+   "html",
+   "css",
+   "firebase"
+  ],
+  "topics": [
+   "artificial intelligence",
+   "user experience",
+   "usability",
+   "eye tracking"
+  ],
+  "orgs": [
+   "ruxailab"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "videolan",
+  "name": "VideoLAN",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://www.videolan.org",
+  "tech": [
+   "c",
+   "c++",
+   "qt",
+   "assembly",
+   "video"
+  ],
+  "topics": [
+   "audio",
+   "streaming",
+   "video",
+   "codecs",
+   "media database"
+  ],
+  "orgs": [],
+  "repos": [],
+  "unmappable": "Development happens outside GitHub (code.videolan.org)."
+ },
+ {
+  "slug": "wagtail",
+  "name": "Wagtail",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://wagtail.org/",
+  "tech": [
+   "python",
+   "javascript",
+   "django"
+  ],
+  "topics": [
+   "web",
+   "accessibility",
+   "cms"
+  ],
+  "orgs": [],
+  "repos": [
+   "wagtail/wagtail"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "waycrate",
+  "name": "Waycrate",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://waycrate.github.io/",
+  "tech": [
+   "c",
+   "c++",
+   "rust",
+   "wayland",
+   "zig"
+  ],
+  "topics": [
+   "security",
+   "graphics",
+   "wayland",
+   "screencapture",
+   "desktop portals"
+  ],
+  "orgs": [
+   "waycrate"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "webpack",
+  "name": "webpack",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://webpack.js.org",
+  "tech": [
+   "javascript",
+   "typescript",
+   "node"
+  ],
+  "topics": [
+   "web development",
+   "javascript",
+   "webassembly",
+   "node.js",
+   "webpack"
+  ],
+  "orgs": [
+   "webpack"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "wellcome-sanger-institute",
+  "name": "Wellcome Sanger Tree of Life",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://www.sanger.ac.uk/",
+  "tech": [
+   "python",
+   "machine learning",
+   "natural language processing",
+   "nextflow",
+   "cloud storage"
+  ],
+  "topics": [
+   "machine learning",
+   "genomics",
+   "bioinformatics",
+   "genome analysis"
+  ],
+  "orgs": [
+   "sanger-tol"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "wikimedia-foundation-nd",
+  "name": "Wikimedia Foundation",
+  "years": [
+   2024,
+   2026
+  ],
+  "website": "http://wikimediafoundation.org/",
+  "tech": [
+   "javascript",
+   "html",
+   "php",
+   "css",
+   "phyton"
+  ],
+  "topics": [
+   "semantic web",
+   "wikipedia",
+   "wikimedia",
+   "mediawiki",
+   "i18n"
+  ],
+  "orgs": [
+   "wikimedia"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "xmpp-standards-foundation",
+  "name": "XMPP Standards Foundation",
+  "years": [
+   2024
+  ],
+  "website": "https://xmpp.org/",
+  "tech": [
+   "javascript",
+   "java"
+  ],
+  "topics": [
+   "instant messaging",
+   "chat",
+   "webrtc",
+   "real-time communication"
+  ],
+  "orgs": [],
+  "repos": [
+   "xsf/xeps"
+  ],
+  "unmappable": null
+ },
+ {
+  "slug": "zendalona",
+  "name": "Zendalona",
+  "years": [
+   2024,
+   2025
+  ],
+  "website": "https://zendalona.com/",
+  "tech": [
+   "python",
+   "javascript",
+   "android",
+   "gtk",
+   "qt"
+  ],
+  "topics": [
+   "web",
+   "accessibility",
+   "braille",
+   "gaming",
+   "agi"
+  ],
+  "orgs": [
+   "zendalona"
+  ],
+  "repos": [],
+  "unmappable": null
+ },
+ {
+  "slug": "zulip",
+  "name": "Zulip",
+  "years": [
+   2024,
+   2025,
+   2026
+  ],
+  "website": "https://zulip.com/",
+  "tech": [
+   "python",
+   "django",
+   "flutter",
+   "css",
+   "typescript"
+  ],
+  "topics": [
+   "great developer tooling",
+   "visual design",
+   "teaching quality codebase",
+   "team chat",
+   "integrations"
+  ],
+  "orgs": [],
+  "repos": [
+   "zulip/zulip"
+  ],
+  "unmappable": null
+ }
+]

@@ -1,0 +1,17 @@
+{
+  "lablua": { "github": ["labluapucrio"] },
+  "sktime": { "github": ["sktime"] },
+  "sagemath": { "github": ["sagemath"] },
+  "openastronomy": {
+    "github": ["OpenAstronomy", "astropy", "sunpy", "glue-viz", "StingraySoftware", "radis"]
+  },
+  "the-freebsd-project": { "github": ["freebsd"] },
+  "open-genome-informatics": { "github": ["GMOD"] },
+  "wikimedia-foundation-nd": { "github": ["wikimedia"] },
+  "r-project-for-statistical-computing": {
+    "unmappable": "Umbrella organisation: projects live in many unrelated repositories that change every year."
+  },
+  "python-software-foundation": {
+    "unmappable": "Umbrella organisation: sub-organisations change every year and apply through python-gsoc.org."
+  }
+}
