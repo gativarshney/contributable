@@ -20,6 +20,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/gsoc" },
 };
 
+const PAGE_SIZE = 30;
 type Params = Record<string, string | string[] | undefined>;
 const one = (v: string | string[] | undefined) =>
   (Array.isArray(v) ? v[0] : v)?.trim() ?? "";
@@ -61,6 +62,19 @@ export default async function GsocPage({
     measurable.filter((s) => matches(s, q, year, minYears)),
     sort,
   );
+  const pages = Math.max(1, Math.ceil(ranked.length / PAGE_SIZE));
+  const page = Math.min(pages, Math.max(1, Number(one(params.page)) || 1));
+  const shown = ranked.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const pageHref = (target: number) => {
+    const out = new URLSearchParams();
+    if (q) out.set("q", q);
+    if (year) out.set("year", String(year));
+    if (minYears > 1) out.set("years", String(minYears));
+    if (sort !== "reply") out.set("sort", sort);
+    if (target > 1) out.set("page", String(target));
+    const text = out.toString();
+    return `/gsoc${text ? `?${text}` : ""}`;
+  };
   const withData = measurable.filter((s) => s.repos.length > 0).length;
   // Rank positions, counted only for organisations with enough pull requests.
   const positions = new Map<string, number>();
@@ -143,7 +157,7 @@ export default async function GsocPage({
       </p>
 
       <ol className="mt-4 space-y-3">
-        {ranked.map((stats) => {
+        {shown.map((stats) => {
           const position = positions.get(stats.org.slug);
           const rankable = position !== undefined;
           return (
@@ -223,6 +237,31 @@ export default async function GsocPage({
           );
         })}
       </ol>
+
+      {pages > 1 ? (
+        <nav
+          aria-label="Pages"
+          className="mt-8 flex items-center justify-between text-sm"
+        >
+          {page > 1 ? (
+            <Link href={pageHref(page - 1)} className="btn btn-ghost">
+              Previous
+            </Link>
+          ) : (
+            <span />
+          )}
+          <span className="text-ink-2 num">
+            Page {page} of {pages}
+          </span>
+          {page < pages ? (
+            <Link href={pageHref(page + 1)} className="btn btn-ghost">
+              Next
+            </Link>
+          ) : (
+            <span />
+          )}
+        </nav>
+      ) : null}
 
       {ranked.length === 0 ? (
         <div className="card mt-4 p-8 text-center">
