@@ -13,7 +13,13 @@ const displaySerif = Instrument_Serif({
   style: ["normal", "italic"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+// Tolerates stray whitespace or a byte order mark in the configured value.
+function resolveSiteUrl(): string {
+  const raw = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/^﻿/, "").trim();
+  return URL.canParse(raw) ? raw : "http://localhost:3000";
+}
+
+const siteUrl = resolveSiteUrl();
 const description =
   "Contributable tells open source contributors what to expect from a repository: where to start, who maintains it, how fast people reply and whether outside pull requests get merged, with the evidence behind every answer.";
 
