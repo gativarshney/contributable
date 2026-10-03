@@ -4,7 +4,7 @@ export const revalidate = 900;
 
 /**
  * The points of the home page field: every repository with both a reply time and a
- * merge rate, as [id, median reply hours, merge rate, share answered in 48 h, terms].
+ * merge rate, as [id, median reply hours, merge rate, share answered in 48 h, terms, pull requests].
  */
 export async function GET() {
   const index = await getIndex();
@@ -16,6 +16,7 @@ export async function GET() {
       r.mergeRate,
       r.within48h,
       [...r.lang, ...r.fw, ...r.topics].join(" ").toLowerCase(),
+      r.replyN,
     ]);
   return Response.json(
     { generatedAt: index.generatedAt, total: index.rows.length, points },

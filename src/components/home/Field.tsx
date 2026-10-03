@@ -1,7 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import { FieldScene } from "@/components/three/FieldScene";
 
 type Point = [
   id: string,
@@ -9,7 +17,15 @@ type Point = [
   mergeRate: number,
   within48h: number | null,
   terms: string,
+  pulls: number,
 ];
+
+const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
+const subscribeMotion = (notify: () => void) => {
+  const media = window.matchMedia(REDUCED_MOTION);
+  media.addEventListener("change", notify);
+  return () => media.removeEventListener("change", notify);
+};
 
 interface FieldData {
   total: number;
@@ -51,6 +67,24 @@ export function Field() {
   const [data, setData] = useState<FieldData | null>(null);
   const [text, setText] = useState("");
   const query = useMemo(() => words(text), [text]);
+  // The 3D skyline is the default. The flat chart is drawn instead when the visitor
+  // asks for reduced motion, or when the device cannot run WebGL.
+  const reduced = useSyncExternalStore(
+    subscribeMotion,
+    () => window.matchMedia(REDUCED_MOTION).matches,
+    () => false,
+  );
+  const [unsupported, setUnsupported] = useState(false);
+  const flat = reduced || unsupported;
+  const onUnavailable = useCallback(() => setUnsupported(true), []);
+  const columns = useMemo(
+    () => (data?.points ?? []).map((p) => ({ x: xOf(p[1]), z: p[2], n: p[5] ?? 5 })),
+    [data],
+  );
+  const lit = useMemo(
+    () => (data?.points ?? []).map((p) => matches(p, query)),
+    [data, query],
+  );
 
   useEffect(() => {
     let alive = true;
@@ -77,7 +111,7 @@ export function Field() {
 
   useEffect(() => {
     const el = canvas.current;
-    if (!el || !data) return;
+    if (!el || !data || !flat) return;
     const ctx = el.getContext("2d");
     if (!ctx) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -170,9 +204,12 @@ export function Field() {
       window.removeEventListener("resize", onResize);
       theme.disconnect();
     };
-  }, [data, query]);
+  }, [data, query, flat]);
 
   const stack = text.trim();
+  const description = data
+    ? `${data.points.length} repositories placed by first reply time and outside merge rate. Faster replies are to the right, higher merge rates ${flat ? "at the top" : "further back"}.`
+    : "Loading";
 
   return (
     <div>
@@ -202,28 +239,36 @@ export function Field() {
           : data.points.length === 0
             ? "The index is being prepared. Points appear here as repositories are measured."
             : query.length === 0
-              ? `${data.points.length.toLocaleString("en-US")} repositories, each a point. Type a language to light yours up.`
+              ? `${data.points.length.toLocaleString("en-US")} repositories, one ${flat ? "point" : "column"} each. Type a language to light yours up.`
               : matched.length === 0
                 ? `No measured repository uses "${stack}" yet.`
                 : `${matched.length.toLocaleString("en-US")} ${matched.length === 1 ? "repository uses" : "repositories use"} ${stack}.`}
       </p>
 
       <div className="relative mx-auto mt-3 max-w-4xl">
-        <canvas
-          ref={canvas}
-          role="img"
-          aria-label={
-            data
-              ? `${data.points.length} repositories plotted by first reply time and outside merge rate. Faster replies are to the right, higher merge rates at the top.`
-              : "Loading"
-          }
-          className="h-[clamp(11rem,34svh,20rem)] w-full"
-        />
+        {flat ? (
+          <canvas
+            ref={canvas}
+            role="img"
+            aria-label={description}
+            className="h-[clamp(11rem,34svh,20rem)] w-full"
+          />
+        ) : (
+          <div role="img" aria-label={description}>
+            <FieldScene
+              points={columns}
+              lit={lit}
+              searching={query.length > 0}
+              onUnavailable={onUnavailable}
+              className="skyline-fade h-[clamp(11rem,34svh,20rem)] w-full"
+            />
+          </div>
+        )}
         <span className="text-ink-3 pointer-events-none absolute right-1 bottom-0 text-[11px]">
           Faster first reply →
         </span>
         <span className="text-ink-3 pointer-events-none absolute top-0 left-1 text-[11px]">
-          ↑ More outside PRs merged
+          {flat ? "↑ More outside PRs merged" : "Further back: more outside PRs merged"}
         </span>
       </div>
 

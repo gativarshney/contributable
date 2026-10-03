@@ -123,8 +123,7 @@ export async function discoverUniverse(
     if (!complete) break;
   }
 
-  const repos = [...byId.values()].sort((a, b) =>
-    `${a.owner}/${a.name}`.localeCompare(`${b.owner}/${b.name}`),
-  );
+  // Kept in discovery order: within an account, most starred first.
+  const repos = [...byId.values()];
   return { repos, complete, missing };
 }

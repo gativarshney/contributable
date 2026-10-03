@@ -74,8 +74,8 @@
       "heathcare",
       "polar science"
     ],
-    "orgs": [],
-    "repos": ["uaanchorage/GSoC"],
+    "orgs": ["uaanchorage"],
+    "repos": [],
     "unmappable": null
   },
   {
@@ -612,8 +612,8 @@
     "website": "https://med.emory.edu/departments/biomedical-informatics/",
     "tech": ["python", "javascript", "java", "bash", "colab"],
     "topics": ["cloud", "data integration", "workflows", "data security", "ml/al"],
-    "orgs": [],
-    "repos": ["NISYSLAB/Emory-BMI-GSoC"],
+    "orgs": ["NISYSLAB"],
+    "repos": [],
     "unmappable": null
   },
   {
@@ -896,8 +896,8 @@
     "website": "https://gcos.ai/",
     "tech": ["python", "pytorch", "scikit-learn"],
     "topics": ["machine learning", "time-series", "causal inference"],
-    "orgs": [],
-    "repos": ["gc-os-ai/.github"],
+    "orgs": ["gc-os-ai"],
+    "repos": [],
     "unmappable": null
   },
   {
@@ -2005,8 +2005,8 @@
       "numerical computation"
     ],
     "orgs": [],
-    "repos": ["numfocus/gsoc"],
-    "unmappable": null
+    "repos": [],
+    "unmappable": "Umbrella organisation: its member projects apply separately and change every year."
   },
   {
     "slug": "omegaup",
@@ -3017,8 +3017,8 @@
     "website": "http://www.linuxfoundation.org/",
     "tech": ["c", "linux", "cups", "ai", "fuzz-testing"],
     "topics": ["kernel", "automotive", "printing", "iio", "zephyr"],
-    "orgs": [],
-    "repos": ["LinuxFoundationGSoC/ProjectIdeas"],
+    "orgs": ["OpenPrinting"],
+    "repos": [],
     "unmappable": null
   },
   {

@@ -1,7 +1,13 @@
 {
-  "lablua": { "github": ["labluapucrio"] },
-  "sktime": { "github": ["sktime"] },
-  "sagemath": { "github": ["sagemath"] },
+  "lablua": {
+    "github": ["labluapucrio"]
+  },
+  "sktime": {
+    "github": ["sktime"]
+  },
+  "sagemath": {
+    "github": ["sagemath"]
+  },
   "openastronomy": {
     "github": [
       "OpenAstronomy",
@@ -12,13 +18,34 @@
       "radis"
     ]
   },
-  "the-freebsd-project": { "github": ["freebsd"] },
-  "open-genome-informatics": { "github": ["GMOD"] },
-  "wikimedia-foundation-nd": { "github": ["wikimedia"] },
+  "the-freebsd-project": {
+    "github": ["freebsd"]
+  },
+  "open-genome-informatics": {
+    "github": ["GMOD"]
+  },
+  "wikimedia-foundation-nd": {
+    "github": ["wikimedia"]
+  },
   "r-project-for-statistical-computing": {
     "unmappable": "Umbrella organisation: projects live in many unrelated repositories that change every year."
   },
   "python-software-foundation": {
     "unmappable": "Umbrella organisation: sub-organisations change every year and apply through python-gsoc.org."
+  },
+  "the-linux-foundation": {
+    "github": ["OpenPrinting"]
+  },
+  "alaska": {
+    "github": ["uaanchorage"]
+  },
+  "department-of-biomedical-informatics-emory-university": {
+    "github": ["NISYSLAB"]
+  },
+  "german-center-for-open-source-ai": {
+    "github": ["gc-os-ai"]
+  },
+  "numfocus": {
+    "unmappable": "Umbrella organisation: its member projects apply separately and change every year."
   }
 }

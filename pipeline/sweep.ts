@@ -11,6 +11,7 @@
  *
  * Paths are lower case so a URL in any casing finds its file.
  */
+import { createHash } from "node:crypto";
 import { mkdir, readdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { gunzipSync, gzipSync } from "node:zlib";
@@ -55,6 +56,8 @@ interface UniverseFile {
   v: number;
   generatedAt: string;
   complete: boolean;
+  /** Fingerprint of the organisation list this was built from. */
+  source?: string;
   missing: string[];
   repos: UniverseRepo[];
 }
@@ -143,8 +146,16 @@ async function main() {
   const universeAge = universe
     ? startedAt.getTime() - Date.parse(universe.generatedAt)
     : Infinity;
-  if (!universe || !universe.complete || universeAge > UNIVERSE_DUE_DAYS * DAY_MS) {
-    const orgs = (await readJson<GsocOrg[]>("universe/gsoc.json")) ?? [];
+  // A change to the organisation list (a corrected mapping, say) also rebuilds it.
+  const orgsText = await readFile("universe/gsoc.json", "utf8");
+  const source = createHash("sha256").update(orgsText).digest("hex").slice(0, 16);
+  if (
+    !universe ||
+    !universe.complete ||
+    universe.source !== source ||
+    universeAge > UNIVERSE_DUE_DAYS * DAY_MS
+  ) {
+    const orgs = JSON.parse(orgsText) as GsocOrg[];
     const found = await discoverUniverse(
       client,
       orgs,
@@ -157,6 +168,7 @@ async function main() {
         v: PUBLISHED_VERSION,
         generatedAt: startedAt.toISOString(),
         complete: found.complete,
+        source,
         missing: found.missing,
         repos: found.repos,
       };
@@ -187,6 +199,17 @@ async function main() {
   );
   const latestYear = (repo: UniverseRepo) =>
     Math.max(0, ...repo.programs.flatMap((p) => p.years));
+  // A repository's place within its own account, most starred first. Reading rank 0
+  // of every account before any rank 1 puts every organisation on the site early,
+  // instead of finishing the alphabet's first accounts while the rest wait.
+  const rank = new Map<string, number>();
+  const perOwner = new Map<string, number>();
+  for (const repo of universe.repos) {
+    const owner = repo.owner.toLowerCase();
+    rank.set(idOf(repo).toLowerCase(), perOwner.get(owner) ?? 0);
+    perOwner.set(owner, (perOwner.get(owner) ?? 0) + 1);
+  }
+  const rankOf = (repo: UniverseRepo) => rank.get(idOf(repo).toLowerCase()) ?? 0;
   const queue = universe.repos
     .map((repo) => ({ repo, updatedAt: known.get(idOf(repo).toLowerCase()) ?? null }))
     .filter(({ repo, updatedAt }) => {
@@ -202,7 +225,9 @@ async function main() {
     .sort((a, b) => {
       if ((a.updatedAt === null) !== (b.updatedAt === null))
         return a.updatedAt === null ? -1 : 1;
-      if (a.updatedAt === null) return latestYear(b.repo) - latestYear(a.repo);
+      if (a.updatedAt === null) {
+        return rankOf(a.repo) - rankOf(b.repo) || latestYear(b.repo) - latestYear(a.repo);
+      }
       return Date.parse(a.updatedAt) - Date.parse(b.updatedAt!);
     });
   console.log(`queue: ${queue.length} of ${universe.repos.length} due`);
