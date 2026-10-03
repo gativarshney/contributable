@@ -182,9 +182,9 @@ export function ReportLoader({ owner, name }: { owner: string; name: string }) {
         status: "error",
         error: error ?? {
           code: "unavailable",
-          title: "Analysis interrupted",
+          title: "Preparing this report",
           message:
-            "The connection dropped before the report was complete. Please try again.",
+            "This one is taking longer than usual. Leave the page open and it will fill in on its own.",
         },
       });
 
@@ -268,7 +268,46 @@ export function ReportLoader({ owner, name }: { owner: string; name: string }) {
     return () => controller.abort();
   }, [owner, name, attempt]);
 
+  // Anything short of "this repository does not exist" is retried quietly, with a
+  // growing pause, so the visitor never has to do it by hand.
+  const waiting = state.status === "error" && state.error.code !== "not_found";
+  useEffect(() => {
+    if (!waiting) return;
+    const seconds = Math.min(300, 30 * 2 ** Math.min(attempt, 4));
+    const timer = setTimeout(() => setAttempt((n) => n + 1), seconds * 1000);
+    return () => clearTimeout(timer);
+  }, [waiting, attempt]);
+
   if (state.status === "ready") return <ReportView report={state.report} />;
+
+  if (state.status === "error" && waiting) {
+    return (
+      <div className="shell py-20 md:py-28" aria-live="polite">
+        <p className="eyebrow">
+          github.com/{owner}/{name}
+        </p>
+        <h1 className="display mt-5 text-[clamp(2.2rem,6vw,3.5rem)]">
+          Preparing <em>this report.</em>
+        </h1>
+        <p className="text-ink-2 mt-5 max-w-xl text-lg">{state.error.message}</p>
+        <div className="bg-bg-3 mt-8 h-1 max-w-sm overflow-hidden rounded-full">
+          <div className="stage-pulse bg-accent h-full w-1/3 rounded-full" />
+        </div>
+        <div className="mt-10 flex flex-wrap gap-3">
+          <button
+            type="button"
+            className="btn btn-ghost"
+            onClick={() => setAttempt((n) => n + 1)}
+          >
+            Check now
+          </button>
+          <Link href="/explore" className="btn btn-ghost">
+            Browse measured repositories
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (state.status === "error") {
     return (

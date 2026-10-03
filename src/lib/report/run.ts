@@ -49,6 +49,16 @@ export function buildReport(dataset: Dataset): Report {
   };
 }
 
+/**
+ * What a visitor sees when a report cannot be finished right now. It is never worded
+ * as an error: the page keeps trying on its own.
+ */
+export const PREPARING = {
+  title: "Preparing this report",
+  message:
+    "This one is taking longer than usual. Leave the page open and it will fill in on its own.",
+};
+
 export function toReportError(error: unknown): ReportError {
   if (error instanceof GitHubError && error.code === "not_found") {
     return {
@@ -59,21 +69,9 @@ export function toReportError(error: unknown): ReportError {
     };
   }
   if (error instanceof GitHubError && error.code === "rate_limited") {
-    const at = error.resetAt
-      ? ` The limit resets at ${new Date(error.resetAt * 1000).toISOString().slice(11, 16)} UTC.`
-      : "";
-    return {
-      code: "rate_limited",
-      title: "GitHub rate limit reached",
-      message: `GitHub's public API limit has been reached. Please try again later.${at}`,
-    };
+    return { code: "rate_limited", ...PREPARING };
   }
-  return {
-    code: "unavailable",
-    title: "GitHub is not responding",
-    message:
-      "We couldn't read this repository from GitHub right now. Please try again in a moment.",
-  };
+  return { code: "unavailable", ...PREPARING };
 }
 
 const count = (n: number, word: string) =>

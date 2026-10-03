@@ -470,9 +470,10 @@ describe("toReportError", () => {
     expect(toReportError(new GitHubError("not_found", 404)).message).toMatch(
       /couldn't find that public repository/,
     );
-    expect(
-      toReportError(new GitHubError("rate_limited", 403, 1790000000)).message,
-    ).toMatch(/resets at \d\d:\d\d UTC/);
+    // A visitor never reads about limits or quotas: the page says it is preparing.
+    const limited = toReportError(new GitHubError("rate_limited", 403, 1790000000));
+    expect(limited.title).toBe("Preparing this report");
+    expect(`${limited.title} ${limited.message}`).not.toMatch(/limit|quota|GitHub/i);
     expect(toReportError(new Error("boom")).code).toBe("unavailable");
   });
 });
