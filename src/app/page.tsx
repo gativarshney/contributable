@@ -1,154 +1,109 @@
 import Link from "next/link";
-import { EvidenceCard } from "@/components/home/EvidenceCard";
-import { Showcase, type ShowcaseData } from "@/components/home/Showcase";
+import { Field } from "@/components/home/Field";
 import { RepoInput } from "@/components/site/RepoInput";
-import { Reveal } from "@/components/site/Reveal";
-import { Skyline } from "@/components/three/Skyline";
-import { buildSampleReport } from "@/lib/sample/dataset";
-import { buildSkylineValues } from "@/lib/sample/skyline";
+import { getIndex, getStatus } from "@/lib/data";
+import { count, date } from "@/lib/format";
+import { GSOC_ORGS } from "@/lib/gsoc/orgs";
 
-const examples = ["vercel/next.js", "fastify/fastify", "sindresorhus/ky"];
-const skyline = buildSkylineValues();
+export const revalidate = 900;
 
-const layers = [
-  ["Observed", "What GitHub returned."],
-  ["Calculated", "The formula, written out."],
-  ["Interpreted", "What the number suggests."],
-  ["Limited", "What it cannot prove."],
+const DOORS = [
+  {
+    href: "/gsoc",
+    title: "GSoC organisations",
+    text: "Ranked by how often they answer outside pull requests within 7 days.",
+  },
+  {
+    href: "/issues",
+    title: "Available first issues",
+    text: "Open, unassigned, unclaimed and with no pull request yet.",
+  },
+  {
+    href: "/guide",
+    title: "How to pick an organisation",
+    text: "One rule, a six-point checklist and examples from the data.",
+  },
 ];
 
-function showcaseData(): ShowcaseData {
-  const report = buildSampleReport();
-  const { contributing, contributors } = report.analysis;
-  return {
-    repository: report.repository.fullName,
-    checklist: report.checklist,
-    window: contributing.windows[90],
-    starter: contributing.starter,
-    responders: contributing.responders,
-    rhythm: contributing.rhythm,
-    authors: contributors.windows[90].distribution,
-    people: contributors.windows[90].contributors,
-  };
-}
+export default async function HomePage() {
+  const [index, status] = await Promise.all([getIndex(), getStatus()]);
+  const available = index.rows.reduce((sum, r) => sum + r.available, 0);
 
-export default function HomePage() {
   return (
     <>
-      {/* One screen tall, with the 3D skyline resting on its bottom edge. */}
-      <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col overflow-hidden">
+      <section className="relative overflow-hidden">
         <div className="hero-glow" aria-hidden="true" />
-        <Skyline
-          values={skyline}
-          anchor="bottom"
-          reactive
-          className="skyline-fade pointer-events-none absolute inset-x-0 bottom-0 h-[clamp(14rem,38svh,26rem)]"
-        />
-        <div className="shell relative flex flex-col items-center pt-[clamp(2rem,7svh,6rem)] pb-[clamp(10rem,29svh,20rem)] text-center">
-          <Link
-            href="/sample"
-            className="rise border-hair-strong text-ink-2 hover:text-ink bg-bg-2/60 inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] transition-colors"
-          >
-            <span className="bg-accent size-1.5 rounded-full" aria-hidden="true" />
-            For open source contributors
-            <span className="text-ink-3" aria-hidden="true">
-              ·
-            </span>
-            See an example →
-          </Link>
-          <h1
-            className="display rise mt-7 max-w-4xl text-[clamp(2.5rem,min(7.4vw,10svh),5.25rem)]"
-            style={{ animationDelay: "70ms" }}
-          >
-            Know a repository <em>before your first pull request.</em>
+        <div className="shell relative pt-[clamp(1.5rem,5svh,4rem)] pb-10 text-center">
+          <h1 className="display rise mx-auto max-w-4xl text-[clamp(2.3rem,min(7vw,9svh),4.75rem)]">
+            Find a project that <em>answers newcomers.</em>
           </h1>
           <p
-            className="text-ink-2 rise mt-6 max-w-xl text-lg text-balance"
-            style={{ animationDelay: "140ms" }}
+            className="text-ink-2 rise mx-auto mt-4 max-w-xl text-balance"
+            style={{ animationDelay: "70ms" }}
           >
-            Where to start, who maintains it, and whether outside contributions actually
-            get merged. Every answer shows its evidence.
+            We measure how open source projects treat people outside their team: how fast
+            they reply, and how often they merge.
           </p>
-          <div className="rise mt-9 w-full max-w-xl" style={{ animationDelay: "210ms" }}>
-            <RepoInput />
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <span className="text-ink-3 mr-1 text-sm">Try</span>
-              {examples.map((repo) => (
-                <Link
-                  key={repo}
-                  href={`/report/${repo}`}
-                  className="border-hair-strong text-ink-2 hover:text-ink hover:border-ink-3 rounded-full border px-3 py-1 font-mono text-xs transition-colors"
-                >
-                  {repo}
-                </Link>
-              ))}
-            </div>
+          <div className="rise mt-7" style={{ animationDelay: "140ms" }}>
+            <Field />
           </div>
         </div>
       </section>
 
-      <section aria-labelledby="questions-heading" className="py-20 md:py-28">
-        <div className="shell">
-          <Reveal>
-            <p className="eyebrow">What you get</p>
-            <h2
-              id="questions-heading"
-              className="display mt-5 text-[clamp(2rem,4.6vw,3.25rem)]"
+      <section className="border-hair border-t">
+        <dl className="shell grid grid-cols-2 gap-y-6 py-8 text-center sm:grid-cols-4">
+          {[
+            [count(index.rows.length), "repositories measured"],
+            [count(GSOC_ORGS.length), "GSoC organisations, 2024 to 2026"],
+            [count(available), "starter issues available now"],
+            [
+              status ? date(status.generatedAt) : "Preparing",
+              status ? "last refresh" : "first refresh under way",
+            ],
+          ].map(([value, label]) => (
+            <div key={label}>
+              <dd className="num text-2xl font-medium sm:text-3xl">{value}</dd>
+              <dt className="text-ink-2 mt-1 text-xs sm:text-sm">{label}</dt>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <section className="border-hair border-t py-14 md:py-20">
+        <div className="shell grid gap-4 md:grid-cols-3">
+          {DOORS.map((door) => (
+            <Link
+              key={door.href}
+              href={door.href}
+              className="card hover:border-hair-strong block p-6 transition-colors"
             >
-              Six questions, <em>answered.</em>
-            </h2>
-          </Reveal>
-          <Reveal delay={100} className="mt-10">
-            <Showcase data={showcaseData()} />
-          </Reveal>
+              <h2 className="font-display text-xl">{door.title}</h2>
+              <p className="text-ink-2 mt-2 text-sm">{door.text}</p>
+              <p className="text-accent mt-5 text-sm">Open →</p>
+            </Link>
+          ))}
         </div>
       </section>
 
-      <section className="border-hair border-t py-20 md:py-28">
-        <div className="shell grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-          <Reveal>
-            <p className="eyebrow">Evidence first</p>
-            <h2 className="display mt-5 text-[clamp(2rem,4.6vw,3.25rem)]">
-              Every number <em>shows its work.</em>
-            </h2>
-            <dl className="border-hair mt-10 border-t">
-              {layers.map(([term, detail]) => (
-                <div
-                  key={term}
-                  className="border-hair flex items-baseline justify-between gap-6 border-b py-4"
-                >
-                  <dt className="font-medium">{term}</dt>
-                  <dd className="text-ink-2 text-right text-[15px]">{detail}</dd>
-                </div>
-              ))}
-            </dl>
-            <p className="text-ink-3 mt-6 text-sm">
-              No score, no generated text. Also in every report: activity, maintenance,
-              releases, issues and pull requests.
-            </p>
-          </Reveal>
-          <Reveal delay={120}>
-            <EvidenceCard />
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="border-hair relative overflow-hidden border-t py-24 md:py-36">
-        <div className="hero-glow rotate-180" aria-hidden="true" />
-        <Reveal className="shell relative flex flex-col items-center text-center">
-          <h2 className="display text-[clamp(2.2rem,5.4vw,4rem)]">
-            Pick a repository. <em>Start contributing.</em>
+      <section className="border-hair border-t py-16 md:py-24">
+        <div className="shell flex flex-col items-center text-center">
+          <h2 className="display text-[clamp(1.9rem,4.4vw,3rem)]">
+            Have a repository in mind? <em>Check it.</em>
           </h2>
-          <div className="mt-9 w-full max-w-xl">
+          <p className="text-ink-2 mt-3 max-w-lg">
+            Paste any public GitHub repository. If it is not in the index yet, it is
+            measured while you wait.
+          </p>
+          <div className="mt-7 w-full max-w-xl">
             <RepoInput />
           </div>
           <p className="text-ink-3 text-sm">
-            Public data only. Nothing stored.{" "}
+            Public data only. No account needed.{" "}
             <Link href="/methodology" className="link text-ink-2">
-              Methodology and limitations
+              How every figure is calculated
             </Link>
           </p>
-        </Reveal>
+        </div>
       </section>
     </>
   );

@@ -20,7 +20,7 @@ export function RepoInput({ defaultValue = "" }: { defaultValue?: string }) {
       return;
     }
     setPending(true);
-    router.push(`/report/${result.ref.owner}/${result.ref.name}`);
+    router.push(`/repo/${result.ref.owner}/${result.ref.name}`);
   }
 
   return (
