@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Methodology and limitations",
   description:
-    "How RepoInsight reads public GitHub data, calculates its metrics, and what the numbers cannot tell you.",
+    "How Contributable reads public GitHub data, calculates its metrics, and what the numbers cannot tell you.",
 };
 
 const steps = [
@@ -88,7 +88,7 @@ export default function MethodologyPage() {
         Calculated, <em>not generated.</em>
       </h1>
       <p className="text-ink-2 mt-6 mb-14 max-w-2xl text-lg">
-        What RepoInsight reads, how it turns that into numbers, and where those numbers
+        What Contributable reads, how it turns that into numbers, and where those numbers
         stop being useful.
       </p>
 
@@ -148,7 +148,7 @@ export default function MethodologyPage() {
 
       <Block title="Privacy">
         <p className="text-ink-2 max-w-2xl">
-          RepoInsight retrieves only what GitHub already serves publicly for the
+          Contributable retrieves only what GitHub already serves publicly for the
           repository you enter. It stores nothing, sets no cookies and asks for no
           credentials. Each report also documents its own formulas under every metric.
         </p>

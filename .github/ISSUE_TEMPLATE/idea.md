@@ -1,6 +1,6 @@
 ---
 name: An idea
-about: A signal RepoInsight should show, or a way to show one better
+about: A signal Contributable should show, or a way to show one better
 labels: enhancement
 ---
 

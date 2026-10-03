@@ -1,6 +1,6 @@
-# Contributing to RepoInsight
+# Contributing to Contributable
 
-Thanks for looking. RepoInsight tells people what to expect before they contribute to a
+Thanks for looking. Contributable tells people what to expect before they contribute to a
 project, so this one tries to be easy to contribute to.
 
 ## Getting set up
@@ -8,8 +8,8 @@ project, so this one tries to be easy to contribute to.
 You need Node.js 20.9 or newer.
 
 ```bash
-git clone https://github.com/gativarshney/repoinsight.git
-cd repoinsight
+git clone https://github.com/gativarshney/contributable.git
+cd contributable
 npm install
 npm run dev
 ```
@@ -52,7 +52,7 @@ src/components/     the interface
 - **Partial data never becomes a no.** Lists from GitHub can be cut short. A count from a
   partial list is a lower bound: it may prove a yes, never a no. See
   `src/lib/insights/checklist.ts`.
-- **No score, no generated text.** RepoInsight reports measurements and fixed rules. A
+- **No score, no generated text.** Contributable reports measurements and fixed rules. A
   change that adds a blended score or model-written prose will not be merged.
 - **Mind the request budget.** A report costs about a dozen GitHub requests. If your
   change adds one, say so in the pull request and explain why it is worth it.
@@ -69,7 +69,7 @@ through before writing much code.
 ## Reporting a wrong number
 
 If a report disagrees with what you see on GitHub, that is the most useful bug there is.
-Open an issue with the repository, the figure RepoInsight showed, and what GitHub shows.
+Open an issue with the repository, the figure Contributable showed, and what GitHub shows.
 
 ## Conduct
 

@@ -11,7 +11,7 @@ export function SiteHeader() {
   return (
     <header className="border-hair bg-bg/75 sticky top-0 z-40 border-b backdrop-blur-xl">
       <div className="shell flex h-14 items-center justify-between gap-6">
-        <Link href="/" aria-label="RepoInsight home">
+        <Link href="/" aria-label="Contributable home">
           <Logo />
         </Link>
         <nav aria-label="Primary" className="flex items-center gap-5">

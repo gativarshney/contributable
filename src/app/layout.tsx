@@ -15,16 +15,16 @@ const displaySerif = Instrument_Serif({
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 const description =
-  "RepoInsight tells open source contributors what to expect from a repository: where to start, who maintains it, how fast people reply and whether outside pull requests get merged, with the evidence behind every answer.";
+  "Contributable tells open source contributors what to expect from a repository: where to start, who maintains it, how fast people reply and whether outside pull requests get merged, with the evidence behind every answer.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "RepoInsight",
-    template: "%s — RepoInsight",
+    default: "Contributable",
+    template: "%s | Contributable",
   },
   description,
-  applicationName: "RepoInsight",
+  applicationName: "Contributable",
   authors: [{ name: "Gati Varshney", url: "https://gativarshney.github.io/" }],
   keywords: [
     "open source",
@@ -35,14 +35,14 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     type: "website",
-    siteName: "RepoInsight",
-    title: "RepoInsight",
+    siteName: "Contributable",
+    title: "Contributable",
     description,
     url: "/",
   },
   twitter: {
     card: "summary_large_image",
-    title: "RepoInsight",
+    title: "Contributable",
     description,
   },
   robots: { index: true, follow: true },

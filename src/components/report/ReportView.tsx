@@ -125,7 +125,7 @@ export function ReportView({ report }: { report: Report }) {
           UTC. Public data only.
         </p>
         <Link href="/methodology" className="link text-ink-2">
-          How RepoInsight works
+          How Contributable works
         </Link>
       </footer>
     </article>

@@ -73,7 +73,7 @@ export function SiteFooter() {
               How it works
             </Link>
             <a
-              href="https://github.com/gativarshney/repoinsight"
+              href="https://github.com/gativarshney/contributable"
               target="_blank"
               rel="noreferrer"
               className="hover:text-ink transition-colors"
@@ -81,7 +81,7 @@ export function SiteFooter() {
               Source
             </a>
             <a
-              href="https://github.com/gativarshney/repoinsight/blob/main/CONTRIBUTING.md"
+              href="https://github.com/gativarshney/contributable/blob/main/CONTRIBUTING.md"
               target="_blank"
               rel="noreferrer"
               className="hover:text-ink transition-colors"

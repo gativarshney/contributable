@@ -78,7 +78,7 @@ export function parseErrorMessage(reason: "empty" | "not_github" | "malformed"):
     case "empty":
       return "Paste a public GitHub repository URL to analyze.";
     case "not_github":
-      return "RepoInsight only reads repositories hosted on github.com.";
+      return "Contributable only reads repositories hosted on github.com.";
     default:
       return "That doesn't look like a valid GitHub repository URL.";
   }

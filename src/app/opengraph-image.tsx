@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "RepoInsight";
+export const alt = "Contributable";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -19,7 +19,7 @@ export default function OpenGraphImage() {
       }}
     >
       <div style={{ display: "flex", fontSize: 30, letterSpacing: 6, color: "#6fd3cf" }}>
-        REPOINSIGHT
+        CONTRIBUTABLE
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div

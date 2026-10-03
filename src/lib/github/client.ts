@@ -73,7 +73,7 @@ export function createGitHubClient(
             Accept: "application/vnd.github+json",
             ...(inBrowser
               ? {}
-              : { "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "RepoInsight" }),
+              : { "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "Contributable" }),
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
           cache: inBrowser ? "default" : "no-store",

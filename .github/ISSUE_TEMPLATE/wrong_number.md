@@ -8,7 +8,7 @@ labels: bug
 
 <!-- e.g. https://github.com/owner/name -->
 
-**What RepoInsight showed**
+**What Contributable showed**
 
 <!-- The section and the figure, e.g. "Pull request journey: 11 merged in 30 days". -->
 

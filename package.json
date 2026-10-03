@@ -1,5 +1,5 @@
 {
-  "name": "repoinsight",
+  "name": "contributable",
   "version": "0.1.0",
   "private": true,
   "description": "Know a repository before your first pull request. Contributor reports from public GitHub data.",

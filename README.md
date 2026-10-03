@@ -1,18 +1,18 @@
-# RepoInsight
+# Contributable
 
 Know a repository before your first pull request.
 
-RepoInsight is for open source contributors. Paste a public GitHub repository and it
+Contributable is for open source contributors. Paste a public GitHub repository and it
 tells you what to expect: where to start, who maintains it, how fast people reply, and
 whether pull requests from outside the team actually get merged. Every answer is
 calculated from public GitHub data and shows how it was worked out.
 
-Live: https://repoinsight-app.vercel.app
+Live: https://contributable.vercel.app
 
 ## Why it exists
 
 Deciding whether to contribute somewhere usually means clicking through commits, issues
-and pull requests and forming an impression. RepoInsight reads the same public data and
+and pull requests and forming an impression. Contributable reads the same public data and
 answers the questions a contributor is advised to ask first. It is deliberately not a
 chatbot, not a GitHub clone, and it does not produce a "health score".
 
@@ -141,7 +141,7 @@ with modern templates or issue forms would be shown as having none.
 
 ## Cost and scaling
 
-RepoInsight costs nothing to run. There is no database, no paid API and no AI service.
+Contributable costs nothing to run. There is no database, no paid API and no AI service.
 The only limit is GitHub's free API allowance, and four things stretch it:
 
 1. **A server token.** With `GITHUB_TOKEN` set, the server gets 5,000 requests an hour
@@ -292,7 +292,7 @@ that disagrees with what GitHub shows.
 
 Built by [Gati Varshney](https://gativarshney.github.io/), a
 [Google Summer of Code 2026](https://summerofcode.withgoogle.com/programs/2026/projects/k0bZOR1y)
-contributor at OpenPrinting, The Linux Foundation. RepoInsight is an independent project
+contributor at OpenPrinting, The Linux Foundation. Contributable is an independent project
 and is not part of that programme; it grew out of the questions that come up before a
 first pull request to an unfamiliar project.
 
