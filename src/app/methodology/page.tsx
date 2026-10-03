@@ -152,6 +152,12 @@ export default function MethodologyPage() {
           repository you enter. It stores nothing, sets no cookies and asks for no
           credentials. Each report also documents its own formulas under every metric.
         </p>
+        <p className="text-ink-2 mt-4 max-w-2xl">
+          Reply timing describes the project, never a person. The weekly pattern pools
+          every team member&apos;s comments, and it is left out entirely when fewer than
+          three people contributed to it, because it would then be one maintainer&apos;s
+          schedule.
+        </p>
         <Link href="/sample" className="btn btn-ghost mt-8">
           See it in the example report →
         </Link>

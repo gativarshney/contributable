@@ -193,7 +193,9 @@ Periods are trailing, measured back from the moment the data was read.
 - **Who wrote the code** — share of commits on the default branch per author over 90
   days, bots excluded. Commits not linked to an account are grouped by git author name.
 - **Timing** — every comment by a team member placed in a half-hour slot of the week
-  (UTC), shifted to the viewer's time zone in the browser.
+  (UTC), shifted to the viewer's time zone in the browser. The pattern is pooled across
+  the team and never broken down by person. It is dropped when fewer than three team
+  members commented, because it would then be one maintainer's schedule.
 - **Commits per week** — twelve 7-day totals ending now.
 - **Release rhythm** — median gap between the publish dates of the most recent releases.
 - **Open issues** — `open_issues_count - open pull requests`, because GitHub's count

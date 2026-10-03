@@ -12,6 +12,7 @@ import { People } from "./People";
 import { Pulse } from "./Pulse";
 import { Start } from "./Start";
 import { Timing } from "./Timing";
+import { RHYTHM_MIN_PEOPLE } from "@/lib/analysis/contributing";
 import { Verdict } from "./Verdict";
 
 export function ReportView({ report }: { report: Report }) {
@@ -100,17 +101,18 @@ export function ReportView({ report }: { report: Report }) {
       />
       <People report={report} />
 
-      {contributing.rhythm.total >= 10 ? (
+      {contributing.rhythm.total >= 10 &&
+      contributing.rhythm.people >= RHYTHM_MIN_PEOPLE ? (
         <Block
           id="timing"
           question="When will someone see my question?"
           title={
             <>
-              When maintainers are <em>usually around.</em>
+              When the project is <em>most responsive.</em>
             </>
           }
         >
-          <Timing slots={contributing.rhythm.slots} total={contributing.rhythm.total} />
+          <Timing {...contributing.rhythm} />
         </Block>
       ) : null}
 

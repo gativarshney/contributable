@@ -27,7 +27,7 @@ const QUESTIONS = [
   ["merged", "Will my pull request be merged?"],
   ["reply", "Will anyone reply?"],
   ["people", "Who will I work with?"],
-  ["timing", "When are maintainers around?"],
+  ["timing", "When do replies arrive?"],
 ] as const;
 type QuestionId = (typeof QUESTIONS)[number][0];
 
@@ -189,7 +189,7 @@ function Panel({ id, data }: { id: QuestionId; data: ShowcaseData }) {
       );
     }
     case "timing":
-      return <Timing slots={rhythm.slots} total={rhythm.total} />;
+      return <Timing {...rhythm} />;
   }
 }
 

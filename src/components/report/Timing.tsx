@@ -15,8 +15,19 @@ function zoneName(offset: number): string {
   }`;
 }
 
-/** When the team comments, hour by hour across the week, in the viewer's own time zone. */
-export function Timing({ slots, total }: { slots: number[]; total: number }) {
+/**
+ * When the project's team comments, hour by hour across the week, in the viewer's own
+ * time zone. Always the whole team pooled, never one person.
+ */
+export function Timing({
+  slots,
+  total,
+  people,
+}: {
+  slots: number[];
+  total: number;
+  people: number;
+}) {
   // The server renders in UTC; the browser switches to the viewer's zone on hydration.
   const offset = useSyncExternalStore(
     subscribe,
@@ -30,7 +41,7 @@ export function Timing({ slots, total }: { slots: number[]; total: number }) {
   return (
     <div>
       <p className="mb-8 max-w-2xl text-lg">
-        Maintainers are most active on{" "}
+        Replies from the project are most likely on{" "}
         <strong className="font-medium">{peak.day}s</strong>, around{" "}
         <strong className="font-medium">
           {hour(peak.from)}–{hour(peak.to)}
@@ -43,8 +54,8 @@ export function Timing({ slots, total }: { slots: number[]; total: number }) {
         label={`Team comments by weekday and hour in ${zone}. Busiest on ${peak.day}s between ${hour(peak.from)} and ${hour(peak.to)}.`}
       />
       <p className="text-ink-3 mt-3 text-xs">
-        Based on {total.toLocaleString("en-US")} comments by team members. Each square is
-        one hour.
+        Based on {total.toLocaleString("en-US")} comments from {people} team members,
+        counted together. Each square is one hour. Never shown per person.
       </p>
     </div>
   );

@@ -123,10 +123,12 @@ export interface ContributingAnalysis {
   /** Team members who replied to community threads in the observed period, busiest first. */
   responders: Responder[];
   /**
-   * When team members comment: 336 half-hour slots across a UTC week, Sunday 00:00 first.
-   * Half hours let the browser shift the pattern into any local time zone.
+   * When the team comments, pooled: 336 half-hour slots across a UTC week, Sunday 00:00
+   * first. Half hours let the browser shift the pattern into any local time zone.
+   * With fewer than RHYTHM_MIN_PEOPLE commenters the pattern would be one person's
+   * schedule, so the slots are left empty and nothing is shown.
    */
-  rhythm: { total: number; slots: number[] };
+  rhythm: { total: number; people: number; slots: number[] };
   /** Labels on issues and pull requests opened in the trailing 90 days, most used first. */
   labels: { name: string; count: number }[];
   /**
@@ -148,6 +150,12 @@ const FILE_LABELS: [keyof CommunityFiles, string][] = [
 ];
 
 export const SLOTS_PER_WEEK = 7 * 48;
+
+/**
+ * The weekly pattern is only kept when at least this many team members contributed to
+ * it. Below that it stops describing the project and starts describing a person.
+ */
+export const RHYTHM_MIN_PEOPLE = 3;
 
 /** Index of the half-hour slot a timestamp falls in, counted from Sunday 00:00 UTC. */
 export function weekSlot(iso: string): number {
@@ -336,10 +344,12 @@ export function calculateContributingSignals(
   const communityNumbers = new Set(communityThreads.map((t) => t.number));
   const replies = new Map<string, { replies: number; threads: Set<number> }>();
   const slots = new Array<number>(SLOTS_PER_WEEK).fill(0);
+  const teamAuthors = new Set<string>();
   let teamComments = 0;
   for (const comment of comments.items) {
     if (comment.association !== "team" || comment.author === null) continue;
     slots[weekSlot(comment.createdAt)] += 1;
+    teamAuthors.add(comment.author);
     teamComments += 1;
     if (!communityNumbers.has(comment.issueNumber)) continue;
     const entry = replies.get(comment.author) ?? { replies: 0, threads: new Set() };
@@ -390,7 +400,14 @@ export function calculateContributingSignals(
       ? FILE_LABELS.map(([key, label]) => ({ key, label, url: community[key] }))
       : null,
     responders,
-    rhythm: { total: teamComments, slots },
+    rhythm: {
+      total: teamComments,
+      people: teamAuthors.size,
+      slots:
+        teamAuthors.size >= RHYTHM_MIN_PEOPLE
+          ? slots
+          : new Array<number>(SLOTS_PER_WEEK).fill(0),
+    },
     queue: queueFor(extra.openPullRequests ?? null, observed),
     claBot:
       comments.items.map((c) => c.author).find((login) => login && isClaBot(login)) ??

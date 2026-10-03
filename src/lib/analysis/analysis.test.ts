@@ -396,7 +396,29 @@ describe("people, rhythm and stack", () => {
     ]);
     // Every team comment counts towards the weekly rhythm, wherever it was left.
     expect(result.rhythm.total).toBe(5);
-    expect(result.rhythm.slots.reduce((a, b) => a + b, 0)).toBe(5);
+    expect(result.rhythm.people).toBe(2);
+    // Two people are too few: the pattern would give away an individual's hours.
+    expect(result.rhythm.slots.reduce((a, b) => a + b, 0)).toBe(0);
+  });
+
+  it("keeps the weekly pattern only when three or more team members commented", () => {
+    const items = [item(1, 10, null, outsider)];
+    const rhythmFor = (authors: string[]) =>
+      calculateContributingSignals(
+        collection(items),
+        collection(authors.map((author, i) => reply(1, ago(9 - i), author))),
+        collection<StarterIssue>([], { coveredSince: null }),
+        null,
+        NOW,
+      ).rhythm;
+
+    const solo = rhythmFor(["mia", "mia", "mia", "mia"]);
+    expect(solo).toMatchObject({ total: 4, people: 1 });
+    expect(solo.slots.every((count) => count === 0)).toBe(true);
+
+    const team = rhythmFor(["mia", "raj", "lee", "mia"]);
+    expect(team).toMatchObject({ total: 4, people: 3 });
+    expect(team.slots.reduce((a, b) => a + b, 0)).toBe(4);
   });
 
   it("places timestamps in half-hour slots of a UTC week", () => {
