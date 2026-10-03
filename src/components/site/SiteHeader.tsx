@@ -3,8 +3,10 @@ import { Logo } from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
-  { href: "/sample", label: "Example" },
-  { href: "/methodology", label: "How it works" },
+  { href: "/explore", label: "Explore" },
+  { href: "/gsoc", label: "GSoC" },
+  { href: "/issues", label: "Issues" },
+  { href: "/methodology", label: "Method", wide: true },
 ];
 
 export function SiteHeader() {
@@ -14,13 +16,13 @@ export function SiteHeader() {
         <Link href="/" aria-label="Contributable home">
           <Logo />
         </Link>
-        <nav aria-label="Primary" className="flex items-center gap-5">
-          <ul className="flex items-center gap-5">
+        <nav aria-label="Primary" className="flex items-center gap-3 sm:gap-5">
+          <ul className="flex items-center gap-3.5 sm:gap-5">
             {links.map((link) => (
-              <li key={link.href}>
+              <li key={link.href} className={link.wide ? "hidden sm:block" : undefined}>
                 <Link
                   href={link.href}
-                  className="text-ink-2 hover:text-ink text-sm transition-colors"
+                  className="text-ink-2 hover:text-ink inline-flex min-h-11 items-center text-sm transition-colors"
                 >
                   {link.label}
                 </Link>
