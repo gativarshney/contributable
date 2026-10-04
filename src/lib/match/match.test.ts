@@ -196,6 +196,7 @@ describe("find my project", () => {
   it("applies the stated rules for goal, level and hours", () => {
     const input = parseMatch({ stack: "python" });
     expect(fits(row("x/quiet", { trend: "went-quiet" }), input)).toBe(false);
+    expect(fits(row("x/no-prs", { noPulls: true }), input)).toBe(false);
     expect(fits(row("x/no-guide", { guide: false }), input)).toBe(false);
     expect(fits(row("x/slow", { replyHours: 400 }), input)).toBe(false);
     expect(fits(row("x/slow", { replyHours: 400 }), { ...input, level: "some" })).toBe(

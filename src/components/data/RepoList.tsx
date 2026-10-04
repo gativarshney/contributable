@@ -160,6 +160,14 @@ export function RepoCard({ row }: { row: IndexRow }) {
             GSoC {row.years.at(-1)}
           </span>
         ) : null}
+        {row.noPulls ? (
+          <span
+            className="text-danger text-xs font-medium"
+            title="Its README or contributing guide says it does not take pull requests here. Open the repository for the exact words."
+          >
+            Not taking PRs
+          </span>
+        ) : null}
         {trend ? (
           <span className={`text-xs ${TREND_CLASS[row.trend] ?? "text-ink-3"}`}>
             {trend}

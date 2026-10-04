@@ -7,6 +7,7 @@ import {
   type RepoFacts,
   type RepoState,
 } from "../schema";
+import { pullRequestPolicy } from "../policy";
 import { detectChannels, detectFrameworks, detectSignOff } from "../stack";
 import { isClaimComment, starterLabelClass } from "../starter";
 import type { GraphQLClient } from "./client";
@@ -404,6 +405,7 @@ export async function fetchFacts(
         botLogins,
       }),
       channels: detectChannels(contributing, readme),
+      policy: pullRequestPolicy([contributing, readme]),
     },
   };
   return { facts, starterLabels: labels.filter((l) => starterLabelClass(l) !== null) };

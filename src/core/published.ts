@@ -74,6 +74,8 @@ export interface IndexRow {
   cla: RepoFacts["gettingStarted"]["cla"];
   channels: string[];
   guide: boolean;
+  /** True when the project says it does not take pull requests on this repository. */
+  noPulls?: boolean;
   trend: TrendFlag;
   /** Outside pull requests opened per four weeks over the last year, oldest first. */
   spark: number[];
@@ -179,6 +181,7 @@ export function toIndexRow(detail: RepoDetail): IndexRow {
     cla: facts.gettingStarted.cla,
     channels: [...new Set(facts.gettingStarted.channels.map((c) => c.kind))],
     guide: facts.gettingStarted.contributing,
+    ...(facts.gettingStarted.policy ? { noPulls: true } : {}),
     trend: detail.trend.flag,
     spark: spark(detail.series),
     hours: hourOfDayProfile(metrics.responseWindow.hours),

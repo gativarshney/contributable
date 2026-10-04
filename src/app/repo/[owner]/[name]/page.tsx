@@ -465,6 +465,47 @@ export default async function RepoPage({ params }: Props) {
         </Link>
       </p>
 
+      {facts.gettingStarted.policy ? (
+        <aside
+          role="note"
+          className="border-slow/50 bg-slow/10 mt-8 flex gap-4 rounded-2xl border p-5 md:p-6"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            className="text-slow mt-0.5 size-6 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+          </svg>
+          <div>
+            <p className="font-medium">
+              This project says it does not take pull requests here.
+            </p>
+            <blockquote className="text-ink-2 border-hair-strong mt-2 border-l-2 pl-3 text-sm italic">
+              “{facts.gettingStarted.policy}”
+            </blockquote>
+            <p className="text-ink-2 mt-3 text-sm">
+              From its README or contributing guide. The figures still describe the
+              repository, but read the project&apos;s own instructions before you open a
+              pull request.{" "}
+              <a
+                href={`https://github.com/${id}#readme`}
+                target="_blank"
+                rel="noreferrer"
+                className="link"
+              >
+                Read them on GitHub
+              </a>
+            </p>
+          </div>
+        </aside>
+      ) : null}
+
       <JumpBar items={jumps} />
 
       <Section

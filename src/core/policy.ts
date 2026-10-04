@@ -4,17 +4,32 @@
  * look healthy (the team merges its own work, or pulls changes in from forks), so the
  * project's own words have to win. This finds that statement.
  */
+
+// A condition after the noun ("without an issue", "that only fix typos", "from bots")
+// makes the sentence a rule for some pull requests, not a refusal of all of them.
+const NO_CONDITION =
+  "(?!\\s+(?:without|unless|that|which|who|if|from|for|to|on|in|before|until|with|by|of|containing|adding|changing|touching|where|when|after)\\b)";
+const KIND =
+  "(?:new\\s+|outside\\s+|external\\s+|community\\s+|third[- ]party\\s+|unsolicited\\s+)?";
+const THING = "(?:pull\\s+requests|PRs|contributions|patches|code\\s+contributions)\\b";
+
 const PATTERNS: RegExp[] = [
   // "We don't run an inbound review queue on this repo."
   /\b(?:do not|don['’]t|does not|doesn['’]t)\s+(?:run|have|maintain|keep)\s+an?\s+(?:inbound\s+|public\s+|open\s+)?review\s+queue/i,
   // "We are not accepting pull requests / contributions at this time."
-  /\b(?:not|no\s+longer)\s+(?:currently\s+|actively\s+)?(?:accept(?:ing)?|tak(?:e|ing)|review(?:ing)?|look(?:ing)?\s+for)\s+(?:any\s+)?(?:new\s+|outside\s+|external\s+|community\s+|third[- ]party\s+|unsolicited\s+)?(?:pull\s+requests|PRs|contributions|patches|code\s+contributions)\b/i,
+  new RegExp(
+    `\\b(?:not|no\\s+longer)\\s+(?:currently\\s+|actively\\s+)?(?:accept(?:ing)?|tak(?:e|ing)|review(?:ing)?|look(?:ing)?\\s+for)\\s+(?:any\\s+)?${KIND}${THING}${NO_CONDITION}`,
+    "i",
+  ),
   // "We do not accept / will not merge outside pull requests."
-  /\b(?:do\s+not|don['’]t|will\s+not|won['’]t|cannot|can['’]t)\s+(?:normally\s+|generally\s+|usually\s+|currently\s+)?(?:accept|review|merge)\s+(?:any\s+)?(?:outside\s+|external\s+|community\s+|third[- ]party\s+|unsolicited\s+)?(?:pull\s+requests|PRs|contributions|patches)\b/i,
+  new RegExp(
+    `\\b(?:do\\s+not|don['’]t|will\\s+not|won['’]t|cannot|can['’]t)\\s+(?:normally\\s+|generally\\s+|usually\\s+|currently\\s+)?(?:accept|review|merge)\\s+(?:any\\s+)?${KIND}${THING}${NO_CONDITION}`,
+    "i",
+  ),
   // "This project is closed to contributions."
   /\bclosed\s+to\s+(?:outside\s+|external\s+|new\s+)?contributions\b/i,
   // "Pull requests will be closed without review."
-  /\b(?:pull\s+requests|PRs)\s+(?:are|will\s+be)\s+(?:automatically\s+)?(?:closed|ignored|not\s+(?:accepted|reviewed|merged))\b/i,
+  /\b(?:pull\s+requests|PRs)\s+(?:are|will\s+be)\s+(?:automatically\s+)?(?:closed|ignored|not\s+(?:accepted|reviewed|merged))\b(?!\s+(?:if|unless|when|after|that|which)\b)/i,
   // "Contributions are paused / not being accepted."
   /\bcontributions\s+(?:are|have\s+been)\s+(?:currently\s+)?(?:paused|closed|suspended|not\s+being\s+accepted)\b/i,
 ];

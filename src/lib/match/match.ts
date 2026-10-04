@@ -104,8 +104,9 @@ export function matchProjects(rows: readonly IndexRow[], input: MatchInput): Mat
 }
 
 export function fits(row: IndexRow, input: MatchInput): boolean {
-  // Somebody must be home.
+  // Somebody must be home, and the project must take pull requests here.
   if (row.trend === "went-quiet" || !row.commits90d) return false;
+  if (row.noPulls) return false;
   if (input.goal === "gsoc" && row.gsoc === null) return false;
   if (input.goal === "first-pr" && row.available === 0 && row.mergeRate === null)
     return false;

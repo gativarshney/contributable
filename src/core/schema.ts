@@ -71,6 +71,8 @@ export const repoFacts = z.object({
     issueTemplates: z.boolean(),
     devcontainer: z.boolean(),
     cla: z.enum(["cla", "dco", "none", "unknown"]),
+    /** The README or contributing guide's own words against outside pull requests. */
+    policy: z.string().nullable().optional(),
     channels: z.array(
       z.object({
         kind: z.enum([

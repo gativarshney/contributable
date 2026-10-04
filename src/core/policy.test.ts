@@ -24,6 +24,19 @@ describe("pullRequestPolicy", () => {
     }
   });
 
+  it("does not mistake a condition for a refusal", () => {
+    for (const text of [
+      "We do not accept pull requests without an issue first.",
+      "We don't accept PRs that only fix typos.",
+      "We are not accepting pull requests for new features right now, only bug fixes.",
+      "We will not merge pull requests unless tests pass.",
+      "We do not accept contributions from bots.",
+      "Pull requests will be closed if they have no description.",
+    ]) {
+      expect(pullRequestPolicy([text]), text).toBeNull();
+    }
+  });
+
   it("stays quiet on an ordinary contributing guide", () => {
     const guide =
       "We welcome pull requests! Please do not open a pull request without an issue first. Tests must pass. We review contributions weekly.";
