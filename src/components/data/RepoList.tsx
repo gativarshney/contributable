@@ -13,6 +13,7 @@ import {
   type Speed,
 } from "@/lib/format";
 import { Sparkline } from "./Sparkline";
+import { FIRST_REPLY_INFO, InfoTip } from "@/components/site/InfoTip";
 
 const SPEED_CLASS: Record<Speed, string> = {
   fast: "text-fast",
@@ -34,16 +35,21 @@ function Figure({
   value,
   note,
   className = "",
+  info,
 }: {
   label: string;
   value: string;
   note: string;
   className?: string;
+  info?: string;
 }) {
   const missing = value === NOT_ENOUGH || value === UNANSWERED;
   return (
     <div>
-      <dt className="text-ink-3 text-xs">{label}</dt>
+      <dt className="text-ink-3 flex items-center gap-1 text-xs">
+        {label}
+        {info ? <InfoTip text={info} /> : null}
+      </dt>
       <dd
         className={
           missing
@@ -102,6 +108,7 @@ export function RepoCard({ row }: { row: IndexRow }) {
       <dl className="mt-4 grid grid-cols-[1.2fr_1fr_1fr] gap-3">
         <Figure
           label="First reply"
+          info={FIRST_REPLY_INFO}
           value={firstReply(row.replyHours, row.replyN)}
           note={`${row.replyN} outside PRs`}
           className={SPEED_CLASS[replySpeed(row.replyHours)]}
@@ -172,7 +179,10 @@ export function RepoTable({ rows }: { rows: IndexRow[] }) {
           <tr>
             <th scope="col">Repository</th>
             <th scope="col" className="right">
-              First reply
+              <span className="inline-flex items-center gap-1">
+                First reply
+                <InfoTip text={FIRST_REPLY_INFO} side="bottom" />
+              </span>
             </th>
             <th scope="col" className="right">
               In 48 h

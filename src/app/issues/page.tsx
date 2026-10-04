@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Drift, DriftPill, PageMark } from "@/components/site/Drift";
 import Link from "next/link";
+import { FIRST_REPLY_INFO, InfoTip } from "@/components/site/InfoTip";
 import { FilterForm } from "@/components/explore/FilterForm";
 import type { IndexRow } from "@/core/published";
 import { getAvailableIssues, getIndex } from "@/lib/data";
@@ -267,7 +268,10 @@ export default async function IssuesPage({
               </div>
               <dl className="hidden shrink-0 grid-cols-2 gap-x-5 text-right sm:grid">
                 <div>
-                  <dt className="text-ink-3 text-[11px]">First reply</dt>
+                  <dt className="text-ink-3 inline-flex items-center gap-1 text-[11px]">
+                    First reply
+                    <InfoTip text={FIRST_REPLY_INFO} align="right" />
+                  </dt>
                   <dd
                     className={`num font-medium ${SPEED_CLASS[replySpeed(repo.replyHours)]}`}
                   >

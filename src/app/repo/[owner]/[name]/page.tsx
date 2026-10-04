@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { JumpBar } from "@/components/site/JumpBar";
+import { FIRST_REPLY_INFO, InfoTip } from "@/components/site/InfoTip";
 import {
   Funnel,
   PositionStrip,
@@ -93,17 +94,22 @@ function Tile({
   label,
   value,
   sample,
+  info,
   children,
 }: {
   label: string;
   value: string;
   sample: string;
+  info?: string;
   children?: React.ReactNode;
 }) {
   const missing = value === NOT_ENOUGH || value === UNANSWERED;
   return (
     <div className="card p-5">
-      <h2 className="text-ink-2 text-sm font-normal">{label}</h2>
+      <h2 className="text-ink-2 flex items-center gap-1.5 text-sm font-normal">
+        {label}
+        {info ? <InfoTip text={info} /> : null}
+      </h2>
       <p
         className={
           missing
@@ -405,6 +411,7 @@ export default async function RepoPage({ params }: Props) {
         </Tile>
         <Tile
           label="First human reply"
+          info={FIRST_REPLY_INFO}
           value={firstReply(reply.medianHours, reply.n)}
           sample={`median of ${reply.n} outside PRs, ${reply.waiting} unanswered`}
         >
