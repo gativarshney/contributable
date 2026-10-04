@@ -274,7 +274,7 @@ export default async function RepoPage({ params }: Props) {
   const alike = similar(index.rows, detail);
 
   return (
-    <article className="shell py-10 md:py-14">
+    <article className="page-glow shell py-10 md:py-14">
       <header>
         <nav aria-label="Breadcrumb" className="text-ink-3 text-sm">
           <Link href="/explore" className="hover:text-ink">

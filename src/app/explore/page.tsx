@@ -213,7 +213,7 @@ export default async function ExplorePage({
   );
 
   return (
-    <div className="shell py-10 md:py-14">
+    <div className="page-glow shell py-10 md:py-14">
       <header className="max-w-2xl">
         <div className="flex items-center gap-3">
           <PageMark icon="M10.5 3a7.5 7.5 0 1 0 4.7 13.3L20 21l1-1-4.7-4.8A7.5 7.5 0 0 0 10.5 3z" />

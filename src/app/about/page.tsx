@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageMark } from "@/components/site/Drift";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -10,8 +11,11 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="shell max-w-3xl py-10 md:py-14">
-      <p className="eyebrow">About</p>
+    <div className="page-glow shell max-w-3xl py-10 md:py-14">
+      <div className="flex items-center gap-3">
+        <PageMark icon="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM5 20c0-3.5 3-6 7-6s7 2.5 7 6" />
+        <p className="eyebrow">About</p>
+      </div>
       <h1 className="display mt-3 text-[clamp(2rem,5vw,3.25rem)]">
         Pick the project <em>that answers.</em>
       </h1>

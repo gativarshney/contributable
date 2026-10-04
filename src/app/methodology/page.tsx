@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageMark } from "@/components/site/Drift";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -142,8 +143,11 @@ function Block({ title, children }: { title: string; children: React.ReactNode }
 
 export default function MethodologyPage() {
   return (
-    <div className="shell pt-16 pb-24 md:pt-24">
-      <p className="eyebrow">Methodology</p>
+    <div className="page-glow shell pt-16 pb-24 md:pt-24">
+      <div className="flex items-center gap-3">
+        <PageMark icon="M4 20h16M7 16V10M12 16V5M17 16v-4" />
+        <p className="eyebrow">Methodology</p>
+      </div>
       <h1 className="display mt-5 max-w-3xl text-[clamp(2.4rem,6vw,4.25rem)]">
         Calculated, <em>not generated.</em>
       </h1>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Drift, DriftPill, PageMark } from "@/components/site/Drift";
 import Link from "next/link";
 import type { IndexRow } from "@/core/published";
 import { getIndex } from "@/lib/data";
@@ -105,8 +106,11 @@ export default async function GuidePage() {
   const { famous, responsive, solid } = examples(index.rows);
 
   return (
-    <article className="shell max-w-3xl py-10 md:py-14">
-      <p className="eyebrow">Guide</p>
+    <article className="page-glow shell max-w-3xl py-10 md:py-14">
+      <div className="flex items-center gap-3">
+        <PageMark icon="M4 4h6a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4zM20 4h-6a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z" />
+        <p className="eyebrow">Guide</p>
+      </div>
       <h1 className="display mt-3 text-[clamp(2rem,5vw,3.25rem)]">
         How to pick <em>an organisation.</em>
       </h1>
@@ -118,6 +122,17 @@ export default async function GuidePage() {
         cannot read them all, and yours waits in the pile. A smaller project that replies
         in a day teaches you more in a month than a famous one does in a year.
       </p>
+
+      <div className="mt-10">
+        <Drift
+          seconds={80}
+          items={CHECKLIST.map(([question], i) => (
+            <DriftPill key={question} accent={i === 0}>
+              {question}
+            </DriftPill>
+          ))}
+        />
+      </div>
 
       {famous && responsive ? (
         <section className="border-hair mt-12 border-t pt-10">

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageMark } from "@/components/site/Drift";
 import { getStatus } from "@/lib/data";
 import { count, dateTime, percent } from "@/lib/format";
 
@@ -34,8 +35,11 @@ function Row({ label, value }: { label: string; value: string }) {
 export default async function StatusPage() {
   const status = await getStatus();
   return (
-    <div className="shell max-w-3xl py-10 md:py-14">
-      <p className="eyebrow">Status</p>
+    <div className="page-glow shell max-w-3xl py-10 md:py-14">
+      <div className="flex items-center gap-3">
+        <PageMark icon="M3 12h4l2-5 4 10 2-5h6" />
+        <p className="eyebrow">Status</p>
+      </div>
       <h1 className="display mt-3 text-[clamp(2rem,5vw,3.25rem)]">
         How fresh <em>the data is.</em>
       </h1>

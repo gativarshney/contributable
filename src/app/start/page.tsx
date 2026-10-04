@@ -60,7 +60,7 @@ export default async function StartPage() {
   const free = issues.filter((i) => i.label === "beginner").length;
 
   return (
-    <div className="shell py-10 md:py-14">
+    <div className="page-glow shell py-10 md:py-14">
       <header className="max-w-3xl">
         <div className="flex items-center gap-3">
           <PageMark icon="M6 4l14 8-14 8z" />

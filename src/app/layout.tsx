@@ -4,7 +4,6 @@ import { ViewTransition } from "react";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { CommandPalette } from "@/components/site/CommandPalette";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import { SmoothScroll } from "@/components/site/SmoothScroll";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import "./globals.css";
 
@@ -93,7 +92,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </main>
         <SiteFooter />
         <CommandPalette />
-        <SmoothScroll />
       </body>
     </html>
   );

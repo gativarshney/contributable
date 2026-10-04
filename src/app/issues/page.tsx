@@ -95,7 +95,7 @@ export default async function IssuesPage({
   };
 
   return (
-    <div className="shell py-10 md:py-14">
+    <div className="page-glow shell py-10 md:py-14">
       <header className="max-w-3xl">
         <div className="flex items-center gap-3">
           <PageMark icon="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm0 6a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />

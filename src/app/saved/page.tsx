@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageMark } from "@/components/site/Drift";
 import { SavedList } from "@/components/site/Saved";
 
 export const metadata: Metadata = {
@@ -10,9 +11,12 @@ export const metadata: Metadata = {
 
 export default function SavedPage() {
   return (
-    <div className="shell py-10 md:py-14">
+    <div className="page-glow shell py-10 md:py-14">
       <header className="max-w-2xl">
-        <p className="eyebrow">Saved</p>
+        <div className="flex items-center gap-3">
+          <PageMark icon="M6 4h12v16l-6-4-6 4z" />
+          <p className="eyebrow">Saved</p>
+        </div>
         <h1 className="display mt-3 text-[clamp(2rem,5vw,3.25rem)]">
           Your shortlist, <em>kept current.</em>
         </h1>

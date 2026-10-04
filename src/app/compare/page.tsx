@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Drift, DriftPill, PageMark } from "@/components/site/Drift";
 import Link from "next/link";
 import { Sparkline } from "@/components/data/Sparkline";
 import type { IndexRow } from "@/core/published";
@@ -142,9 +143,12 @@ export default async function ComparePage({
     list.length ? `/compare?repos=${list.join(",")}` : "/compare";
 
   return (
-    <div className="shell py-10 md:py-14">
+    <div className="page-glow shell py-10 md:py-14">
       <header className="max-w-2xl">
-        <p className="eyebrow">Compare</p>
+        <div className="flex items-center gap-3">
+          <PageMark icon="M8 4v16M16 4v16M3 9h5M16 15h5" />
+          <p className="eyebrow">Compare</p>
+        </div>
         <h1 className="display mt-3 text-[clamp(2rem,5vw,3.25rem)]">
           Side by <em>side.</em>
         </h1>
@@ -153,6 +157,21 @@ export default async function ComparePage({
           tie or a missing figure has no mark.
         </p>
       </header>
+
+      <div className="mt-10">
+        <Drift
+          seconds={90}
+          items={index.rows
+            .filter((r) => r.replyN >= 20 && r.replyHours !== null)
+            .sort((a, b) => b.stars - a.stars)
+            .slice(0, 24)
+            .map((r) => (
+              <DriftPill key={r.id} accent>
+                {r.id}
+              </DriftPill>
+            ))}
+        />
+      </div>
 
       {rows.length < MAX ? (
         <form action="/compare" className="mt-8 flex max-w-xl flex-col gap-3 sm:flex-row">

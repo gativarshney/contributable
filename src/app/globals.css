@@ -737,16 +737,12 @@ body {
   }
 }
 
-/* While momentum scrolling runs, the browser's own smooth scrolling steps aside. */
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-stopped {
-  overflow: hidden;
+/* A soft light behind each page's heading, like the hero on the home page. */
+.page-glow {
+  background: radial-gradient(
+      ellipse 55% 380px at 20% -60px,
+      var(--glow),
+      transparent 72%
+    )
+    no-repeat;
 }

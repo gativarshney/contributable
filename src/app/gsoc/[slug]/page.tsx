@@ -49,7 +49,7 @@ export default async function OrgPage({ params }: Props) {
   const na = (value: number | null) => (value === null ? "n/a" : percent(value));
 
   return (
-    <article className="shell py-10 md:py-14">
+    <article className="page-glow shell py-10 md:py-14">
       <nav aria-label="Breadcrumb" className="text-ink-3 text-sm">
         <Link href="/gsoc" className="hover:text-ink">
           GSoC organisations

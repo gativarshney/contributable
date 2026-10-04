@@ -45,7 +45,7 @@ export default async function MatchPage({ searchParams }: Props) {
   const matches = asked ? matchProjects(index.rows, input) : [];
 
   return (
-    <div className="shell py-10 md:py-14">
+    <div className="page-glow shell py-10 md:py-14">
       <header className="max-w-2xl">
         <div className="flex items-center gap-3">
           <PageMark icon="M12 3l2.6 5.6 6 .8-4.4 4.2 1.1 6L12 16.8 6.7 19.6l1.1-6L3.4 9.4l6-.8z" />
