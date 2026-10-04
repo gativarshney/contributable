@@ -13,7 +13,12 @@ import {
   type Speed,
 } from "@/lib/format";
 import { Sparkline } from "./Sparkline";
-import { FIRST_REPLY_INFO, InfoTip } from "@/components/site/InfoTip";
+import {
+  FIRST_REPLY_INFO,
+  InfoTip,
+  MERGED_INFO,
+  STARTER_INFO,
+} from "@/components/site/InfoTip";
 
 const SPEED_CLASS: Record<Speed, string> = {
   fast: "text-fast",
@@ -36,19 +41,21 @@ function Figure({
   note,
   className = "",
   info,
+  infoAlign,
 }: {
   label: string;
   value: string;
   note: string;
   className?: string;
   info?: string;
+  infoAlign?: "left" | "right";
 }) {
   const missing = value === NOT_ENOUGH || value === UNANSWERED;
   return (
     <div>
-      <dt className="text-ink-3 flex items-center gap-1 text-xs">
+      <dt className="text-ink-3 flex items-center gap-1 text-xs whitespace-nowrap">
         {label}
-        {info ? <InfoTip text={info} /> : null}
+        {info ? <InfoTip text={info} align={infoAlign} /> : null}
       </dt>
       <dd
         className={
@@ -116,6 +123,7 @@ export function RepoCard({ row }: { row: IndexRow }) {
         <div>
           <Figure
             label="Merged"
+            info={MERGED_INFO}
             value={percent(row.mergeRate)}
             note={`of ${row.decided} decided`}
           />
@@ -132,7 +140,9 @@ export function RepoCard({ row }: { row: IndexRow }) {
           ) : null}
         </div>
         <Figure
-          label="Starter issues"
+          label="Free issues"
+          info={STARTER_INFO}
+          infoAlign="right"
           value={String(row.available)}
           note="available"
           className={row.available > 0 ? "text-accent" : "text-ink-3"}
@@ -188,13 +198,19 @@ export function RepoTable({ rows }: { rows: IndexRow[] }) {
               In 48 h
             </th>
             <th scope="col" className="right">
-              Merged
+              <span className="inline-flex items-center gap-1">
+                Merged
+                <InfoTip text={MERGED_INFO} side="bottom" align="right" />
+              </span>
             </th>
             <th scope="col" className="right @max-[54rem]:hidden">
               To merge
             </th>
             <th scope="col" className="right">
-              Free issues
+              <span className="inline-flex items-center gap-1">
+                Free issues
+                <InfoTip text={STARTER_INFO} side="bottom" align="right" />
+              </span>
             </th>
             <th scope="col" className="right">
               Stars

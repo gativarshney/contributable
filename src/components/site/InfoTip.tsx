@@ -2,6 +2,12 @@
 export const FIRST_REPLY_INFO =
   "Median time until a person from the project comments on, or merges, a pull request from an outside contributor. Bots do not count. Pull requests opened 30 to 120 days ago.";
 
+export const MERGED_INFO =
+  "Share of pull requests from outside contributors that were merged, out of those the project has decided on (merged or closed). Ones still open are left out. Pull requests opened 30 to 120 days ago.";
+
+export const STARTER_INFO =
+  "Issues labelled for beginners that are really free: open, unassigned, no linked pull request, nobody claimed them in the last 14 days, and updated in the last 60 days.";
+
 /**
  * A small info icon that shows a definition on hover, or on tap and keyboard focus.
  * Plain CSS, so it works without JavaScript and inside server components.

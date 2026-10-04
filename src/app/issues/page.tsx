@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Drift, DriftPill, PageMark } from "@/components/site/Drift";
 import Link from "next/link";
-import { FIRST_REPLY_INFO, InfoTip } from "@/components/site/InfoTip";
+import { FIRST_REPLY_INFO, InfoTip, MERGED_INFO } from "@/components/site/InfoTip";
 import { FilterForm } from "@/components/explore/FilterForm";
 import type { IndexRow } from "@/core/published";
 import { getAvailableIssues, getIndex } from "@/lib/data";
@@ -281,7 +281,10 @@ export default async function IssuesPage({
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-ink-3 text-[11px]">Merged</dt>
+                  <dt className="text-ink-3 inline-flex items-center gap-1 text-[11px]">
+                    Merged
+                    <InfoTip text={MERGED_INFO} align="right" />
+                  </dt>
                   <dd className="num font-medium">
                     {repo.mergeRate === null ? "n/a" : percent(repo.mergeRate)}
                   </dd>

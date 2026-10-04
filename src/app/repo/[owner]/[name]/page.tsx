@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { JumpBar } from "@/components/site/JumpBar";
-import { FIRST_REPLY_INFO, InfoTip } from "@/components/site/InfoTip";
+import { FIRST_REPLY_INFO, InfoTip, MERGED_INFO } from "@/components/site/InfoTip";
 import {
   Funnel,
   PositionStrip,
@@ -385,6 +385,7 @@ export default async function RepoPage({ params }: Props) {
       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Tile
           label="Outside PRs merged"
+          info={MERGED_INFO}
           value={percent(cohort.mergeRate)}
           sample={`${cohort.merged} merged, ${cohort.closedUnmerged} closed, ${cohort.open} still open`}
         >
