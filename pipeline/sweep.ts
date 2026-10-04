@@ -250,6 +250,10 @@ async function main() {
     });
   console.log(`queue: ${queue.length} of ${universe.repos.length} due`);
 
+  // A repository never read, or read under older rules, costs a full year of history.
+  const isFullRead = (item: { repo: UniverseRepo; updatedAt: string | null }) =>
+    item.updatedAt === null || outdated.has(idOf(item.repo).toLowerCase());
+
   // 3. Refresh until the queue, the budget or the clock runs out.
   let refreshed = 0;
   let failed = 0;
@@ -267,7 +271,7 @@ async function main() {
       // Every worker may be in the middle of a large first read, so the reserve
       // is kept per worker.
       const reserve =
-        (queue[next].updatedAt === null ? RESERVE_BACKFILL : RESERVE_REFRESH) * WORKERS;
+        (isFullRead(queue[next]) ? RESERVE_BACKFILL : RESERVE_REFRESH) * WORKERS;
       if (remaining() < reserve) {
         stoppedBy = "budget";
         return;
