@@ -220,7 +220,7 @@ export default async function ExplorePage({
           <p className="eyebrow">Explore every measured repository</p>
         </div>
         <h1 className="display mt-5 text-[clamp(2rem,5vw,3.25rem)]">
-          Find a project that <em>answers newcomers.</em>
+          Sort projects by <em>how fast they reply.</em>
         </h1>
         <p className="text-ink-2 mt-4">
           {index.rows.length > 0
