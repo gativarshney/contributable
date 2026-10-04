@@ -1,4 +1,6 @@
+/// <reference types="react/canary" />
 import type { Metadata, Viewport } from "next";
+import { ViewTransition } from "react";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { CommandPalette } from "@/components/site/CommandPalette";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -84,7 +86,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         <SiteHeader />
         <main id="main" className="flex-1">
-          {children}
+          {/* Page changes cross-fade instead of flashing. */}
+          <ViewTransition>{children}</ViewTransition>
         </main>
         <SiteFooter />
         <CommandPalette />

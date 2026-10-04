@@ -534,3 +534,18 @@ body {
     display: none;
   }
 }
+
+/* Page changes: a short cross-fade, and none at all for visitors who ask for less motion. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.22s;
+  animation-timing-function: var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

@@ -10,44 +10,128 @@ const ICONS = {
     "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.93 6h-2.95a15.7 15.7 0 0 0-1.38-3.56A8.03 8.03 0 0 1 18.93 8ZM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96ZM4.26 14a8.2 8.2 0 0 1 0-4h3.38a16.5 16.5 0 0 0 0 4H4.26Zm.81 2h2.95c.32 1.25.78 2.45 1.38 3.56A7.99 7.99 0 0 1 5.07 16Zm2.95-8H5.07A7.99 7.99 0 0 1 9.4 4.44 15.7 15.7 0 0 0 8.02 8ZM12 19.96A14.1 14.1 0 0 1 10.09 16h3.82A14.1 14.1 0 0 1 12 19.96ZM14.34 14H9.66a14.7 14.7 0 0 1 0-4h4.68a14.7 14.7 0 0 1 0 4Zm.26 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56ZM16.36 14a16.5 16.5 0 0 0 0-4h3.38a8.2 8.2 0 0 1 0 4h-3.38Z",
 };
 
-const LINKS: { label: string; href: string; icon: keyof typeof ICONS }[] = [
+const SOCIAL: { label: string; href: string; icon: keyof typeof ICONS }[] = [
+  { label: "GitHub", href: "https://github.com/gativarshney", icon: "github" },
   {
     label: "LinkedIn",
     href: "https://www.linkedin.com/in/gativarshney/",
     icon: "linkedin",
   },
-  { label: "GitHub", href: "https://github.com/gativarshney", icon: "github" },
   { label: "Portfolio", href: "https://gativarshney.github.io/", icon: "portfolio" },
+];
+
+const REPO = "https://github.com/gativarshney/contributable";
+
+/** The same three sections as the header, plus the pages about the project itself. */
+const COLUMNS: { title: string; links: [label: string, href: string][] }[] = [
+  {
+    title: "Find",
+    links: [
+      ["Repositories", "/explore"],
+      ["GSoC organisations", "/gsoc"],
+      ["Help me choose", "/match"],
+      ["Compare", "/compare"],
+    ],
+  },
+  {
+    title: "Check",
+    links: [
+      ["Check a repo", "/check"],
+      ["Example report", "/sample"],
+      ["Saved", "/saved"],
+    ],
+  },
+  {
+    title: "Start",
+    links: [
+      ["Start here", "/start"],
+      ["First issues", "/issues"],
+      ["How to pick", "/guide"],
+    ],
+  },
+  {
+    title: "Project",
+    links: [
+      ["About", "/about"],
+      ["Methodology", "/methodology"],
+      ["Status", "/status"],
+      ["Source code", REPO],
+      ["Contribute", `${REPO}/blob/main/CONTRIBUTING.md`],
+    ],
+  },
 ];
 
 export function SiteFooter() {
   return (
     <footer className="border-hair border-t">
-      <div className="shell grid gap-10 py-12 md:grid-cols-[1fr_auto] md:items-end">
-        <div>
-          <p className="text-ink-2 text-sm">Designed and built by</p>
-          <p className="display mt-2 text-[clamp(1.75rem,4vw,2.5rem)]">
-            Gati <em>Varshney</em>
-          </p>
-          <p className="text-ink-2 mt-3 text-sm">
-            <a
-              href="https://summerofcode.withgoogle.com/programs/2026/projects/k0bZOR1y"
-              target="_blank"
-              rel="noreferrer"
-              className="link"
-            >
-              Google Summer of Code 2026 contributor
-            </a>{" "}
-            at The Linux Foundation
-          </p>
-          <ul className="mt-5 flex flex-wrap gap-2">
-            {LINKS.map((link) => (
+      <div className="shell py-14 md:py-16">
+        <div className="grid gap-12 lg:grid-cols-[1.3fr_2fr]">
+          <div>
+            <Logo />
+            <p className="text-ink-2 mt-4 max-w-xs text-sm">
+              Pick the project that answers newcomers, not the most famous one.
+            </p>
+          </div>
+          <nav aria-label="Footer" className="grid grid-cols-2 gap-8 sm:grid-cols-4">
+            {COLUMNS.map((column) => (
+              <div key={column.title}>
+                <h2 className="eyebrow">{column.title}</h2>
+                <ul className="mt-4 space-y-1">
+                  {column.links.map(([label, href]) => {
+                    const external = href.startsWith("http");
+                    const Tag = external ? "a" : Link;
+                    return (
+                      <li key={href}>
+                        <Tag
+                          href={href}
+                          {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
+                          className="text-ink-2 hover:text-ink inline-flex min-h-8 items-center text-sm transition-colors"
+                        >
+                          {label}
+                        </Tag>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+          </nav>
+        </div>
+
+        <div className="border-hair mt-12 flex flex-col gap-6 border-t pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm">
+              <span className="text-ink-3">Built by</span>{" "}
+              <a
+                href="https://gativarshney.github.io/"
+                target="_blank"
+                rel="noreferrer"
+                className="font-medium tracking-tight hover:underline"
+              >
+                Gati Varshney
+              </a>
+            </p>
+            <p className="text-ink-3 mt-1 text-xs">
+              <a
+                href="https://summerofcode.withgoogle.com/programs/2026/projects/k0bZOR1y"
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-ink-2 transition-colors"
+              >
+                Google Summer of Code 2026 contributor
+              </a>
+              , The Linux Foundation
+            </p>
+          </div>
+          <ul className="flex gap-2">
+            {SOCIAL.map((link) => (
               <li key={link.label}>
                 <a
                   href={link.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="border-hair-strong hover:border-accent hover:text-accent inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors duration-200"
+                  aria-label={`Gati Varshney on ${link.label}`}
+                  className="border-hair-strong text-ink-2 hover:border-accent hover:text-accent grid size-10 place-items-center rounded-full border transition-colors"
                 >
                   <svg
                     viewBox="0 0 24 24"
@@ -57,55 +141,16 @@ export function SiteFooter() {
                   >
                     <path d={ICONS[link.icon]} />
                   </svg>
-                  {link.label}
                 </a>
               </li>
             ))}
           </ul>
         </div>
-        <div className="text-ink-3 flex flex-col gap-3 text-sm md:items-end">
-          <Logo className="text-ink" />
-          <nav
-            aria-label="Footer"
-            className="flex flex-wrap gap-x-5 gap-y-2 md:justify-end"
-          >
-            <Link href="/start" className="hover:text-ink transition-colors">
-              Start here
-            </Link>
-            <Link href="/guide" className="hover:text-ink transition-colors">
-              Guide
-            </Link>
-            <Link href="/about" className="hover:text-ink transition-colors">
-              About
-            </Link>
-            <Link href="/status" className="hover:text-ink transition-colors">
-              Status
-            </Link>
-            <Link href="/methodology" className="hover:text-ink transition-colors">
-              How it works
-            </Link>
-            <a
-              href="https://github.com/gativarshney/contributable"
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-ink transition-colors"
-            >
-              Source
-            </a>
-            <a
-              href="https://github.com/gativarshney/contributable/blob/main/CONTRIBUTING.md"
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-ink transition-colors"
-            >
-              Contribute
-            </a>
-          </nav>
-          <p>
-            Open source under the MIT licence. An independent project, not affiliated with
-            GitHub or Google.
-          </p>
-        </div>
+
+        <p className="text-ink-3 mt-8 text-xs">
+          Open source under the MIT licence. Data under CC BY 4.0. An independent project,
+          not affiliated with GitHub or Google.
+        </p>
       </div>
     </footer>
   );
