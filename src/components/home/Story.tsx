@@ -3,7 +3,9 @@ import type { IndexRow } from "@/core/published";
 import { compact, duration } from "@/lib/format";
 
 /** How many of the most starred repositories the comparison is drawn from. */
-const FAMOUS = 20;
+const FAMOUS = 40;
+/** Two projects count as equally starred when their star counts are this close. */
+const STAR_GAP = 0.1;
 /** Enough outside pull requests that a median is not luck. */
 const SOLID = 20;
 const TRACK_DAYS = 14;
@@ -11,8 +13,13 @@ const TRACK_DAYS = 14;
 const MIN_MERGE_RATE = 0.3;
 
 /**
- * The two ends of the famous: among the most starred repositories with a solid sample,
- * the one that replies slowest and the one that replies fastest.
+ * Two well-known projects with about the same number of stars and very different
+ * waits. Matching the stars is the point: if the faster project simply had more of
+ * them, a reader would learn the wrong lesson.
+ *
+ * Among the most starred repositories with a solid sample, every pair whose star
+ * counts are within STAR_GAP of each other is considered, and the pair with the
+ * widest gap in reply time is shown.
  */
 export function famousPair(rows: readonly IndexRow[]) {
   const famous = rows
@@ -28,8 +35,20 @@ export function famousPair(rows: readonly IndexRow[]) {
     .sort((a, b) => b.stars - a.stars)
     .slice(0, FAMOUS);
   if (famous.length < 4) return null;
-  const byWait = [...famous].sort((a, b) => a.replyHours! - b.replyHours!);
-  return { fast: byWait[0], slow: byWait[byWait.length - 1], pool: famous.length };
+  let best: { fast: IndexRow; slow: IndexRow; ratio: number } | null = null;
+  for (let i = 0; i < famous.length; i += 1) {
+    for (let j = i + 1; j < famous.length; j += 1) {
+      const [a, b] = [famous[i], famous[j]];
+      if (Math.abs(a.stars - b.stars) / Math.max(a.stars, b.stars) > STAR_GAP) continue;
+      const [fast, slow] = a.replyHours! <= b.replyHours! ? [a, b] : [b, a];
+      // Anything under an hour counts as an hour, so a few minutes cannot inflate the gap.
+      const ratio = Math.max(1, slow.replyHours!) / Math.max(1, fast.replyHours!);
+      if (!best || ratio > best.ratio) best = { fast, slow, ratio };
+    }
+  }
+  // A gap under threefold is not a story worth telling.
+  if (!best || best.ratio < 3) return null;
+  return { fast: best.fast, slow: best.slow, pool: famous.length };
 }
 
 function Wait({ row, tone }: { row: IndexRow; tone: "slow" | "fast" }) {
@@ -163,14 +182,14 @@ export function Story({ rows }: { rows: readonly IndexRow[] }) {
 
   return (
     <section className="border-hair border-t py-20 md:py-28">
-      <div className="shell">
+      <div className="shell reveal">
         <p className="eyebrow">Why it matters</p>
         <h2 className="display mt-5 max-w-3xl text-[clamp(2rem,4.6vw,3.25rem)]">
           Same pull request. <em>Very different wait.</em>
         </h2>
         <p className="text-ink-2 mt-5 max-w-xl text-lg">
-          Two of the {pair.pool} most starred projects that merge outside pull requests on
-          GitHub. Stars tell you neither.
+          Two well-known projects with almost the same number of stars. Stars tell you
+          nothing about how long you will wait.
         </p>
         <div className="mt-12 grid gap-12 lg:grid-cols-2 lg:gap-16">
           <Wait row={pair.slow} tone="slow" />
@@ -179,7 +198,9 @@ export function Story({ rows }: { rows: readonly IndexRow[] }) {
         <p className="text-ink-3 mt-6 text-xs">
           Median wait for a first human reply on pull requests from outside the team,
           across {pair.slow.replyN} and {pair.fast.replyN} pull requests. The track is{" "}
-          {TRACK_DAYS} days long.
+          {TRACK_DAYS} days long. The pair is picked by rule: among the {pair.pool} most
+          starred projects that merge outside pull requests on GitHub, the two within 10%
+          of each other in stars with the widest gap.
         </p>
       </div>
     </section>
@@ -198,7 +219,7 @@ export function FourThings({ rows }: { rows: readonly IndexRow[] }) {
 
   return (
     <section className="border-hair border-t py-20 md:py-28">
-      <div className="shell">
+      <div className="shell reveal">
         <p className="eyebrow">What you get</p>
         <h2 className="display mt-5 max-w-3xl text-[clamp(2rem,4.6vw,3.25rem)]">
           Four things, <em>for every project.</em>

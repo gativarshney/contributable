@@ -85,7 +85,7 @@ export function ThisWeek({
 
   return (
     <section className="border-hair border-t py-20 md:py-28">
-      <div className="shell">
+      <div className="shell reveal">
         <p className="eyebrow">Lately</p>
         <h2 className="display mt-5 max-w-3xl text-[clamp(2rem,4.6vw,3.25rem)]">
           What changed <em>since you last looked.</em>

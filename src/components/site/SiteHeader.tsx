@@ -1,19 +1,19 @@
 import Link from "next/link";
 import { PaletteButton } from "./CommandPalette";
 import { Logo } from "./Logo";
-import { HeaderNav, SectionTabs, TabBar } from "./Nav";
+import { HeaderNav, TabBar } from "./Nav";
 import { SavedLink } from "./Saved";
 import { ThemeToggle } from "./ThemeToggle";
 
 export function SiteHeader() {
   return (
     <>
-      <header className="border-hair bg-bg/75 sticky top-0 z-40 border-b backdrop-blur-xl">
-        <div className="shell flex h-14 items-center justify-between gap-6">
+      <header className="header-fade sticky top-0 z-40">
+        <div className="shell flex h-16 items-center justify-between gap-4">
           <Link href="/" aria-label="Contributable home">
             <Logo />
           </Link>
-          <nav aria-label="Primary" className="flex items-center gap-3 sm:gap-7">
+          <nav aria-label="Primary" className="contents">
             <HeaderNav />
             <div className="flex items-center gap-2">
               <PaletteButton />
@@ -23,7 +23,6 @@ export function SiteHeader() {
           </nav>
         </div>
       </header>
-      <SectionTabs />
       <TabBar />
     </>
   );

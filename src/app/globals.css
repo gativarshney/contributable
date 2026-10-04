@@ -516,20 +516,20 @@ body {
   bottom: 0;
   z-index: 40;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   border-top: 1px solid var(--hair-strong);
   background: color-mix(in oklch, var(--bg) 88%, transparent);
   backdrop-filter: blur(16px);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-@media (max-width: 639px) {
+@media (max-width: 767px) {
   body {
     padding-bottom: calc(3.5rem + env(safe-area-inset-bottom));
   }
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .tabbar {
     display: none;
   }
@@ -547,5 +547,100 @@ body {
   ::view-transition-old(*),
   ::view-transition-new(*) {
     animation: none !important;
+  }
+}
+
+/* Placeholder blocks shown while a page's data arrives. */
+.skeleton {
+  border-radius: 8px;
+  background: var(--bg-3);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton {
+    animation: skeleton 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes skeleton {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Cards and rows answer the pointer with a small lift, never a jump. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .card {
+    transition:
+      border-color 0.2s,
+      transform 0.3s var(--ease-out);
+  }
+
+  a.card:hover,
+  .card:has(a::after):hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* The header floats: the page shows through and fades out behind it. */
+.header-fade {
+  background: linear-gradient(to bottom, var(--bg) 35%, transparent);
+  backdrop-filter: blur(6px);
+  mask-image: linear-gradient(to bottom, #000 70%, transparent);
+}
+
+/* Doors on the home page: a glow that follows the pointer onto the card. */
+.door {
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color 0.25s,
+    transform 0.35s var(--ease-out);
+}
+
+.door::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, var(--glow), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.35s;
+  pointer-events: none;
+}
+
+.door:hover {
+  border-color: var(--accent);
+}
+
+.door:hover::before {
+  opacity: 1;
+}
+
+/*
+ * Sections ease in as they are scrolled to. This is driven by the scroll position in
+ * CSS alone, so a section is never left hidden: without support for it, or with
+ * reduced motion, the rule simply does not apply and the content is shown as normal.
+ */
+.reveal,
+.reveal[data-shown] {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
   }
 }

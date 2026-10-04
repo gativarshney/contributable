@@ -36,28 +36,71 @@ export default async function HomePage() {
     .filter((name) => !NOT_A_STACK.has(name))
     .slice(0, 6);
 
+  const bars = index.rows
+    .filter((r) => r.within48h !== null)
+    .slice(0, 30)
+    .map((r) => r.within48h ?? 0);
+
   // The three things a visitor comes to do, each with the one figure that sizes it.
   const doors = [
     {
       href: "/explore",
-      label: "Find",
+      label: "Explore",
       title: "A project that replies",
       figure: count(index.rows.length),
       unit: "repositories measured",
+      // Thirty measured repositories: how much of their outside work gets an answer.
+      art: (
+        <div className="flex h-full w-full items-end gap-[3px]">
+          {bars.map((share, i) => (
+            <span
+              key={i}
+              className="bg-accent/70 flex-1 rounded-t-[2px]"
+              style={{ height: `${Math.max(8, share * 100)}%` }}
+            />
+          ))}
+        </div>
+      ),
     },
     {
       href: "/check",
-      label: "Check",
-      title: "A repository you have in mind",
+      label: "Check a repo",
+      title: "A repo you have in mind",
       figure: "Any",
       unit: "public GitHub repository",
+      art: (
+        <div className="border-hair-strong bg-bg flex w-full items-center gap-2 rounded-full border px-4 py-2.5 font-mono text-xs">
+          <span className="text-ink-3">github.com/</span>
+          <span>owner/name</span>
+          <span className="bg-accent ml-auto size-2 rounded-full" />
+        </div>
+      ),
     },
     {
       href: "/start",
-      label: "Start",
+      label: "Start here",
       title: "Your first pull request",
       figure: count(free),
       unit: "first issues free right now",
+      // Five steps, the first one lit.
+      art: (
+        <div className="flex w-full items-center">
+          {[1, 2, 3, 4, 5].map((step) => (
+            <span key={step} className="flex flex-1 items-center last:flex-none">
+              <span
+                className={`num grid size-8 place-items-center rounded-full border text-xs ${
+                  step === 1
+                    ? "border-accent bg-accent text-accent-ink"
+                    : "border-hair-strong text-ink-3"
+                }`}
+              >
+                {step}
+              </span>
+              {step < 5 ? <span className="bg-hair-strong h-px flex-1" /> : null}
+            </span>
+          ))}
+        </div>
+      ),
     },
   ];
 
@@ -89,28 +132,31 @@ export default async function HomePage() {
       <ThisWeek rows={index.rows} issues={issues} now={now} />
 
       <section className="border-hair border-t py-20 md:py-28">
-        <div className="shell">
-          <ul className="grid gap-px md:grid-cols-3">
+        <div className="shell reveal">
+          <ul className="grid gap-4 md:grid-cols-3">
             {doors.map((door) => (
               <li key={door.href}>
                 <Link
                   href={door.href}
-                  className="group border-hair hover:border-accent block border-t py-8 transition-colors md:pr-10"
+                  className="card door group flex h-full flex-col p-7"
                 >
-                  <p className="eyebrow !text-accent">{door.label}</p>
-                  <p className="font-display mt-4 text-2xl">{door.title}</p>
-                  <p className="mt-10 text-[clamp(2.5rem,5vw,3.75rem)] leading-none font-medium tracking-tight">
-                    {door.figure}
-                  </p>
-                  <p className="text-ink-2 mt-3 flex items-center justify-between gap-4 text-sm">
-                    {door.unit}
+                  <div className="flex items-center justify-between">
+                    <p className="eyebrow !text-accent">{door.label}</p>
                     <span
-                      className="text-ink transition-transform group-hover:translate-x-1"
+                      className="border-hair-strong group-hover:bg-accent group-hover:text-accent-ink group-hover:border-accent grid size-9 place-items-center rounded-full border transition-colors duration-200"
                       aria-hidden="true"
                     >
                       →
                     </span>
+                  </div>
+                  <p className="font-display mt-5 text-2xl">{door.title}</p>
+                  <div className="mt-8 flex h-16 items-end" aria-hidden="true">
+                    {door.art}
+                  </div>
+                  <p className="mt-8 text-[clamp(2.5rem,5vw,3.5rem)] leading-none font-medium tracking-tight">
+                    {door.figure}
                   </p>
+                  <p className="text-ink-2 mt-3 text-sm">{door.unit}</p>
                 </Link>
               </li>
             ))}

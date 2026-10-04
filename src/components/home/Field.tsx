@@ -98,7 +98,7 @@ export function Field({
   const stack = query.join(", ");
 
   return (
-    <section className="relative flex min-h-[calc(100svh-7rem)] flex-col overflow-hidden sm:min-h-[calc(100svh-3.5rem)]">
+    <section className="relative flex min-h-[calc(100svh-7rem)] flex-col overflow-hidden md:min-h-[calc(100svh-3.5rem)]">
       <div className="hero-glow" aria-hidden="true" />
       {values.length > 0 ? (
         <Skyline
