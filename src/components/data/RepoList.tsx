@@ -60,15 +60,43 @@ function Figure({
 
 export function RepoCard({ row }: { row: IndexRow }) {
   const trend = TREND_LABEL[row.trend];
+  const [owner, name] = row.id.split("/");
   return (
-    <article className="card hover:border-hair-strong relative flex flex-col p-5 transition-colors">
-      <h3 className="text-[15px] font-medium tracking-tight">
-        <Link href={repoHref(row.id)} className="after:absolute after:inset-0">
-          <span className="text-ink-2">{row.id.split("/")[0]}/</span>
-          {row.id.split("/")[1]}
-        </Link>
-      </h3>
-      <p className="text-ink-2 mt-1.5 line-clamp-2 min-h-[2.5rem] text-sm">
+    <article className="card hover:border-accent/40 group relative flex flex-col p-5 transition-colors">
+      <div className="flex items-start gap-3">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={`https://github.com/${owner}.png?size=72`}
+          alt=""
+          width={36}
+          height={36}
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
+          className="border-hair bg-bg-3 size-9 shrink-0 rounded-lg border"
+        />
+        <h3 className="min-w-0 flex-1 text-[15px] leading-snug font-medium tracking-tight">
+          <Link
+            href={repoHref(row.id)}
+            className="group-hover:text-accent break-words transition-colors after:absolute after:inset-0"
+          >
+            <span className="text-ink-2 block text-xs font-normal">{owner}</span>
+            {name}
+          </Link>
+        </h3>
+        <span className="text-ink-3 num inline-flex shrink-0 items-center gap-1 text-xs">
+          <svg
+            viewBox="0 0 24 24"
+            className="size-3.5"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z" />
+          </svg>
+          {compact(row.stars)}
+        </span>
+      </div>
+      <p className="text-ink-2 mt-3 line-clamp-2 min-h-[2.5rem] text-sm">
         {row.d || "No description."}
       </p>
       <dl className="mt-4 grid grid-cols-[1.2fr_1fr_1fr] gap-3">
@@ -78,12 +106,30 @@ export function RepoCard({ row }: { row: IndexRow }) {
           note={`${row.replyN} outside PRs`}
           className={SPEED_CLASS[replySpeed(row.replyHours)]}
         />
+        <div>
+          <Figure
+            label="Merged"
+            value={percent(row.mergeRate)}
+            note={`of ${row.decided} decided`}
+          />
+          {row.mergeRate !== null ? (
+            <span
+              className="bg-bg-3 mt-1.5 block h-1 overflow-hidden rounded-full"
+              aria-hidden="true"
+            >
+              <span
+                className="bg-accent block h-full rounded-full"
+                style={{ width: `${Math.round(row.mergeRate * 100)}%` }}
+              />
+            </span>
+          ) : null}
+        </div>
         <Figure
-          label="Merged"
-          value={percent(row.mergeRate)}
-          note={`of ${row.decided} decided`}
+          label="Starter issues"
+          value={String(row.available)}
+          note="available"
+          className={row.available > 0 ? "text-accent" : "text-ink-3"}
         />
-        <Figure label="Starter issues" value={String(row.available)} note="available" />
       </dl>
       <div className="mt-4 flex flex-wrap items-center gap-1.5">
         {row.lang.map((l) => (
@@ -102,9 +148,15 @@ export function RepoCard({ row }: { row: IndexRow }) {
           </span>
         ) : null}
       </div>
-      <p className="text-ink-3 mt-3 text-[11px]">
-        Updated {date(row.updatedAt)} · {compact(row.stars)} stars
-      </p>
+      <div className="border-hair [margin-top:max(1rem,auto)] mt-auto flex items-end justify-between gap-3 border-t pt-3">
+        <p className="text-ink-3 text-[11px]">Updated {date(row.updatedAt)}</p>
+        <Sparkline
+          width={72}
+          height={20}
+          values={row.spark}
+          label={`Outside pull requests opened per four weeks: ${row.spark.join(", ")}`}
+        />
+      </div>
     </article>
   );
 }
