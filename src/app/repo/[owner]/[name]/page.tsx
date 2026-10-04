@@ -626,40 +626,64 @@ export default async function RepoPage({ params }: Props) {
       <Section
         id="share"
         title="Badge and feed"
-        note="For maintainers: show these figures in your README. For contributors: follow new starter issues in a feed reader."
+        note="Two ways to use these figures outside this page."
       >
-        <div className="max-w-3xl space-y-4">
-          {(["reply", "merge"] as const).map((metric) => {
-            const markdown = `[![${metric === "reply" ? "First reply" : "Outside PRs merged"}](${SITE}/badge/${id}?metric=${metric})](${SITE}/repo/${id})`;
-            return (
-              <div key={metric} className="flex flex-wrap items-center gap-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`/badge/${id}?metric=${metric}`}
-                  alt={
-                    metric === "reply" ? "First reply badge" : "Outside PRs merged badge"
-                  }
-                  height={20}
-                  className="h-5"
-                />
-                <code className="bg-bg-3 text-ink-2 min-w-0 flex-1 basis-64 truncate rounded-md px-2.5 py-1.5 text-xs">
-                  {markdown}
-                </code>
-                <CopyButton text={markdown} label="Copy Markdown" />
-              </div>
-            );
-          })}
-          <p className="text-sm">
-            <a href={`/feed/repo/${id}`} className="link">
-              Atom feed of available starter issues
-            </a>{" "}
-            <span className="text-ink-3">
-              · JSON at{" "}
-              <a href={`/api/v1/repos/${id}`} className="link">
+        <div className="grid gap-4 lg:grid-cols-2">
+          <div className="card p-5">
+            <h3 className="font-medium">For maintainers: a README badge</h3>
+            <p className="text-ink-2 mt-1 text-sm">
+              Shows newcomers how quickly this project answers and how often it merges.
+              Paste the line into your README; the badge updates with the index.
+            </p>
+            <div className="mt-4 space-y-4">
+              {(["reply", "merge"] as const).map((metric) => {
+                const markdown = `[![${metric === "reply" ? "First reply" : "Outside PRs merged"}](${SITE}/badge/${id}?metric=${metric})](${SITE}/repo/${id})`;
+                return (
+                  <div key={metric}>
+                    <div className="flex items-center justify-between gap-3">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`/badge/${id}?metric=${metric}`}
+                        alt={
+                          metric === "reply"
+                            ? "First reply badge"
+                            : "Outside PRs merged badge"
+                        }
+                        height={20}
+                        className="h-5"
+                      />
+                      <CopyButton text={markdown} label="Copy Markdown" />
+                    </div>
+                    <pre className="bg-bg-3 text-ink-2 mt-2 overflow-x-auto rounded-md px-3 py-2 text-xs">
+                      <code>{markdown}</code>
+                    </pre>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="card p-5">
+            <h3 className="font-medium">For contributors: follow new issues</h3>
+            <p className="text-ink-2 mt-1 text-sm">
+              Add the feed to a feed reader (Feedly, Inoreader, Thunderbird) and you hear
+              about new free starter issues here without checking the site.
+            </p>
+            <div className="mt-4 flex items-center justify-between gap-3">
+              <span className="text-sm">Atom feed of free starter issues</span>
+              <CopyButton text={`${SITE}/feed/repo/${id}`} label="Copy feed link" />
+            </div>
+            <pre className="bg-bg-3 text-ink-2 mt-2 overflow-x-auto rounded-md px-3 py-2 text-xs">
+              <code>{`${SITE}/feed/repo/${id}`}</code>
+            </pre>
+            <p className="text-ink-3 mt-4 text-xs">
+              For developers: every figure on this page as JSON at{" "}
+              <a href={`/api/v1/repos/${id}`} className="link break-all">
                 /api/v1/repos/{id}
               </a>
-            </span>
-          </p>
+              .
+            </p>
+          </div>
         </div>
       </Section>
 
