@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { FourThings } from "@/components/home/Story";
 import { RepoInput } from "@/components/site/RepoInput";
+import { getIndex } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Check any repository",
@@ -50,7 +52,10 @@ const QUESTIONS: { question: string; answer: string; icon: string }[] = [
   },
 ];
 
-export default function CheckPage() {
+export const revalidate = 900;
+
+export default async function CheckPage() {
+  const index = await getIndex();
   return (
     <>
       <section className="relative overflow-hidden">
@@ -82,9 +87,11 @@ export default function CheckPage() {
         </div>
       </section>
 
+      <FourThings rows={index.rows} />
+
       <section className="border-hair border-t py-20 md:py-28">
         <div className="shell">
-          <p className="eyebrow">What you get</p>
+          <p className="eyebrow">In a full report</p>
           <h2 className="display mt-5 max-w-3xl text-[clamp(2rem,4.6vw,3.25rem)]">
             Six questions, <em>answered.</em>
           </h2>

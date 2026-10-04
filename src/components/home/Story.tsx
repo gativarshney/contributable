@@ -155,14 +155,11 @@ function Tile({
 
 /**
  * What the site is for, shown rather than said: the same pull request waiting at two
- * famous projects, then the four things measured for every repository, using one real
- * repository as the example.
+ * famous projects.
  */
 export function Story({ rows }: { rows: readonly IndexRow[] }) {
   const pair = famousPair(rows);
   if (!pair) return null;
-  const example = pair.fast;
-  const issues = rows.reduce((sum, r) => sum + r.available, 0);
 
   return (
     <section className="border-hair border-t py-20 md:py-28">
@@ -184,8 +181,26 @@ export function Story({ rows }: { rows: readonly IndexRow[] }) {
           across {pair.slow.replyN} and {pair.fast.replyN} pull requests. The track is{" "}
           {TRACK_DAYS} days long.
         </p>
+      </div>
+    </section>
+  );
+}
 
-        <h2 className="display mt-24 max-w-3xl text-[clamp(2rem,4.6vw,3.25rem)]">
+/**
+ * The four things measured for every repository, each as a small picture, using one
+ * real repository as the example.
+ */
+export function FourThings({ rows }: { rows: readonly IndexRow[] }) {
+  const pair = famousPair(rows);
+  if (!pair) return null;
+  const example = pair.fast;
+  const issues = rows.reduce((sum, r) => sum + r.available, 0);
+
+  return (
+    <section className="border-hair border-t py-20 md:py-28">
+      <div className="shell">
+        <p className="eyebrow">What you get</p>
+        <h2 className="display mt-5 max-w-3xl text-[clamp(2rem,4.6vw,3.25rem)]">
           Four things, <em>for every project.</em>
         </h2>
         <p className="text-ink-2 mt-5 text-lg">

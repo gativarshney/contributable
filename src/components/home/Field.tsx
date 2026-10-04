@@ -30,6 +30,10 @@ function matches(point: Point, query: string[]): boolean {
   return query.length > 0 && query.every((word) => point[4].includes(word));
 }
 
+/** A hero panel that is not the current one keeps its space but cannot be seen or used. */
+const panel = (active: boolean) =>
+  active ? "transition-opacity duration-200" : "invisible opacity-0";
+
 const hoursText = (hours: number) =>
   hours < 48 ? `${Math.max(1, Math.round(hours))} h` : `${Math.round(hours / 24)} days`;
 
@@ -135,8 +139,11 @@ export function Field({
           ))}
         </div>
 
-        {mode === "check" ? (
-          <div className="mt-4 w-full max-w-xl">
+        <div className="grid w-full justify-items-center">
+          <div
+            className={`col-start-1 row-start-1 mt-4 w-full max-w-xl ${panel(mode === "check")}`}
+            inert={mode !== "check"}
+          >
             <RepoInput />
             <div className="flex flex-wrap items-center justify-center gap-2">
               <span className="text-ink-3 mr-1 text-sm">Try</span>
@@ -155,98 +162,101 @@ export function Field({
               outside work gets merged.
             </p>
           </div>
-        ) : null}
 
-        <form
-          action="/match"
-          className={`mt-4 w-full max-w-xl text-left ${mode === "find" ? "" : "hidden"}`}
-        >
-          <label htmlFor="home-stack" className="sr-only">
-            What do you code in?
-          </label>
-          <div className="repo-input border-hair-strong bg-bg-2 flex items-center gap-1 rounded-full border p-1.5 pl-5">
-            <svg
-              viewBox="0 0 16 16"
-              className="text-ink-3 size-[18px] shrink-0"
-              fill="none"
-              aria-hidden="true"
+          <div
+            className={`col-start-1 row-start-1 flex w-full flex-col items-center ${panel(mode === "find")}`}
+            inert={mode !== "find"}
+          >
+            <form action="/match" className="mt-4 w-full max-w-xl text-left">
+              <label htmlFor="home-stack" className="sr-only">
+                What do you code in?
+              </label>
+              <div className="repo-input border-hair-strong bg-bg-2 flex items-center gap-1 rounded-full border p-1.5 pl-5">
+                <svg
+                  viewBox="0 0 16 16"
+                  className="text-ink-3 size-[18px] shrink-0"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+                  <path
+                    d="m10.5 10.5 3 3"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <input
+                  id="home-stack"
+                  name="stack"
+                  value={text}
+                  onChange={(event) => setText(event.target.value)}
+                  placeholder="What do you code in?"
+                  className="placeholder:text-ink-3 h-11 min-w-0 flex-1 bg-transparent px-2 text-base outline-none"
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                />
+                <button className="btn shrink-0">
+                  <span className="max-[420px]:hidden">Find projects</span>
+                  <span className="min-[421px]:hidden">Find</span>
+                  <span aria-hidden="true">→</span>
+                </button>
+              </div>
+            </form>
+
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+              <span className="text-ink-3 mr-1 text-sm">Try</span>
+              {chips.map((chip) => {
+                const on = query.includes(chip);
+                return (
+                  <button
+                    key={chip}
+                    type="button"
+                    onClick={() => toggle(chip)}
+                    aria-pressed={on}
+                    className={`min-h-8 rounded-full border px-3 font-mono text-xs transition-colors ${
+                      on
+                        ? "border-accent text-accent"
+                        : "border-hair-strong text-ink-2 hover:text-ink hover:border-ink-3"
+                    }`}
+                  >
+                    {chip}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div
+              className="mt-4 min-h-[3rem] sm:mt-5 sm:min-h-[4.5rem]"
+              aria-live="polite"
             >
-              <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
-              <path
-                d="m10.5 10.5 3 3"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
-            <input
-              id="home-stack"
-              name="stack"
-              value={text}
-              onChange={(event) => setText(event.target.value)}
-              placeholder="What do you code in?"
-              className="placeholder:text-ink-3 h-11 min-w-0 flex-1 bg-transparent px-2 text-base outline-none"
-              autoComplete="off"
-              autoCapitalize="none"
-              spellCheck={false}
-            />
-            <button className="btn shrink-0">
-              <span className="max-[420px]:hidden">Find projects</span>
-              <span className="min-[421px]:hidden">Find</span>
-              <span aria-hidden="true">→</span>
-            </button>
+              {mode === "find" && query.length > 0 && data ? (
+                <>
+                  <p className="text-ink-2 text-sm">
+                    {matched.length === 0
+                      ? `No measured repository uses ${stack} yet.`
+                      : `${matched.length.toLocaleString("en-US")} ${matched.length === 1 ? "repository uses" : "repositories use"} ${stack}. Best at answering:`}
+                  </p>
+                  <ul className="mt-2.5 flex flex-wrap justify-center gap-2 text-sm">
+                    {matched.slice(0, 3).map((point) => (
+                      <li key={point[0]}>
+                        <Link
+                          href={`/repo/${point[0]}`}
+                          className="border-hair-strong bg-bg/70 hover:border-accent inline-flex min-h-9 items-center gap-2 rounded-full border px-3.5 backdrop-blur transition-colors"
+                        >
+                          <span>{point[0]}</span>
+                          <span className="num text-accent text-xs">
+                            {hoursText(point[1])} · {Math.round(point[2] * 100)}%
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : null}
+            </div>
           </div>
-        </form>
-
-        <div
-          className={`mt-4 flex flex-wrap items-center justify-center gap-2 ${mode === "find" ? "" : "hidden"}`}
-        >
-          <span className="text-ink-3 mr-1 text-sm">Try</span>
-          {chips.map((chip) => {
-            const on = query.includes(chip);
-            return (
-              <button
-                key={chip}
-                type="button"
-                onClick={() => toggle(chip)}
-                aria-pressed={on}
-                className={`min-h-8 rounded-full border px-3 font-mono text-xs transition-colors ${
-                  on
-                    ? "border-accent text-accent"
-                    : "border-hair-strong text-ink-2 hover:text-ink hover:border-ink-3"
-                }`}
-              >
-                {chip}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="mt-4 min-h-[3rem] sm:mt-5 sm:min-h-[4.5rem]" aria-live="polite">
-          {mode === "find" && query.length > 0 && data ? (
-            <>
-              <p className="text-ink-2 text-sm">
-                {matched.length === 0
-                  ? `No measured repository uses ${stack} yet.`
-                  : `${matched.length.toLocaleString("en-US")} ${matched.length === 1 ? "repository uses" : "repositories use"} ${stack}. Best at answering:`}
-              </p>
-              <ul className="mt-2.5 flex flex-wrap justify-center gap-2 text-sm">
-                {matched.slice(0, 3).map((point) => (
-                  <li key={point[0]}>
-                    <Link
-                      href={`/repo/${point[0]}`}
-                      className="border-hair-strong bg-bg/70 hover:border-accent inline-flex min-h-9 items-center gap-2 rounded-full border px-3.5 backdrop-blur transition-colors"
-                    >
-                      <span>{point[0]}</span>
-                      <span className="num text-accent text-xs">
-                        {hoursText(point[1])} · {Math.round(point[2] * 100)}%
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </>
-          ) : null}
         </div>
       </div>
 

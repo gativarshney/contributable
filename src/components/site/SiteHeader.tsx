@@ -1,16 +1,9 @@
 import Link from "next/link";
 import { PaletteButton } from "./CommandPalette";
 import { Logo } from "./Logo";
-import { NavLink, TabBar } from "./Nav";
+import { HeaderNav, SectionTabs, TabBar } from "./Nav";
 import { SavedLink } from "./Saved";
 import { ThemeToggle } from "./ThemeToggle";
-
-const links = [
-  { href: "/explore", label: "Explore" },
-  { href: "/gsoc", label: "GSoC" },
-  { href: "/issues", label: "First issues" },
-  { href: "/check", label: "Check a repo" },
-];
 
 export function SiteHeader() {
   return (
@@ -20,20 +13,17 @@ export function SiteHeader() {
           <Link href="/" aria-label="Contributable home">
             <Logo />
           </Link>
-          <nav aria-label="Primary" className="flex items-center gap-3 sm:gap-6">
-            <ul className="hidden items-center gap-6 sm:flex">
-              {links.map((link) => (
-                <li key={link.href}>
-                  <NavLink href={link.href}>{link.label}</NavLink>
-                </li>
-              ))}
-            </ul>
-            <PaletteButton />
-            <SavedLink />
-            <ThemeToggle />
+          <nav aria-label="Primary" className="flex items-center gap-3 sm:gap-7">
+            <HeaderNav />
+            <div className="flex items-center gap-2">
+              <PaletteButton />
+              <SavedLink />
+              <ThemeToggle />
+            </div>
           </nav>
         </div>
       </header>
+      <SectionTabs />
       <TabBar />
     </>
   );
