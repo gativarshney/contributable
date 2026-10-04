@@ -181,8 +181,9 @@ export default function AboutPage() {
           ))}
         </ul>
         <p className="text-ink-3 border-hair mt-8 border-t pt-6 text-sm">
-          The code is open source under the MIT licence. Contributable is independent and
-          is not affiliated with GitHub or Google. Read{" "}
+          The code is open source under the GNU AGPL-3.0: copies that are run as a website
+          must publish their source and keep the author credit. Contributable is
+          independent and is not affiliated with GitHub or Google. Read{" "}
           <Link href="/methodology" className="link">
             how every figure is calculated
           </Link>{" "}

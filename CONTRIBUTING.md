@@ -81,4 +81,5 @@ Be kind and assume good faith. See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 ## Licence
 
 By contributing you agree that your contribution is released under the
-[MIT licence](LICENSE) that covers the project.
+[GNU AGPL-3.0 licence](LICENSE), with the additional terms in [NOTICE](NOTICE), that
+covers the project.

@@ -157,8 +157,8 @@ export function SiteFooter() {
         </div>
 
         <p className="border-hair text-ink-3 mt-12 border-t pt-8 text-xs">
-          Open source under the MIT licence. Data under CC BY 4.0. An independent project,
-          not affiliated with GitHub or Google.
+          © 2026 Gati Varshney. Open source under the GNU AGPL-3.0. Data under CC BY 4.0.
+          An independent project, not affiliated with GitHub or Google.
         </p>
       </div>
     </footer>

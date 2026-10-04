@@ -181,4 +181,7 @@ project and is not affiliated with GitHub or Google.
 
 ## Licence
 
-Code: [MIT](LICENSE) © 2026 Gati Varshney. Data: CC BY 4.0.
+Code: [GNU AGPL-3.0](LICENSE) © 2026 Gati Varshney, with the additional terms in
+[NOTICE](NOTICE). In short: you may use, study and change it, but if you run a copy as a
+website you must publish your full source code under the same licence and keep the
+"Built by Gati Varshney" credit visible. Data: CC BY 4.0.
