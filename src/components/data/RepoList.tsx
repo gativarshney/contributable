@@ -111,8 +111,8 @@ export function RepoCard({ row }: { row: IndexRow }) {
 
 export function RepoTable({ rows }: { rows: IndexRow[] }) {
   return (
-    <div className="border-hair overflow-x-auto rounded-2xl border">
-      <table className="data-table min-w-[860px]">
+    <div className="border-hair @container overflow-x-auto rounded-2xl border">
+      <table className="data-table min-w-[620px]">
         <caption className="sr-only">
           Repositories with reply time, merge rate and starter issues
         </caption>
@@ -123,32 +123,47 @@ export function RepoTable({ rows }: { rows: IndexRow[] }) {
               First reply
             </th>
             <th scope="col" className="right">
-              Within 48 h
+              In 48 h
             </th>
             <th scope="col" className="right">
               Merged
             </th>
-            <th scope="col" className="right">
-              Time to merge
+            <th scope="col" className="right @max-[54rem]:hidden">
+              To merge
             </th>
             <th scope="col" className="right">
-              Starter issues
+              Free issues
             </th>
             <th scope="col" className="right">
               Stars
             </th>
-            <th scope="col">Outside PRs, 52 weeks</th>
-            <th scope="col">Updated</th>
+            <th
+              scope="col"
+              title="Outside pull requests opened, per four weeks, over the last year"
+            >
+              52 weeks
+            </th>
+            <th scope="col" className="@max-[54rem]:hidden">
+              Updated
+            </th>
           </tr>
         </thead>
         <tbody>
           {rows.map((row) => (
             <tr key={row.id}>
               <th scope="row" className="!text-ink !border-hair !text-sm font-medium">
-                <Link href={repoHref(row.id)} className="link">
-                  {row.id}
-                </Link>
-                <span className="text-ink-3 ml-2 text-xs font-normal">{row.lang[0]}</span>
+                <span className="flex max-w-[17rem] items-baseline gap-2">
+                  <Link
+                    href={repoHref(row.id)}
+                    title={row.id}
+                    className="link min-w-0 truncate"
+                  >
+                    {row.id}
+                  </Link>
+                  <span className="text-ink-3 shrink-0 text-xs font-normal">
+                    {row.lang[0]}
+                  </span>
+                </span>
               </th>
               <td
                 className={`right num ${SPEED_CLASS[replySpeed(row.replyHours)]}`}
@@ -167,18 +182,19 @@ export function RepoTable({ rows }: { rows: IndexRow[] }) {
                 {row.mergeRate === null ? "n/a" : percent(row.mergeRate)}
                 <span className="text-ink-3 ml-1 text-[11px]">/{row.decided}</span>
               </td>
-              <td className="right num">
+              <td className="right num @max-[54rem]:hidden">
                 {row.mergeHours === null ? "n/a" : duration(row.mergeHours)}
               </td>
               <td className="right num">{row.available}</td>
               <td className="right num">{compact(row.stars)}</td>
               <td>
                 <Sparkline
+                  width={72}
                   values={row.spark}
                   label={`Outside pull requests opened per four weeks: ${row.spark.join(", ")}`}
                 />
               </td>
-              <td className="text-ink-3 num text-xs whitespace-nowrap">
+              <td className="text-ink-3 num text-xs whitespace-nowrap @max-[54rem]:hidden">
                 {date(row.updatedAt)}
               </td>
             </tr>

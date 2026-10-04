@@ -427,13 +427,13 @@ body {
     font-weight: 500;
     font-size: 12px;
     color: var(--ink-3);
-    padding: 0.5rem 0.75rem;
+    padding: 0.5rem 0.6rem;
     border-bottom: 1px solid var(--hair-strong);
     white-space: nowrap;
   }
 
   .data-table td {
-    padding: 0.6rem 0.75rem;
+    padding: 0.6rem 0.6rem;
     border-bottom: 1px solid var(--hair);
     vertical-align: middle;
   }
@@ -724,12 +724,9 @@ body {
 
 /* A soft light behind each page's heading, like the hero on the home page. */
 .page-glow {
-  background: radial-gradient(
-      ellipse 55% 380px at 20% -60px,
-      var(--glow),
-      transparent 72%
-    )
-    no-repeat;
+  /* Fades to nothing well inside its own edges, so it never shows a border. */
+  background: radial-gradient(closest-side, var(--glow), transparent) 0 -300px / 1100px
+    640px no-repeat;
 }
 
 /* The menu of every page: a full-width panel that drops from the top. */
