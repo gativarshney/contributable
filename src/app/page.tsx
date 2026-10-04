@@ -3,7 +3,6 @@ import { GsocMark } from "@/components/data/GsocMark";
 import { Features } from "@/components/home/Features";
 import { Field } from "@/components/home/Field";
 import { Story } from "@/components/home/Story";
-import { ThisWeek } from "@/components/home/ThisWeek";
 import { getAvailableIssues, getIndex } from "@/lib/data";
 import { facet } from "@/lib/explore/query";
 import { count, date } from "@/lib/format";
@@ -31,8 +30,6 @@ const EXAMPLES = ["vercel/next.js", "fastify/fastify", "OpenPrinting/cups"];
 
 export default async function HomePage() {
   const [index, issues] = await Promise.all([getIndex(), getAvailableIssues()]);
-  // The index's own clock, so the page is the same for everyone until it refreshes.
-  const now = Date.parse(index.generatedAt);
   const chips = facet(index.rows, (r) => r.lang, 40)
     .map((f) => f.value.toLowerCase())
     .filter((name) => !NOT_A_STACK.has(name))
@@ -73,8 +70,6 @@ export default async function HomePage() {
       <Features rows={index.rows} issues={issues} />
 
       <Story rows={index.rows} />
-
-      <ThisWeek rows={index.rows} issues={issues} now={now} />
 
       {index.rows.length > 0 ? (
         <p className="shell text-ink-3 border-hair border-t py-8 text-xs">

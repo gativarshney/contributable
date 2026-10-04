@@ -39,7 +39,7 @@ export const PAGES = [
   {
     href: "/start",
     label: "Start here",
-    short: "Start",
+    short: "New here",
     paths: ["/start", "/guide"],
     icon: "M6 4l14 8-14 8z",
   },
