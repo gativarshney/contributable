@@ -37,7 +37,7 @@ npm run build
 
 ```
 universe/           the GSoC organisations and the opt-out list
-pipeline/           the hourly job that fetches, computes and publishes the index
+pipeline/           the scheduled job that fetches, computes and publishes the index
 src/core/           pure logic shared by the job and the site: metrics, states, trends
 src/lib/            site logic: explore query, GSoC ranking, matching, formatting
 src/lib/analysis/   the on-the-spot report for repositories outside the index
@@ -68,6 +68,13 @@ src/components/     the interface
 Issues labelled `good first issue` are scoped to be done without knowing the whole
 codebase. If you want one, say so on the issue so two people do not do the same work. For
 anything larger, open an issue to talk it through before writing much code.
+
+## Updating the GSoC timeline
+
+The GSoC page shows the next programme's timeline from `src/lib/gsoc-timeline.ts`. Until
+Google publishes the official calendar the dates are expected ones, based on the last
+programme. When the official dates are out, replace the dates and set `official: true`;
+the page then labels them as official.
 
 ## Reporting a wrong number
 

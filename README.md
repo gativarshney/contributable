@@ -25,33 +25,42 @@ Contributable measures both and lets you search by them.
 
 ## Pages
 
-| Page                 | What it does                                                                |
-| -------------------- | --------------------------------------------------------------------------- |
-| `/`                  | Every measured repository as a point; type your stack to light yours up     |
-| `/explore`           | Search and filter the index, as cards or a dense table, with shareable URLs |
-| `/repo/owner/name`   | Verdict, figures with evidence, 52-week trend, starter issues, reply hours  |
-| `/gsoc`              | GSoC organisations ranked by a stated rule                                  |
-| `/gsoc/slug`         | One organisation: pooled figures and the repository to start with           |
-| `/issues`            | Starter issues that are actually available, across the index                |
-| `/match`             | Stack, level, hours, goal and time zone in; a shortlist with reasons out    |
-| `/compare`           | Two to four repositories side by side                                       |
-| `/guide`             | How to pick an organisation, with examples from the data                    |
-| `/methodology`       | Every definition and where it can be wrong                                  |
-| `/status`            | Freshness, coverage and the last refresh                                    |
-| `/report/owner/name` | Any public repository, measured on the spot when it is not in the index     |
+| Page               | What it does                                                                   |
+| ------------------ | ------------------------------------------------------------------------------ |
+| `/`                | Find a project by stack or check a repository, over a 3D skyline of the index  |
+| `/explore`         | Search and filter the index, as cards or a dense table, with shareable URLs    |
+| `/repo/owner/name` | First steps, figures with evidence, 52-week trend, starter issues, reply hours |
+| `/check`           | Paste any public repository and see what to expect before a first pull request |
+| `/gsoc`            | GSoC organisations ranked by a stated rule, with the next programme's timeline |
+| `/gsoc/slug`       | One organisation: pooled figures and the repository to start with              |
+| `/issues`          | Starter issues that are actually available, across the index                   |
+| `/start`           | Your first pull request in five steps, for people new to open source           |
+| `/match`           | Stack, level, hours, goal and time zone in; a shortlist with reasons out       |
+| `/compare`         | Two to four repositories side by side                                          |
+| `/saved`           | Your shortlist, kept in the browser and refreshed with the index               |
+| `/guide`           | How to pick an organisation, with examples from the data                       |
+| `/methodology`     | Every definition and where it can be wrong                                     |
+| `/status`          | Freshness, coverage and the last refresh                                       |
+| `/about`           | Why it exists, who built it and what it promises                               |
 
-Press `Ctrl K` or `/` anywhere to jump to a page or open a repository.
+A repository that is not in the index is measured on the spot when you open its page.
+Press `Ctrl K` or `/` anywhere to jump to a page or open a repository. Long pages have a
+section bar that follows you, and the main figures carry an info icon with their
+definition.
 
 ## What is measured
 
 All figures describe pull requests opened by people GitHub does not mark as owner,
-member or collaborator, and who are not bots.
+member or collaborator, and who are not bots. Bots are recognised by account type, by name
+(such as `-bot`, CI and Jenkins accounts) and by behaviour: an account that answers within
+a minute, comments on most pull requests within minutes, or posts the same templated
+message again and again is treated as automation, and its replies do not count.
 
 - **Outside merge rate.** Merged divided by merged plus closed without merging, for pull
   requests opened 30 to 120 days ago. First-time contributors are shown separately.
-- **First reply time.** Hours to the first comment or review by a person other than the
-  author. Unanswered pull requests stay in the estimate as still waiting, so ignoring
-  people makes the figure worse. The estimate is Kaplan-Meier.
+- **First reply time.** Hours to the first comment by a person other than the author, or
+  to a merge by someone else. Unanswered pull requests stay in the estimate as still
+  waiting, so ignoring people makes the figure worse. The estimate is Kaplan-Meier.
 - **Time to merge** and **issue first reply**, the same way.
 - **Starter issues with their real state**: available, claimed, has a pull request, or
   stale.
@@ -75,7 +84,7 @@ The full definitions and known weaknesses are on the
 
 ```
 universe/                 the GSoC organisations and the opt-out list
-pipeline/                 the hourly job
+pipeline/                 the scheduled job
   universe/               organisations -> repositories worth indexing
   sweep.ts                fetch, compute, publish
 src/core/                 pure logic shared by the job and the site
@@ -93,7 +102,7 @@ snapshot commit. The site reads those files through the framework's fetch cache.
 view never calls GitHub and never waits on it.
 
 ```
-GitHub GraphQL -> sweep (Actions, hourly) -> data branch -> Next.js on Vercel
+GitHub GraphQL -> sweep (Actions, several times a day) -> data branch -> Next.js on Vercel
 ```
 
 ## Cost
