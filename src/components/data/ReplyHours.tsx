@@ -96,6 +96,8 @@ export function ReplyHours({
               return (
                 <span
                   key={h}
+                  // Hover shows the exact count for that hour, in the visitor's zone.
+                  title={`${day} ${hh(h)} (${zone}): ${Math.round(value)} ${Math.round(value) === 1 ? "reply" : "replies"}`}
                   className="aspect-square rounded-[2px]"
                   style={{
                     background:

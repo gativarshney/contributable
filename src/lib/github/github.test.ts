@@ -24,6 +24,14 @@ describe("parseRepoInput", () => {
     ["git@github.com:torvalds/linux.git", "torvalds", "linux"],
     ["  rust-lang/rust  ", "rust-lang", "rust"],
     ["https://github.com/a/b?tab=readme#top", "a", "b"],
+    ["ssh://git@github.com/vercel/next.js.git", "vercel", "next.js"],
+    ["vercel/next.js/tree/canary", "vercel", "next.js"],
+    ["git clone https://github.com/vercel/next.js.git", "vercel", "next.js"],
+    ["gh repo clone vercel/next.js", "vercel", "next.js"],
+    ["vercel / next.js", "vercel", "next.js"],
+    ["vercel/next.js.", "vercel", "next.js"],
+    ["<https://github.com/vercel/next.js>", "vercel", "next.js"],
+    ["m.github.com/vercel/next.js", "vercel", "next.js"],
   ])("accepts %s", (input, owner, name) => {
     expect(parseRepoInput(input)).toEqual({ ok: true, ref: { owner, name } });
   });
@@ -32,7 +40,7 @@ describe("parseRepoInput", () => {
     ["", "empty"],
     ["   ", "empty"],
     ["https://gitlab.com/group/project", "not_github"],
-    ["https://github.com/vercel", "malformed"],
+    ["https://github.com/vercel", "account"],
     ["https://github.com/", "malformed"],
     ["https://github.com/settings/profile", "malformed"],
     ["https://github.com/-bad/repo", "malformed"],

@@ -64,6 +64,12 @@ function Progress({
 }) {
   const finished = STAGES.filter((stage) => stage.id in done).length;
   const found = "repository" in done;
+  // A running count, so a slow repository never looks like a stalled page.
+  const [seconds, setSeconds] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(() => setSeconds((s) => s + 1), 1000);
+    return () => clearInterval(timer);
+  }, []);
   const size = 132;
   const stroke = 6;
   const radius = (size - stroke) / 2;
@@ -107,6 +113,14 @@ function Progress({
       <h1 className="display mt-3 text-[clamp(1.8rem,5vw,3rem)] break-words">
         {owner}/<em>{name}</em>
       </h1>
+      <p className="text-ink-2 mt-4 max-w-lg text-sm">
+        This repository is not in the Google Summer of Code list, so it is measured live
+        now. That usually takes 10 to 20 seconds; very busy repositories take longer.
+      </p>
+      <p className="text-ink-3 num mt-2 text-xs" aria-live="off">
+        {seconds} s so far
+        {seconds >= 30 ? " · still working, the page fills in on its own" : ""}
+      </p>
 
       <ol
         className="mt-12 grid w-full max-w-4xl grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6"
