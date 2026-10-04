@@ -67,22 +67,34 @@ const SLOW_MERGE_HOURS = 30 * 24;
  * The rule, in order:
  *  1. Keep repositories that use at least one thing in your stack.
  *  2. Keep the ones that fit your goal and level (listed in `fits`).
- *  3. Order by: share of outside pull requests answered within 48 hours, then outside
+ *  3. Projects measured on 20 or more outside pull requests come before smaller ones.
+ *  4. Order by: share of outside pull requests answered within 48 hours, then outside
  *     merge rate, then available starter issues. Repositories without enough data to
  *     show a figure come last.
  */
+/** Outside pull requests a project needs for its figures to be more than luck. */
+export const SOLID_SAMPLE = 20;
+
 export function matchProjects(rows: readonly IndexRow[], input: MatchInput): Match[] {
   if (input.stack.length === 0) return [];
   const out: Match[] = [];
   for (const row of rows) {
     const terms = [...row.lang, ...row.fw, ...row.topics];
-    const matched = terms.filter((term) => input.stack.includes(term.toLowerCase()));
+    // "Python" the language and "python" the topic are one match, not two.
+    const seen = new Set<string>();
+    const matched = terms.filter((term) => {
+      const lower = term.toLowerCase();
+      if (!input.stack.includes(lower) || seen.has(lower)) return false;
+      seen.add(lower);
+      return true;
+    });
     if (matched.length === 0 || !fits(row, input)) continue;
     out.push({ row, matched, reasons: reasons(row, input, matched) });
   }
   const key = (v: number | null) => v ?? -1;
   return out.sort(
     (a, b) =>
+      Number(b.row.replyN >= SOLID_SAMPLE) - Number(a.row.replyN >= SOLID_SAMPLE) ||
       key(b.row.within48h) - key(a.row.within48h) ||
       key(b.row.mergeRate) - key(a.row.mergeRate) ||
       b.row.available - a.row.available ||

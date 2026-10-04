@@ -253,3 +253,52 @@ describe("repository discovery", () => {
     expect(pickRepos(many, NOW)[0]).toBe("r19");
   });
 });
+
+describe("find my project: sample size", () => {
+  const row = (id: string, over: Partial<IndexRow>): IndexRow =>
+    ({
+      id,
+      d: "",
+      stars: 1,
+      lang: ["Python"],
+      fw: [],
+      topics: ["python"],
+      gsoc: "org",
+      years: [2026],
+      updatedAt: "2026-10-01T00:00:00Z",
+      mergeRate: 0.8,
+      decided: 30,
+      firstTimerRate: null,
+      replyHours: 10,
+      within48h: 0.8,
+      within7d: 0.9,
+      replyN: 30,
+      mergeHours: 50,
+      issueReplyHours: null,
+      available: 1,
+      helpWanted: 0,
+      commits90d: 10,
+      maintainers: 3,
+      pushedAt: "2026-09-30T00:00:00Z",
+      cla: "none",
+      channels: [],
+      guide: true,
+      trend: "steady",
+      spark: [],
+      hours: null,
+      ...over,
+    }) as IndexRow;
+
+  it("puts a well-sampled project ahead of a perfect record over a handful", () => {
+    const picks = matchProjects(
+      [
+        row("a/lucky", { within48h: 1, replyN: 6 }),
+        row("b/solid", { within48h: 0.8, replyN: 60 }),
+      ],
+      parseMatch({ stack: "python" }),
+    );
+    expect(picks.map((m) => m.row.id)).toEqual(["b/solid", "a/lucky"]);
+    // The language and the topic of the same name count once.
+    expect(picks[0].reasons[0]).toBe("Uses Python.");
+  });
+});

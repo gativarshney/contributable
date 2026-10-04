@@ -148,8 +148,10 @@ export default async function MatchPage({ searchParams }: Props) {
             {input.hours <= 5
               ? " With 5 hours a week or less, projects that take over 30 days to merge are left out."
               : ""}{" "}
-            The order is: share of outside pull requests answered within 48 hours, then
-            outside merge rate, then available starter issues.
+            Projects measured on at least 20 outside pull requests come first, because a
+            perfect record over five is partly luck. Within each group the order is: share
+            of outside pull requests answered within 48 hours, then outside merge rate,
+            then available starter issues.
           </p>
 
           {matches.length === 0 ? (
