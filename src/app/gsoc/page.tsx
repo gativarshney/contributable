@@ -6,7 +6,8 @@ import { count, date, percent } from "@/lib/format";
 import {
   allOrgStats,
   GSOC_YEARS,
-  MIN_ORG_SAMPLE,
+  isRanked,
+  RANK_MIN_SAMPLE,
   ORG_SORTS,
   rankOrgs,
   type OrgSort,
@@ -80,7 +81,7 @@ export default async function GsocPage({
   const positions = new Map<string, number>();
   if (sort === "reply") {
     for (const stats of ranked) {
-      if (stats.within7d !== null) positions.set(stats.org.slug, positions.size + 1);
+      if (isRanked(stats)) positions.set(stats.org.slug, positions.size + 1);
     }
   }
 
@@ -100,8 +101,8 @@ export default async function GsocPage({
           <strong className="text-ink font-medium">The ranking rule.</strong> Share of
           pull requests from outside the core team that got a reply from a person within 7
           days, across all of the organisation&apos;s measured repositories. Ties go to
-          the higher outside merge rate. An organisation needs at least {MIN_ORG_SAMPLE}{" "}
-          outside pull requests to be ranked.
+          the higher outside merge rate. An organisation needs at least {RANK_MIN_SAMPLE}{" "}
+          outside pull requests to take a place; smaller ones follow, unranked.
         </p>
       </header>
 

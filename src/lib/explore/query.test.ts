@@ -180,3 +180,29 @@ describe("GSoC organisations", () => {
     expect(startingRepo([rows[2]])).toBeNull();
   });
 });
+
+describe("GSoC ranking sample", () => {
+  const org = (slug: string): GsocOrgInfo => ({
+    slug,
+    name: slug,
+    years: [2026],
+    website: null,
+    tech: [],
+    topics: [],
+    unmappable: null,
+  });
+
+  it("does not let a perfect record over a handful of pull requests take first place", () => {
+    const rows = [
+      row("small/a", { gsoc: "small", within7d: 1, replyN: 8 }),
+      row("large/a", { gsoc: "large", within7d: 0.9, replyN: 300 }),
+      row("mid/a", { gsoc: "mid", within7d: 0.7, replyN: 25 }),
+    ];
+    const ranked = rankOrgs(
+      ["small", "large", "mid"].map((slug) => orgStats(org(slug), rows)),
+    );
+    expect(ranked.map((s) => s.org.slug)).toEqual(["large", "mid", "small"]);
+    // The small organisation still shows its figure; it just has no place.
+    expect(ranked[2].within7d).toBe(1);
+  });
+});

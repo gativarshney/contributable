@@ -99,7 +99,7 @@ const definitions = [
   ],
   [
     "GSoC ranking",
-    "An organisation's figure pools its measured repositories, weighted by their number of outside pull requests. Organisations are ordered by the share answered within 7 days, then by outside merge rate. Fewer than 5 pull requests means no rank.",
+    "An organisation's figure pools its measured repositories, weighted by their number of outside pull requests. Organisations are ordered by the share answered within 7 days, then by outside merge rate. An organisation needs 20 outside pull requests to take a place in the ranking; smaller ones are listed after it with their figures.",
   ],
   [
     "Which repositories",

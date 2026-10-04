@@ -81,7 +81,7 @@ export function Field({ chips, children }: { chips: string[]; children: ReactNod
   const stack = query.join(", ");
 
   return (
-    <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col overflow-hidden">
+    <section className="relative flex min-h-[calc(100svh-7rem)] flex-col overflow-hidden sm:min-h-[calc(100svh-3.5rem)]">
       <div className="hero-glow" aria-hidden="true" />
       {values.length > 0 ? (
         <Skyline
@@ -89,14 +89,14 @@ export function Field({ chips, children }: { chips: string[]; children: ReactNod
           lit={lit}
           anchor="bottom"
           reactive
-          className="skyline-fade pointer-events-none absolute inset-x-0 bottom-0 h-[clamp(13rem,36svh,25rem)]"
+          className="skyline-fade pointer-events-none absolute inset-x-0 bottom-0 h-[clamp(10rem,34svh,25rem)]"
         />
       ) : null}
 
-      <div className="shell relative flex flex-col items-center pt-[clamp(2rem,7svh,6rem)] pb-[clamp(11rem,31svh,21rem)] text-center">
+      <div className="shell relative flex flex-col items-center pt-[clamp(1.5rem,6svh,6rem)] pb-[clamp(9rem,29svh,21rem)] text-center">
         {children}
 
-        <form action="/match" className="mt-9 w-full max-w-xl text-left">
+        <form action="/match" className="mt-7 w-full max-w-xl text-left sm:mt-9">
           <label htmlFor="home-stack" className="sr-only">
             What do you code in?
           </label>
@@ -127,7 +127,8 @@ export function Field({ chips, children }: { chips: string[]; children: ReactNod
               spellCheck={false}
             />
             <button className="btn shrink-0">
-              Find projects <span aria-hidden="true">→</span>
+              Find<span className="max-[420px]:sr-only"> projects</span>{" "}
+              <span aria-hidden="true">→</span>
             </button>
           </div>
         </form>
@@ -154,7 +155,7 @@ export function Field({ chips, children }: { chips: string[]; children: ReactNod
           })}
         </div>
 
-        <div className="mt-5 min-h-[4.5rem]" aria-live="polite">
+        <div className="mt-4 min-h-[3rem] sm:mt-5 sm:min-h-[4.5rem]" aria-live="polite">
           {query.length > 0 && data ? (
             <>
               <p className="text-ink-2 text-sm">

@@ -65,15 +65,18 @@ export default async function HomePage() {
           {index.rows.length > 0
             ? `${count(index.rows.length)} repositories measured`
             : "For open source contributors"}
-          <span className="text-ink-3" aria-hidden="true">
+          <span className="text-ink-3 hidden sm:inline" aria-hidden="true">
             ·
           </span>
-          See GSoC organisations →
+          <span className="hidden sm:inline">See GSoC organisations →</span>
+          <span className="sm:hidden" aria-hidden="true">
+            →
+          </span>
         </Link>
         <h1 className="display mt-7 max-w-4xl text-[clamp(2.5rem,min(7.4vw,10svh),5.25rem)]">
           Find a project that <em>answers newcomers.</em>
         </h1>
-        <p className="text-ink-2 mt-6 max-w-xl text-lg text-balance">
+        <p className="text-ink-2 mt-5 max-w-xl text-balance sm:mt-6 sm:text-lg">
           How fast a person replies to your first pull request, and how often it gets
           merged. Measured for every GSoC organisation, with the evidence behind each
           number.

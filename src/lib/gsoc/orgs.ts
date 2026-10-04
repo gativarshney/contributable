@@ -18,6 +18,16 @@ export const GSOC_YEARS = [...new Set(GSOC_ORGS.flatMap((o) => o.years))].sort(
 
 /** Under this many outside pull requests an organisation is listed but not ranked. */
 export const MIN_ORG_SAMPLE = 5;
+/**
+ * Outside pull requests an organisation needs to take a place in the ranking. A
+ * perfect record over six pull requests is luck as much as habit, so smaller
+ * organisations show their figures but are listed after the ranked ones.
+ */
+export const RANK_MIN_SAMPLE = 20;
+
+/** Whether an organisation has enough pull requests to be ranked on reply share. */
+export const isRanked = (stats: { within7d: number | null; replyN: number }) =>
+  stats.within7d !== null && stats.replyN >= RANK_MIN_SAMPLE;
 
 export interface OrgStats {
   org: GsocOrgInfo;
@@ -106,17 +116,26 @@ export type OrgSort = keyof typeof ORG_SORTS;
 /**
  * The ranking rule, in full: share of outside pull requests answered by a person
  * within 7 days, highest first; ties go to the higher outside merge rate, then to the
- * larger sample. Organisations with too few pull requests come last, unranked.
+ * larger sample. Organisations with fewer than 20 outside pull requests come last,
+ * unranked, most pull requests first.
  */
 export function rankOrgs(stats: OrgStats[], sort: OrgSort = "reply"): OrgStats[] {
   const value = (s: OrgStats): number | null =>
-    sort === "reply" ? s.within7d : sort === "merge" ? s.mergeRate : s.available;
+    sort === "reply"
+      ? isRanked(s)
+        ? s.within7d
+        : null
+      : sort === "merge"
+        ? s.decided >= RANK_MIN_SAMPLE
+          ? s.mergeRate
+          : null
+        : s.available;
   return [...stats].sort((a, b) => {
     if (sort === "name") return a.org.name.localeCompare(b.org.name);
     const x = value(a);
     const y = value(b);
     if (x === null || y === null) {
-      if (x === y) return a.org.name.localeCompare(b.org.name);
+      if (x === y) return b.replyN - a.replyN || a.org.name.localeCompare(b.org.name);
       return x === null ? 1 : -1;
     }
     return (
