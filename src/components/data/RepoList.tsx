@@ -127,6 +127,7 @@ export function RepoCard({ row }: { row: IndexRow }) {
         <Figure
           label="Merged"
           info={MERGED_INFO}
+          infoAlign="right"
           value={percent(row.mergeRate)}
           note={`of ${row.decided} decided`}
           extra={

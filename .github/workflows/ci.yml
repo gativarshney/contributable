@@ -12,7 +12,7 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,3 +25,11 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      # Every main page at phone, tablet and desktop widths: nothing may reach past the screen.
+      - name: Layout check
+        run: |
+          npx next start -p 3210 &
+          for i in $(seq 1 30); do curl -fs http://localhost:3210/ > /dev/null && break; sleep 2; done
+          npm run layout
+        env:
+          BASE_URL: http://localhost:3210

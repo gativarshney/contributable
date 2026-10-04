@@ -34,17 +34,19 @@ function Figure({
   value,
   sample,
   info,
+  infoAlign,
 }: {
   label: string;
   value: string;
   sample: string;
   info: string;
+  infoAlign?: "left" | "right";
 }) {
   return (
     <div className="card p-5">
       <h2 className="text-ink-2 flex items-center gap-1.5 text-sm">
         {label}
-        <InfoTip text={info} />
+        <InfoTip text={info} align={infoAlign} />
       </h2>
       <p className="num mt-2 text-[2.25rem] leading-none font-medium">{value}</p>
       <p className="text-ink-3 num mt-2 text-xs">{sample}</p>
@@ -162,12 +164,14 @@ export default async function OrgPage({ params }: Props) {
             <Figure
               label="Outside PRs merged"
               info={MERGED_INFO}
+              infoAlign="right"
               value={na(stats.mergeRate)}
               sample={`${stats.decided} decided`}
             />
             <Figure
               label="Starter issues available"
               info={STARTER_INFO}
+              infoAlign="right"
               value={String(stats.available)}
               sample={`across ${stats.repos.length} repositories`}
             />
