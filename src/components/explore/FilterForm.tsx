@@ -17,6 +17,7 @@ export function FilterForm({
   return (
     <Form
       action={action}
+      scroll={false}
       className={className}
       onChange={(event) => {
         const form = event.currentTarget;
