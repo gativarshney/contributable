@@ -31,7 +31,7 @@ jobs:
       - name: Check out code and data
         run: |
           set -eu
-          git clone --depth 1 "https://github.com/${GITHUB_REPOSITORY}.git" app
+          git clone --depth 1 --branch v2 "https://github.com/${GITHUB_REPOSITORY}.git" app
           if git ls-remote --exit-code --heads "https://github.com/${GITHUB_REPOSITORY}.git" data > /dev/null; then
             git clone --depth 1 --branch data "https://github.com/${GITHUB_REPOSITORY}.git" data
           else
