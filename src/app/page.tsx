@@ -40,7 +40,7 @@ export default async function HomePage() {
       <Field chips={chips} examples={EXAMPLES}>
         <div className="flex flex-wrap items-center justify-center gap-2">
           <Link
-            href="/gsoc#next-gsoc-timeline"
+            href="/gsoc"
             className="gsoc-pill border-hair-strong bg-bg-2/70 hover:border-accent inline-flex items-center gap-2.5 rounded-full border py-1 pr-4 pl-1.5 text-[13px] backdrop-blur transition-colors"
           >
             <GsocMark size={26} />

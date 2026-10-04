@@ -4,6 +4,7 @@ import { GsocMark } from "@/components/data/GsocMark";
 import { GsocTimeline } from "@/components/data/GsocTimeline";
 import { OrgLogo } from "@/components/data/OrgLogo";
 import { FilterForm } from "@/components/explore/FilterForm";
+import { ScrollToList } from "@/components/explore/ScrollToList";
 import { getIndex } from "@/lib/data";
 import { count, date, percent } from "@/lib/format";
 import {
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/gsoc" },
 };
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 10;
 
 /** A slow, endless row of the organisations' logos. Decorative: the list below names them. */
 function LogoWall({
@@ -112,7 +113,8 @@ export default async function GsocPage({
     if (sort !== "reply") out.set("sort", sort);
     if (target > 1) out.set("page", String(target));
     const text = out.toString();
-    return `/gsoc${text ? `?${text}` : ""}`;
+    // Page links land on the list itself, not the top of the page.
+    return `/gsoc${text ? `?${text}` : ""}#organisations`;
   };
   const withData = measurable.filter((s) => s.repos.length > 0).length;
   // Rank positions, counted only for organisations with enough pull requests.
@@ -249,7 +251,8 @@ export default async function GsocPage({
         </label>
       </FilterForm>
 
-      <p className="mt-6 text-sm" aria-live="polite">
+      <ScrollToList id="organisations" page={page} />
+      <p id="organisations" className="mt-6 text-sm" aria-live="polite">
         <span className="num font-medium">{ranked.length}</span>{" "}
         <span className="text-ink-2">organisations</span>
       </p>
