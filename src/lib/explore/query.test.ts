@@ -142,6 +142,10 @@ describe("GSoC organisations", () => {
     website: null,
     tech: [],
     topics: [],
+    logo: null,
+    tagline: null,
+    categories: [],
+    ideas: null,
     unmappable: null,
   });
 
@@ -189,6 +193,10 @@ describe("GSoC ranking sample", () => {
     website: null,
     tech: [],
     topics: [],
+    logo: null,
+    tagline: null,
+    categories: [],
+    ideas: null,
     unmappable: null,
   });
 

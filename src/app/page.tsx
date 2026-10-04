@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Field } from "@/components/home/Field";
+import { Story } from "@/components/home/Story";
 import { RepoInput } from "@/components/site/RepoInput";
 import { getIndex } from "@/lib/data";
 import { facet } from "@/lib/explore/query";
@@ -82,6 +83,8 @@ export default async function HomePage() {
           number.
         </p>
       </Field>
+
+      <Story rows={index.rows} />
 
       <section className="border-hair border-t">
         <dl className="shell grid grid-cols-2 gap-y-8 py-12 text-center md:grid-cols-4">

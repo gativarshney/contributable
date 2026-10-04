@@ -10,6 +10,7 @@ const STATIC = [
   "/gsoc",
   "/issues",
   "/match",
+  "/check",
   "/compare",
   "/guide",
   "/methodology",

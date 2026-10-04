@@ -9,6 +9,7 @@ const PAGES: [label: string, href: string, keys?: string][] = [
   ["GSoC organisations", "/gsoc", "g g"],
   ["Available first issues", "/issues", "g i"],
   ["Find my project", "/match", "g m"],
+  ["Check any repository", "/check", "g r"],
   ["Compare repositories", "/compare", "g c"],
   ["Guide: how to pick an organisation", "/guide"],
   ["Methodology", "/methodology"],

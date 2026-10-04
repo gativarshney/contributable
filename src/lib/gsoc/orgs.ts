@@ -8,6 +8,11 @@ export interface GsocOrgInfo {
   website: string | null;
   tech: string[];
   topics: string[];
+  logo: string | null;
+  tagline: string | null;
+  categories: string[];
+  /** The organisation's own list of project ideas for the most recent year. */
+  ideas: string | null;
   unmappable: string | null;
 }
 

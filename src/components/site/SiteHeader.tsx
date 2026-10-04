@@ -8,7 +8,7 @@ const links = [
   { href: "/explore", label: "Explore" },
   { href: "/gsoc", label: "GSoC" },
   { href: "/issues", label: "First issues" },
-  { href: "/guide", label: "Guide" },
+  { href: "/check", label: "Check a repo" },
 ];
 
 export function SiteHeader() {

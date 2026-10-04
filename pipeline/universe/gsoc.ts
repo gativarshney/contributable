@@ -18,6 +18,10 @@ const apiOrg = z.object({
   website_url: z.string().nullish(),
   source_code: z.string().nullish(),
   ideas_link: z.string().nullish(),
+  ideas_list_url: z.string().nullish(),
+  logo_url: z.string().nullish(),
+  tagline: z.string().nullish(),
+  categories: z.array(z.string()).default([]),
   contributor_guidance_url: z.string().nullish(),
   tech_tags: z.array(z.string()).default([]),
   topic_tags: z.array(z.string()).default([]),
@@ -35,6 +39,11 @@ export interface GsocOrg {
   website: string | null;
   tech: string[];
   topics: string[];
+  /** From the programme listing, most recent year the organisation took part. */
+  logo: string | null;
+  tagline: string | null;
+  categories: string[];
+  ideas: string | null;
   /** GitHub organisations whose active repositories are indexed. */
   orgs: string[];
   /** Single repositories, for projects that live inside someone else's organisation. */
@@ -97,6 +106,10 @@ export async function buildGsocUniverse(years = GSOC_YEARS): Promise<GsocOrg[]> 
         website: null,
         tech: [],
         topics: [],
+        logo: null,
+        tagline: null,
+        categories: [],
+        ideas: null,
         orgs: [],
         repos: [],
         unmappable: null,
@@ -105,6 +118,10 @@ export async function buildGsocUniverse(years = GSOC_YEARS): Promise<GsocOrg[]> 
       entry.name = org.name;
       entry.years.push(year);
       entry.website = org.website_url ?? entry.website;
+      entry.logo = org.logo_url ?? entry.logo;
+      entry.tagline = org.tagline ?? entry.tagline;
+      entry.ideas = org.ideas_link ?? org.ideas_list_url ?? entry.ideas;
+      if (org.categories.length > 0) entry.categories = org.categories;
       entry.source = org.source_code ?? entry.source;
       entry.tech = [
         ...new Set([...entry.tech, ...org.tech_tags.map((t) => t.toLowerCase())]),

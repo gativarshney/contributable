@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { OrgLogo } from "@/components/data/OrgLogo";
 import { FilterForm } from "@/components/explore/FilterForm";
 import { getIndex } from "@/lib/data";
 import { count, date, percent } from "@/lib/format";
@@ -26,12 +27,21 @@ type Params = Record<string, string | string[] | undefined>;
 const one = (v: string | string[] | undefined) =>
   (Array.isArray(v) ? v[0] : v)?.trim() ?? "";
 
-function matches(stats: OrgStats, q: string, year: number | null, minYears: number) {
+function matches(
+  stats: OrgStats,
+  q: string,
+  year: number | null,
+  minYears: number,
+  category: string,
+) {
   if (year && !stats.org.years.includes(year)) return false;
   if (stats.org.years.length < minYears) return false;
+  if (category && !stats.org.categories.includes(category)) return false;
   if (!q) return true;
   const haystack = [
     stats.org.name,
+    stats.org.tagline ?? "",
+    ...stats.org.categories,
     ...stats.org.tech,
     ...stats.org.topics,
     ...stats.repos.flatMap((r) => [...r.lang, ...r.fw]),
@@ -55,12 +65,14 @@ export default async function GsocPage({
   const year = Number(one(params.year)) || null;
   const minYears = Math.min(3, Math.max(1, Number(one(params.years)) || 1));
   const sort = (one(params.sort) in ORG_SORTS ? one(params.sort) : "reply") as OrgSort;
+  const category = one(params.category);
 
   const index = await getIndex();
   const all = allOrgStats(index.rows);
   const measurable = all.filter((s) => !s.org.unmappable);
+  const categories = [...new Set(all.flatMap((s) => s.org.categories))].sort();
   const ranked = rankOrgs(
-    measurable.filter((s) => matches(s, q, year, minYears)),
+    measurable.filter((s) => matches(s, q, year, minYears, category)),
     sort,
   );
   const pages = Math.max(1, Math.ceil(ranked.length / PAGE_SIZE));
@@ -70,6 +82,7 @@ export default async function GsocPage({
     const out = new URLSearchParams();
     if (q) out.set("q", q);
     if (year) out.set("year", String(year));
+    if (category) out.set("category", category);
     if (minYears > 1) out.set("years", String(minYears));
     if (sort !== "reply") out.set("sort", sort);
     if (target > 1) out.set("page", String(target));
@@ -108,7 +121,7 @@ export default async function GsocPage({
 
       <FilterForm
         action="/gsoc"
-        className="mt-8 grid gap-3 sm:grid-cols-[1fr_auto_auto_auto]"
+        className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_auto_auto_auto_auto]"
       >
         <label className="block">
           <span className="text-ink-2 mb-1.5 block text-xs">Technology or name</span>
@@ -120,6 +133,17 @@ export default async function GsocPage({
             className="field"
             autoComplete="off"
           />
+        </label>
+        <label className="block">
+          <span className="text-ink-2 mb-1.5 block text-xs">Category</span>
+          <select name="category" defaultValue={category} className="field">
+            <option value="">Any category</option>
+            {categories.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
         </label>
         <label className="block">
           <span className="text-ink-2 mb-1.5 block text-xs">Took part in</span>
@@ -170,6 +194,7 @@ export default async function GsocPage({
                 >
                   {rankable ? position : ""}
                 </span>
+                <OrgLogo src={stats.org.logo} name={stats.org.name} />
                 <div className="min-w-0 flex-1 basis-60">
                   <h2 className="text-base font-medium">
                     <Link
@@ -179,6 +204,11 @@ export default async function GsocPage({
                       {stats.org.name}
                     </Link>
                   </h2>
+                  {stats.org.tagline ? (
+                    <p className="text-ink-2 mt-0.5 line-clamp-1 text-sm">
+                      {stats.org.tagline}
+                    </p>
+                  ) : null}
                   <p className="text-ink-3 num mt-1 text-xs">
                     GSoC {stats.org.years.join(", ")} · {stats.repos.length}{" "}
                     {stats.repos.length === 1 ? "repository" : "repositories"} measured

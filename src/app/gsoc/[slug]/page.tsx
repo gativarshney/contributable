@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { OrgLogo } from "@/components/data/OrgLogo";
 import { RepoTable } from "@/components/data/RepoList";
 import { getIndex } from "@/lib/data";
 import { date, percent } from "@/lib/format";
@@ -55,9 +56,23 @@ export default async function OrgPage({ params }: Props) {
         </Link>{" "}
         / <span className="text-ink-2">{org.name}</span>
       </nav>
-      <h1 className="display mt-4 text-[clamp(1.9rem,5vw,3.25rem)]">{org.name}</h1>
+      <div className="mt-5 flex items-center gap-4">
+        <OrgLogo src={org.logo} name={org.name} size={64} />
+        <h1 className="display text-[clamp(1.9rem,5vw,3.25rem)]">{org.name}</h1>
+      </div>
+      {org.tagline ? (
+        <p className="text-ink-2 mt-4 max-w-2xl text-lg">{org.tagline}</p>
+      ) : null}
       <p className="text-ink-2 num mt-3 text-sm">
         Google Summer of Code {org.years.join(", ")}
+        {org.ideas ? (
+          <>
+            {" · "}
+            <a href={org.ideas} className="link" target="_blank" rel="noreferrer">
+              Project ideas
+            </a>
+          </>
+        ) : null}
         {org.website ? (
           <>
             {" · "}
@@ -69,7 +84,7 @@ export default async function OrgPage({ params }: Props) {
         {stats.updatedAt ? ` · Updated ${date(stats.updatedAt)}` : ""}
       </p>
       <p className="mt-4 flex flex-wrap gap-1.5">
-        {[...org.tech, ...org.topics].slice(0, 10).map((t) => (
+        {[...org.categories, ...org.tech, ...org.topics].slice(0, 12).map((t) => (
           <span key={t} className="tag">
             {t}
           </span>
