@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { wrongNumberUrl } from "@/lib/report-issue";
 import { JumpBar } from "@/components/site/JumpBar";
 import { FIRST_REPLY_INFO, InfoTip, MERGED_INFO } from "@/components/site/InfoTip";
 import {
@@ -463,6 +464,23 @@ export default async function RepoPage({ params }: Props) {
         <Link href="/methodology" className="link">
           How this is calculated
         </Link>
+        {" · "}
+        <a
+          href={wrongNumberUrl({
+            repo: id,
+            shown: [
+              `Outside PRs merged: ${percent(cohort.mergeRate)} (${cohort.merged} merged, ${cohort.closedUnmerged} closed, ${cohort.open} still open)`,
+              `First human reply: ${firstReply(reply.medianHours, reply.n)} (median of ${reply.n} outside PRs, ${reply.waiting} unanswered)`,
+              `Starter issues available: ${starter.counts.available}`,
+            ],
+            when: `Updated ${dateTime(detail.updatedAt)}`,
+          })}
+          target="_blank"
+          rel="noreferrer"
+          className="link"
+        >
+          A number looks wrong?
+        </a>
       </p>
 
       {facts.gettingStarted.policy ? (

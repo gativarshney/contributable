@@ -214,3 +214,23 @@ describe("GSoC ranking sample", () => {
     expect(ranked[2].within7d).toBe(1);
   });
 });
+
+describe("sortRows with small samples", () => {
+  it("puts projects measured on enough pull requests first", () => {
+    const rows = [
+      row("a/lucky", { replyHours: 0.5, replyN: 6, mergeRate: 1, decided: 6 }),
+      row("b/solid", { replyHours: 8, replyN: 60, mergeRate: 0.8, decided: 55 }),
+      row("c/solid-fast", { replyHours: 4, replyN: 30, mergeRate: 0.7, decided: 25 }),
+    ];
+    expect(sortRows(rows, "reply").map((r) => r.id)).toEqual([
+      "c/solid-fast",
+      "b/solid",
+      "a/lucky",
+    ]);
+    expect(sortRows(rows, "merge").map((r) => r.id)).toEqual([
+      "b/solid",
+      "c/solid-fast",
+      "a/lucky",
+    ]);
+  });
+});

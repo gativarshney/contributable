@@ -10,6 +10,9 @@ export const SORTS = {
 } as const;
 export type SortKey = keyof typeof SORTS;
 
+/** Outside pull requests a project needs for its figures to be more than luck. */
+export const SOLID_SAMPLE = 20;
+
 export const PAGE_SIZE = 30;
 /** India Standard Time, the default zone for the "replies while I am awake" filter. */
 export const DEFAULT_TZ_MINUTES = 330;
@@ -176,9 +179,27 @@ function by(
   };
 }
 
+/**
+ * Projects whose figure rests on at least SOLID_SAMPLE pull requests come first, so a
+ * perfect record over six does not outrank a strong one over sixty.
+ */
+function wellMeasuredFirst(
+  sample: (row: IndexRow) => number,
+  then: (a: IndexRow, b: IndexRow) => number,
+): (a: IndexRow, b: IndexRow) => number {
+  return (a, b) =>
+    Number(sample(b) >= SOLID_SAMPLE) - Number(sample(a) >= SOLID_SAMPLE) || then(a, b);
+}
+
 const COMPARATORS: Record<SortKey, (a: IndexRow, b: IndexRow) => number> = {
-  reply: by((r) => r.replyHours, "asc"),
-  merge: by((r) => r.mergeRate, "desc"),
+  reply: wellMeasuredFirst(
+    (r) => r.replyN,
+    by((r) => r.replyHours, "asc"),
+  ),
+  merge: wellMeasuredFirst(
+    (r) => r.decided,
+    by((r) => r.mergeRate, "desc"),
+  ),
   issues: by((r) => r.available, "desc"),
   stars: by((r) => r.stars, "desc"),
   recent: by((r) => (r.pushedAt ? Date.parse(r.pushedAt) : null), "desc"),

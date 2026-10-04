@@ -1,5 +1,5 @@
 import type { IndexRow } from "@/core/published";
-import { DEFAULT_TZ_MINUTES, overlapShare } from "@/lib/explore/query";
+import { DEFAULT_TZ_MINUTES, overlapShare, SOLID_SAMPLE } from "@/lib/explore/query";
 import { duration, inTen, percent } from "@/lib/format";
 
 export const LEVELS = {
@@ -72,8 +72,7 @@ const SLOW_MERGE_HOURS = 30 * 24;
  *     merge rate, then available starter issues. Repositories without enough data to
  *     show a figure come last.
  */
-/** Outside pull requests a project needs for its figures to be more than luck. */
-export const SOLID_SAMPLE = 20;
+export { SOLID_SAMPLE };
 
 export function matchProjects(rows: readonly IndexRow[], input: MatchInput): Match[] {
   if (input.stack.length === 0) return [];

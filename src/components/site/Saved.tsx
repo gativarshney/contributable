@@ -1,10 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { RepoCard } from "@/components/data/RepoList";
 import type { IndexRow } from "@/core/published";
-import { savedSnapshot, subscribeSaved, toggleSaved } from "@/lib/saved";
+import {
+  addSaved,
+  savedSnapshot,
+  sharedIds,
+  subscribeSaved,
+  toggleSaved,
+} from "@/lib/saved";
+
+// The address does not change while this page is open, so there is nothing to watch.
+const noSubscription = () => () => {};
 
 const useSaved = () =>
   useSyncExternalStore(subscribeSaved, savedSnapshot, () => "")
@@ -62,9 +71,41 @@ export function SavedLink() {
 
 /** The saved list itself: current figures for every saved repository. */
 export function SavedList() {
-  const ids = useSaved();
+  const own = useSaved();
+  // A list someone shared as /saved?ids=a/b,c/d, shown instead of this browser's own.
+  const search = useSyncExternalStore(
+    noSubscription,
+    () => window.location.search,
+    () => "",
+  );
+  const [dismissed, setDismissed] = useState(false);
+  const fromLink = useMemo(() => sharedIds(search), [search]);
+  const shared = !dismissed && fromLink.length > 0 ? fromLink : null;
+  const [copied, setCopied] = useState(false);
+  const ids = shared ?? own;
   const key = ids.join(",");
   const [rows, setRows] = useState<IndexRow[] | null>(null);
+
+  const share = async () => {
+    const url = `${window.location.origin}/saved?ids=${own.join(",")}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "My open source shortlist", url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      // The visitor closed the share sheet, or the clipboard is blocked.
+    }
+  };
+  const keepShared = () => {
+    if (!shared) return;
+    addSaved(shared);
+    window.history.replaceState(null, "", "/saved");
+    setDismissed(true);
+  };
 
   useEffect(() => {
     if (!key) return;
@@ -104,11 +145,39 @@ export function SavedList() {
 
   return (
     <>
+      {shared ? (
+        <div className="border-accent/40 bg-accent-soft/30 mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border p-4">
+          <p className="text-sm">
+            <span className="font-medium">A shortlist someone shared with you.</span>{" "}
+            <span className="text-ink-2">
+              {shared.length} {shared.length === 1 ? "repository" : "repositories"}, with
+              today&apos;s figures.
+            </span>
+          </p>
+          <span className="flex flex-wrap gap-2">
+            <button type="button" onClick={keepShared} className="btn h-9 px-4 text-sm">
+              Save these to my list
+            </button>
+            <a href="/saved" className="btn btn-ghost h-9 px-4 text-sm">
+              My own list
+            </a>
+          </span>
+        </div>
+      ) : null}
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <p className="text-sm" aria-live="polite">
           <span className="num font-medium">{ids.length}</span>{" "}
-          <span className="text-ink-2">saved</span>
+          <span className="text-ink-2">{shared ? "shared" : "saved"}</span>
         </p>
+        {!shared && own.length > 0 ? (
+          <button
+            type="button"
+            onClick={share}
+            className="btn btn-ghost h-9 px-4 text-sm"
+          >
+            {copied ? "Link copied" : "Share this list"}
+          </button>
+        ) : null}
         {shown.length >= 2 ? (
           <Link
             href={`/compare?repos=${shown
@@ -128,13 +197,15 @@ export function SavedList() {
           {shown.map((row) => (
             <div key={row.id} className="flex flex-col gap-2">
               <RepoCard row={row} />
-              <button
-                type="button"
-                onClick={() => toggleSaved(row.id)}
-                className="text-ink-3 hover:text-ink self-end text-xs transition-colors"
-              >
-                Remove from saved
-              </button>
+              {shared ? null : (
+                <button
+                  type="button"
+                  onClick={() => toggleSaved(row.id)}
+                  className="text-ink-3 hover:text-ink self-end text-xs transition-colors"
+                >
+                  Remove from saved
+                </button>
+              )}
             </div>
           ))}
         </div>
@@ -150,6 +221,7 @@ export function SavedList() {
                 </Link>
                 <button
                   type="button"
+                  hidden={shared !== null}
                   onClick={() => toggleSaved(id)}
                   aria-label={`Remove ${id} from saved`}
                   className="text-ink-3 hover:text-ink grid size-6 place-items-center rounded-full transition-colors"

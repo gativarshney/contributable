@@ -34,6 +34,34 @@ export function toggleSaved(id: string): boolean {
   return !has;
 }
 
+/** Adds several repositories at once, keeping the ones already saved. */
+export function addSaved(ids: readonly string[]): void {
+  const current = readSaved();
+  const fresh = ids.filter(
+    (id) =>
+      valid(id) && !current.some((entry) => entry.toLowerCase() === id.toLowerCase()),
+  );
+  try {
+    localStorage.setItem(KEY, JSON.stringify([...fresh, ...current].slice(0, MAX_SAVED)));
+  } catch {
+    // Storage can be unavailable (private mode).
+  }
+  window.dispatchEvent(new Event(EVENT));
+}
+
+/** The repositories in a shared link's ?ids= parameter. */
+export function sharedIds(search: string): string[] {
+  const raw = new URLSearchParams(search).get("ids") ?? "";
+  return [
+    ...new Set(
+      raw
+        .split(",")
+        .map((id) => id.trim())
+        .filter(valid),
+    ),
+  ].slice(0, MAX_SAVED);
+}
+
 /** For useSyncExternalStore: notifies on changes in this tab and in others. */
 export function subscribeSaved(notify: () => void): () => void {
   window.addEventListener(EVENT, notify);

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Drift, DriftPill, PageMark } from "@/components/site/Drift";
 import Link from "next/link";
+import { SOLID_SAMPLE } from "@/lib/explore/query";
 import type { IndexRow } from "@/core/published";
 import { getIndex } from "@/lib/data";
 import { compact, date, firstReply, percent } from "@/lib/format";
@@ -15,7 +16,6 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 /** Enough outside pull requests that the figures are not luck. */
-const SOLID_SAMPLE = 20;
 
 function examples(rows: IndexRow[]) {
   const solid = rows.filter((r) => r.replyN >= SOLID_SAMPLE && r.within48h !== null);

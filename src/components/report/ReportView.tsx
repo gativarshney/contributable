@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { wrongNumberUrl } from "@/lib/report-issue";
 import { useCallback, useMemo } from "react";
 import { Skyline } from "@/components/three/Skyline";
 import type { Report } from "@/lib/report/run";
@@ -172,9 +173,27 @@ export function ReportView({ report }: { report: Report }) {
           Read from GitHub on {day(report.fetchedAt)} at {report.fetchedAt.slice(11, 16)}{" "}
           UTC. Public data only.
         </p>
-        <Link href="/methodology" className="link text-ink-2">
-          How Contributable works
-        </Link>
+        <span className="flex flex-wrap gap-x-4 gap-y-1">
+          <Link href="/methodology" className="link text-ink-2">
+            How Contributable works
+          </Link>
+          {!report.sample ? (
+            <a
+              href={wrongNumberUrl({
+                repo: `${repo.owner}/${repo.name}`,
+                shown: checklist.checks
+                  .filter((check) => check.group === "Open to contributions")
+                  .map((check) => `${check.question} ${check.answer}`),
+                when: `Read from GitHub on ${day(report.fetchedAt)} at ${report.fetchedAt.slice(11, 16)} UTC`,
+              })}
+              target="_blank"
+              rel="noreferrer"
+              className="link text-ink-2"
+            >
+              A number looks wrong?
+            </a>
+          ) : null}
+        </span>
       </footer>
     </article>
   );

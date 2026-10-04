@@ -9,6 +9,7 @@ import {
   explore,
   facet,
   parseQuery,
+  SOLID_SAMPLE,
   SORTS,
   toSearch,
   type ExploreQuery,
@@ -306,6 +307,12 @@ export default async function ExplorePage({
                 <Link href="/explore" className="link text-ink-2 ml-3 text-sm">
                   Clear all
                 </Link>
+              ) : null}
+              {query.sort === "reply" || query.sort === "merge" ? (
+                <span className="text-ink-3 mt-1 block text-xs">
+                  Projects measured on {SOLID_SAMPLE} or more outside pull requests come
+                  first; a perfect record over a handful is partly luck.
+                </span>
               ) : null}
             </p>
             <div className="border-hair-strong flex rounded-full border p-0.5 text-sm">
