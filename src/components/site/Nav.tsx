@@ -61,6 +61,7 @@ export function HeaderNav() {
           <Link
             href={page.href}
             aria-current={current === page ? "page" : undefined}
+            title={page.label === "GSoC" ? "Google Summer of Code" : undefined}
             className={`inline-flex h-9 items-center rounded-full px-3.5 text-sm whitespace-nowrap transition-colors duration-200 lg:px-4 ${
               current === page
                 ? "bg-bg-3 text-ink shadow-[inset_0_0_0_1px_var(--hair-strong)]"

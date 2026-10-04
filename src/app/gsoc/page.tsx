@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { GsocMark } from "@/components/data/GsocMark";
 import { OrgLogo } from "@/components/data/OrgLogo";
 import { FilterForm } from "@/components/explore/FilterForm";
 import { getIndex } from "@/lib/data";
@@ -23,6 +24,25 @@ export const metadata: Metadata = {
 };
 
 const PAGE_SIZE = 30;
+
+/** A slow, endless row of the organisations' logos. Decorative: the list below names them. */
+function LogoWall({
+  orgs,
+}: {
+  orgs: { slug: string; name: string; logo: string | null }[];
+}) {
+  const logos = orgs.filter((o) => o.logo).slice(0, 36);
+  if (logos.length < 12) return null;
+  return (
+    <div className="logo-wall mt-10" aria-hidden="true">
+      <div className="logo-wall-track">
+        {[...logos, ...logos].map((org, i) => (
+          <OrgLogo key={`${org.slug}-${i}`} src={org.logo} name={org.name} size={48} />
+        ))}
+      </div>
+    </div>
+  );
+}
 type Params = Record<string, string | string[] | undefined>;
 const one = (v: string | string[] | undefined) =>
   (Array.isArray(v) ? v[0] : v)?.trim() ?? "";
@@ -101,8 +121,11 @@ export default async function GsocPage({
   return (
     <div className="shell py-10 md:py-14">
       <header className="max-w-3xl">
-        <p className="eyebrow">Google Summer of Code</p>
-        <h1 className="display mt-3 text-[clamp(2rem,5vw,3.25rem)]">
+        <div className="flex items-center gap-3">
+          <GsocMark size={44} />
+          <p className="eyebrow">Google Summer of Code (GSoC)</p>
+        </div>
+        <h1 className="display mt-5 text-[clamp(2rem,5vw,3.25rem)]">
           Which organisations <em>answer newcomers?</em>
         </h1>
         <p className="text-ink-2 mt-4">
@@ -118,6 +141,48 @@ export default async function GsocPage({
           outside pull requests to take a place; smaller ones follow, unranked.
         </p>
       </header>
+
+      <LogoWall orgs={all.map((s) => s.org)} />
+
+      <section aria-labelledby="what-is-gsoc" className="mt-10">
+        <h2 id="what-is-gsoc" className="font-display text-xl">
+          New to it? What Google Summer of Code is
+        </h2>
+        <ul className="mt-5 grid gap-4 md:grid-cols-3">
+          {[
+            [
+              "A paid summer of open source",
+              "Each year Google funds new contributors to spend about 12 weeks building something for an open source project.",
+            ],
+            [
+              "With a mentor",
+              "You work with a mentor from the organisation you applied to. You do not need to be a student, only new to open source and 18 or older.",
+            ],
+            [
+              "You apply to an organisation",
+              "You write a proposal to one of the organisations below. That is why it matters which of them reply to newcomers.",
+            ],
+          ].map(([title, text], i) => (
+            <li key={title} className="card p-5">
+              <span className="text-accent num text-sm">{i + 1}</span>
+              <h3 className="mt-2 font-medium">{title}</h3>
+              <p className="text-ink-2 mt-1.5 text-sm">{text}</p>
+            </li>
+          ))}
+        </ul>
+        <p className="text-ink-3 mt-3 text-xs">
+          Details and dates are on the{" "}
+          <a
+            href="https://summerofcode.withgoogle.com/"
+            className="link"
+            target="_blank"
+            rel="noreferrer"
+          >
+            official Google Summer of Code site
+          </a>
+          .
+        </p>
+      </section>
 
       <FilterForm
         action="/gsoc"

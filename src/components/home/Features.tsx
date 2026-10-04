@@ -122,8 +122,8 @@ export function Features({
 
           <Tile
             href="/gsoc"
-            label="GSoC"
-            title="Organisations ranked by who answers"
+            label="Google Summer of Code"
+            title="GSoC organisations ranked by who answers"
             className="md:col-span-2"
           >
             {orgs.map((stats, i) => (

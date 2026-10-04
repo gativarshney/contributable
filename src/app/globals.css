@@ -644,3 +644,77 @@ body {
     }
   }
 }
+
+/* A row of logos that drifts sideways, fading out at both edges. */
+.logo-wall {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+
+.logo-wall-track {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .logo-wall-track {
+    animation: logo-drift 70s linear infinite;
+  }
+}
+
+@keyframes logo-drift {
+  to {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+}
+
+/* The Google Summer of Code pill in the hero: a slow light runs round its edge. */
+.gsoc-pill {
+  position: relative;
+  isolation: isolate;
+}
+
+@property --pill-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.gsoc-pill::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--pill-angle),
+    transparent 0 70%,
+    var(--accent) 85%,
+    transparent 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .gsoc-pill::before {
+    animation: pill-spin 4s linear infinite;
+  }
+}
+
+@keyframes pill-spin {
+  to {
+    --pill-angle: 360deg;
+  }
+}
+
+/* The credit card at the top of the footer: a faint glow from its top edge. */
+.hero-glow-card {
+  background:
+    radial-gradient(ellipse 70% 120% at 0% 0%, var(--glow), transparent 60%),
+    color-mix(in oklch, var(--bg-2) 60%, transparent);
+}

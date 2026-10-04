@@ -79,7 +79,10 @@ export function Field({
     () => points.slice(0, Math.floor(points.length / 7) * 7),
     [points],
   );
-  const values = useMemo(() => bars.map((p) => Math.round((p[3] ?? 0) * 100)), [bars]);
+  const values = useMemo(
+    () => bars.map((p) => Math.round((p[3] ?? 0) ** 1.3 * 100)),
+    [bars],
+  );
   const lit = useMemo(() => bars.map((p) => matches(p, query)), [bars, query]);
   const matched = useMemo(
     () =>
@@ -106,11 +109,11 @@ export function Field({
           lit={lit}
           anchor="bottom"
           reactive
-          className="skyline-fade pointer-events-none absolute inset-x-0 bottom-0 h-[clamp(12rem,46svh,31rem)]"
+          className="skyline-fade pointer-events-none absolute inset-x-0 bottom-0 h-[clamp(13rem,50svh,33rem)]"
         />
       ) : null}
 
-      <div className="shell relative flex flex-col items-center pt-[clamp(1.25rem,4.5svh,4.5rem)] pb-[clamp(10rem,38svh,26rem)] text-center">
+      <div className="shell relative flex flex-col items-center pt-[clamp(1rem,3svh,3.5rem)] pb-[clamp(8rem,26svh,21rem)] text-center">
         {children}
 
         <div

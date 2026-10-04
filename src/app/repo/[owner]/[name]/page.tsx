@@ -310,7 +310,7 @@ export default async function RepoPage({ params }: Props) {
           </Link>
           {detail.programs.map((p) => (
             <Link key={p.slug} href={`/gsoc/${p.slug}`} className="tag !text-sm">
-              GSoC {p.years.join(", ")}
+              Google Summer of Code {p.years.join(", ")}
             </Link>
           ))}
           <span className="text-ink-3 num ml-1 text-xs">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { GsocMark } from "@/components/data/GsocMark";
 import { Logo } from "./Logo";
 
 const ICONS = {
@@ -65,6 +66,63 @@ export function SiteFooter() {
   return (
     <footer className="border-hair border-t">
       <div className="shell py-14 md:py-16">
+        <div className="card hero-glow-card mb-14 flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <div className="flex items-center gap-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://github.com/gativarshney.png?size=112"
+              alt=""
+              width={52}
+              height={52}
+              loading="lazy"
+              decoding="async"
+              className="border-hair-strong size-[52px] rounded-full border object-cover"
+            />
+            <div>
+              <p className="text-ink-3 text-xs">Built by</p>
+              <a
+                href="https://gativarshney.github.io/"
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-accent text-xl font-medium tracking-tight transition-colors"
+              >
+                Gati Varshney
+              </a>
+              <a
+                href="https://summerofcode.withgoogle.com/programs/2026/projects/k0bZOR1y"
+                target="_blank"
+                rel="noreferrer"
+                className="border-hair-strong text-ink-2 hover:border-accent hover:text-ink mt-2 flex w-fit items-center gap-2 rounded-full border py-1 pr-3 pl-1.5 text-xs transition-colors"
+              >
+                <GsocMark size={18} />
+                Google Summer of Code 2026 · The Linux Foundation
+              </a>
+            </div>
+          </div>
+          <ul className="flex gap-3">
+            {SOCIAL.map((link) => (
+              <li key={link.label}>
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`Gati Varshney on ${link.label}`}
+                  className="border-accent/60 bg-accent-soft/40 text-accent hover:bg-accent hover:text-accent-ink grid size-11 place-items-center rounded-full border shadow-[0_0_0_4px_var(--glow)] transition-colors duration-200"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="size-[18px]"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path d={ICONS[link.icon]} />
+                  </svg>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <div className="grid gap-12 lg:grid-cols-[1.3fr_2fr]">
           <div>
             <Logo />
@@ -98,56 +156,7 @@ export function SiteFooter() {
           </nav>
         </div>
 
-        <div className="border-hair mt-12 flex flex-col gap-6 border-t pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm">
-              <span className="text-ink-3">Built by</span>{" "}
-              <a
-                href="https://gativarshney.github.io/"
-                target="_blank"
-                rel="noreferrer"
-                className="font-medium tracking-tight hover:underline"
-              >
-                Gati Varshney
-              </a>
-            </p>
-            <p className="text-ink-3 mt-1 text-xs">
-              <a
-                href="https://summerofcode.withgoogle.com/programs/2026/projects/k0bZOR1y"
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-ink-2 transition-colors"
-              >
-                Google Summer of Code 2026 contributor
-              </a>
-              , The Linux Foundation
-            </p>
-          </div>
-          <ul className="flex gap-2">
-            {SOCIAL.map((link) => (
-              <li key={link.label}>
-                <a
-                  href={link.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={`Gati Varshney on ${link.label}`}
-                  className="border-hair-strong text-ink-2 hover:border-accent hover:text-accent grid size-10 place-items-center rounded-full border transition-colors"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="size-4"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path d={ICONS[link.icon]} />
-                  </svg>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <p className="text-ink-3 mt-8 text-xs">
+        <p className="border-hair text-ink-3 mt-12 border-t pt-8 text-xs">
           Open source under the MIT licence. Data under CC BY 4.0. An independent project,
           not affiliated with GitHub or Google.
         </p>

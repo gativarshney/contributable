@@ -26,7 +26,8 @@ interface SkylineProps {
 const PALETTES = {
   dark: {
     empty: "#161a1f",
-    ramp: ["#174f4d", "#23807b", "#3fb8b0", "#93f2ea"],
+    ramp: ["#0c2f2f", "#14595a", "#25a39b", "#a6fbf0"],
+    fog: "#08090b",
     highlight: "#ffffff",
     sky: "#cfd8e3",
     ground: "#050607",
@@ -35,7 +36,8 @@ const PALETTES = {
   },
   light: {
     empty: "#e4e2dc",
-    ramp: ["#b5dcd8", "#7cc4bf", "#3d9d97", "#14645f"],
+    ramp: ["#c9e6e2", "#86cbc5", "#35978f", "#0f5a55"],
+    fog: "#faf9f6",
     highlight: "#0b2f2d",
     sky: "#ffffff",
     ground: "#cfcabf",
@@ -129,6 +131,9 @@ export function Skyline({
         let settling = true;
 
         const scene = new THREE.Scene();
+        // Bars further from the camera fade into the page, which gives the field depth.
+        const fog = new THREE.Fog(0x000000, 1, 1000);
+        scene.fog = fog;
         const camera = new THREE.PerspectiveCamera(22, 1, 0.1, 600);
         const group = new THREE.Group();
         scene.add(group);
@@ -136,8 +141,8 @@ export function Skyline({
         const geometry = new THREE.BoxGeometry(1, 1, 1);
         geometry.translate(0, 0.5, 0); // scale bars up from their base
         const material = new THREE.MeshStandardMaterial({
-          roughness: 0.5,
-          metalness: 0.05,
+          roughness: 0.34,
+          metalness: 0.18,
         });
         const mesh = new THREE.InstancedMesh(geometry, material, values.length);
         group.add(mesh);
@@ -145,7 +150,7 @@ export function Skyline({
         const hemisphere = new THREE.HemisphereLight(0xffffff, 0x000000, 1);
         const key = new THREE.DirectionalLight(0xffffff, 2);
         key.position.set(-30, 60, 40);
-        const rim = new THREE.DirectionalLight(0x9fe8e2, 0.7);
+        const rim = new THREE.DirectionalLight(0x9fe8e2, 1.5);
         rim.position.set(40, 20, -50);
         scene.add(hemisphere, key, rim);
 
@@ -195,6 +200,7 @@ export function Skyline({
             mesh.setColorAt(i, colors[i]);
           });
           highlight.set(palette.highlight);
+          fog.color.set(palette.fog);
           dim.set(palette.empty);
           litColor.set(palette.ramp[palette.ramp.length - 1]);
           if (hovered >= 0) mesh.setColorAt(hovered, highlight);
@@ -223,6 +229,10 @@ export function Skyline({
               height *= 1 + focus.strength * 0.9 * Math.exp(-d2 / 14);
             }
             if (i === hovered) height *= 1.12;
+            // A slow swell travels across the field while the page is idle.
+            if (!still && t >= 1) {
+              height *= 1 + 0.07 * Math.sin(elapsed * 0.8 + column * 0.33 + row * 0.6);
+            }
             if (litRef.current) {
               const target = litRef.current[i] ? 1 : 0;
               if (reduceMotion) level[i] = target;
@@ -247,7 +257,7 @@ export function Skyline({
           if (w === 0 || h === 0) return;
           renderer.setSize(w, h, false);
           camera.aspect = w / h;
-          const elevation = 0.6;
+          const elevation = 0.5;
           const vFov = (camera.fov * Math.PI) / 180;
           const hFov = 2 * Math.atan(Math.tan(vFov / 2) * camera.aspect);
           const tanV = Math.tan(vFov / 2);
@@ -278,6 +288,8 @@ export function Skyline({
           );
           // A wide block sits closer to the camera at one end, so look a little lower to centre it.
           camera.lookAt(0, (compact && columns > 14 ? -1.6 : maxHeight * 0.22) + lift, 0);
+          fog.near = distance * 0.97;
+          fog.far = distance * (compact ? 1.9 : 1.3);
           camera.updateProjectionMatrix();
         }
 

@@ -91,7 +91,11 @@ export function RepoCard({ row }: { row: IndexRow }) {
             {l}
           </span>
         ))}
-        {row.gsoc ? <span className="tag">GSoC {row.years.at(-1)}</span> : null}
+        {row.gsoc ? (
+          <span className="tag" title={`Google Summer of Code ${row.years.join(", ")}`}>
+            GSoC {row.years.at(-1)}
+          </span>
+        ) : null}
         {trend ? (
           <span className={`text-xs ${TREND_CLASS[row.trend] ?? "text-ink-3"}`}>
             {trend}

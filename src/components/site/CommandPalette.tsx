@@ -3,16 +3,16 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-const PAGES: [label: string, href: string, keys?: string][] = [
-  ["Home", "/", "g h"],
-  ["Explore repositories", "/explore", "g e"],
-  ["GSoC organisations", "/gsoc", "g g"],
-  ["First issues nobody has taken", "/issues", "g i"],
-  ["Help me choose a project", "/match", "g m"],
-  ["Check any repository", "/check", "g r"],
-  ["Saved repositories", "/saved", "g s"],
-  ["Compare repositories", "/compare", "g c"],
-  ["New to open source? Start here", "/start", "g n"],
+const PAGES: [label: string, href: string][] = [
+  ["Home", "/"],
+  ["Explore repositories", "/explore"],
+  ["Google Summer of Code organisations", "/gsoc"],
+  ["First issues nobody has taken", "/issues"],
+  ["Help me choose a project", "/match"],
+  ["Check any repository", "/check"],
+  ["Saved repositories", "/saved"],
+  ["Compare repositories", "/compare"],
+  ["New to open source? Start here", "/start"],
   ["Guide: how to pick an organisation", "/guide"],
   ["Methodology", "/methodology"],
   ["Status", "/status"],
@@ -33,7 +33,7 @@ const typingIn = (target: EventTarget | null) =>
 
 /**
  * Ctrl+K (or Cmd+K, or "/") opens a box that jumps to any page, searches the index or
- * opens a repository by owner/name. "g" then a letter goes straight to a page.
+ * opens a repository by owner/name.
  */
 export function CommandPalette() {
   const router = useRouter();
@@ -45,7 +45,7 @@ export function CommandPalette() {
   const items = useMemo<Item[]>(() => {
     const q = text.trim().toLowerCase();
     const pages = PAGES.filter(([label]) => label.toLowerCase().includes(q)).map(
-      ([label, href, keys]) => ({ label, href, hint: keys }),
+      ([label, href]) => ({ label, href }),
     );
     if (!q) return pages;
     const cleaned = text
@@ -69,8 +69,6 @@ export function CommandPalette() {
   }, [text]);
 
   useEffect(() => {
-    let pending = false;
-    let timer: ReturnType<typeof setTimeout>;
     const open = () => {
       if (dialog.current?.open) return;
       setText("");
@@ -91,17 +89,6 @@ export function CommandPalette() {
         open();
         return;
       }
-      if (pending) {
-        pending = false;
-        const page = PAGES.find(([, , keys]) => keys === `g ${event.key.toLowerCase()}`);
-        if (page) router.push(page[1]);
-        return;
-      }
-      if (event.key === "g") {
-        pending = true;
-        clearTimeout(timer);
-        timer = setTimeout(() => (pending = false), 1200);
-      }
     };
     const onOpen = () => open();
     document.addEventListener("keydown", onKey);
@@ -109,9 +96,8 @@ export function CommandPalette() {
     return () => {
       document.removeEventListener("keydown", onKey);
       document.removeEventListener("palette:open", onOpen);
-      clearTimeout(timer);
     };
-  }, [router]);
+  }, []);
 
   const go = (item: Item | undefined) => {
     if (!item) return;
@@ -183,7 +169,7 @@ export function CommandPalette() {
           ))}
         </ul>
         <p className="text-ink-3 border-hair mt-2 border-t px-3 pt-2 pb-1 text-xs">
-          Enter to open. Esc to close. Press / or Ctrl K anywhere.
+          Enter to open. Esc to close.
         </p>
       </div>
     </dialog>
