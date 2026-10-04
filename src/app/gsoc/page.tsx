@@ -470,7 +470,7 @@ export default async function GsocPage({
                 strokeLinecap="round"
               />
             </svg>
-            Looking for one? Search by name or technology
+            Looking for one? Search by organisation or technology
           </a>
         </nav>
       ) : null}
