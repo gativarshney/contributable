@@ -359,16 +359,16 @@ body {
 
 /* Status colours. Each is always paired with a word or a number, never used alone. */
 :root {
-  --fast: oklch(52% 0.13 160);
+  --fast: var(--accent);
   --slow: oklch(58% 0.16 45);
-  --merged: oklch(50% 0.14 262);
+  --merged: var(--accent);
   --stale: oklch(50% 0.01 240);
 }
 
 :root[data-theme="dark"] {
-  --fast: oklch(78% 0.14 162);
+  --fast: var(--accent);
   --slow: oklch(76% 0.14 55);
-  --merged: oklch(74% 0.12 262);
+  --merged: var(--accent);
   --stale: oklch(66% 0.01 240);
 }
 
@@ -382,9 +382,9 @@ body {
 @layer components {
   /* Numbers: monospace with digits that line up in columns. */
   .num {
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
     font-variant-numeric: tabular-nums;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
   }
 
   .field {

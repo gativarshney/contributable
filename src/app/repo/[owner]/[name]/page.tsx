@@ -106,7 +106,7 @@ function Tile({
         className={
           missing
             ? "text-ink-3 mt-3 text-lg"
-            : "num mt-2 text-[2.5rem] leading-none font-medium"
+            : "num mt-3 text-[2.75rem] leading-none font-medium tracking-tight"
         }
       >
         {value}
@@ -214,7 +214,8 @@ export default async function RepoPage({ params }: Props) {
           <p className="text-ink-2 mt-3 max-w-2xl">{facts.description}</p>
         ) : null}
 
-        <p className="mt-7 max-w-3xl text-[clamp(1.25rem,2.6vw,1.75rem)] leading-snug font-medium tracking-tight text-balance">
+        <p className="eyebrow !text-accent mt-9">In plain words</p>
+        <p className="display mt-3 max-w-4xl text-[clamp(1.5rem,3.4vw,2.4rem)] !leading-[1.15]">
           {verdict(detail).join(" ")}
         </p>
 

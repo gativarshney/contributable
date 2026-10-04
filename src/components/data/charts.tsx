@@ -37,7 +37,7 @@ export function Funnel({
 }) {
   const stages = [
     { label: "Opened by outsiders", value: opened, color: "var(--ink-3)" },
-    { label: "Got a human reply", value: replied, color: "var(--fast)" },
+    { label: "Got a human reply", value: replied, color: "var(--ink-2)" },
     { label: "Merged", value: merged, color: "var(--merged)" },
   ];
   return (

@@ -201,6 +201,11 @@ async function main() {
   const known = new Map(
     (await listDetails()).map((d) => [idOf(d).toLowerCase(), d.updatedAt]),
   );
+  // Stored results written under older rules are re-read now, not when they fall due.
+  const outdated = new Set<string>();
+  for (const id of known.keys()) {
+    if (!(await readState(id))) outdated.add(id);
+  }
   const latestYear = (repo: UniverseRepo) =>
     Math.max(0, ...repo.programs.flatMap((p) => p.years));
   // A repository's place within its own account, most starred first. Reading rank 0
@@ -223,7 +228,7 @@ async function main() {
         startedAt.getTime() - Date.parse(failed.at) < RETRY_AFTER_HOURS * HOUR_MS
       )
         return false;
-      if (updatedAt === null) return true;
+      if (updatedAt === null || outdated.has(idOf(repo).toLowerCase())) return true;
       return startedAt.getTime() - Date.parse(updatedAt) > PROGRAM_DUE_HOURS * HOUR_MS;
     })
     .sort((a, b) => {
