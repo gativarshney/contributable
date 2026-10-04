@@ -47,6 +47,8 @@ const NOT_A_STACK = new Set([
   "roff",
 ]);
 
+const EXAMPLES = ["vercel/next.js", "fastify/fastify", "OpenPrinting/cups"];
+
 export default async function HomePage() {
   const [index, issues] = await Promise.all([getIndex(), getAvailableIssues()]);
   // The index's own clock, so the page is the same for everyone until it refreshes.
@@ -60,7 +62,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Field chips={chips}>
+      <Field chips={chips} examples={EXAMPLES}>
         <Link
           href="/gsoc"
           className="rise border-hair-strong text-ink-2 hover:text-ink bg-bg-2/60 inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] transition-colors"
@@ -81,9 +83,8 @@ export default async function HomePage() {
           Find a project that <em>answers newcomers.</em>
         </h1>
         <p className="text-ink-2 mt-4 max-w-xl text-balance sm:mt-5 sm:text-lg">
-          How fast a person replies to your first pull request, and how often it gets
-          merged. Measured for every GSoC organisation, with the evidence behind each
-          number.
+          See how fast a project replies to a first pull request and how often it merges
+          one. Search every GSoC organisation, or check any repository.
         </p>
       </Field>
 

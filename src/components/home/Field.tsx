@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { RepoInput } from "@/components/site/RepoInput";
 import { Skyline } from "@/components/three/Skyline";
 
 type Point = [
@@ -38,9 +39,21 @@ const hoursText = (hours: number) =>
  * within 48 hours. Typing a stack brings the repositories that use it forward, and
  * the best of them are listed as links, so the picture is never the only way in.
  */
-export function Field({ chips, children }: { chips: string[]; children: ReactNode }) {
+export function Field({
+  chips,
+  examples,
+  children,
+}: {
+  chips: string[];
+  /** Repositories offered as examples when checking one. */
+  examples: string[];
+  children: ReactNode;
+}) {
   const [data, setData] = useState<FieldData | null>(null);
   const [text, setText] = useState("");
+  // The two things the site does, side by side: find a project by stack, or check one
+  // you already have in mind.
+  const [mode, setMode] = useState<"find" | "check">("find");
   const query = useMemo(() => words(text), [text]);
 
   useEffect(() => {
@@ -96,7 +109,58 @@ export function Field({ chips, children }: { chips: string[]; children: ReactNod
       <div className="shell relative flex flex-col items-center pt-[clamp(1.25rem,4.5svh,4.5rem)] pb-[clamp(10rem,38svh,26rem)] text-center">
         {children}
 
-        <form action="/match" className="mt-6 w-full max-w-xl text-left sm:mt-7">
+        <div
+          role="tablist"
+          aria-label="What do you want to do?"
+          className="border-hair-strong bg-bg-2/70 mt-6 inline-flex rounded-full border p-1 text-sm backdrop-blur sm:mt-7"
+        >
+          {(
+            [
+              ["find", "Find a project"],
+              ["check", "Check a repo"],
+            ] as const
+          ).map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              role="tab"
+              aria-selected={mode === key}
+              onClick={() => setMode(key)}
+              className={`min-h-9 rounded-full px-4 transition-colors ${
+                mode === key ? "bg-ink text-bg" : "text-ink-2 hover:text-ink"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {mode === "check" ? (
+          <div className="mt-4 w-full max-w-xl">
+            <RepoInput />
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <span className="text-ink-3 mr-1 text-sm">Try</span>
+              {examples.map((repo) => (
+                <Link
+                  key={repo}
+                  href={`/repo/${repo}`}
+                  className="border-hair-strong text-ink-2 hover:text-ink hover:border-ink-3 inline-flex min-h-8 items-center rounded-full border px-3 font-mono text-xs transition-colors"
+                >
+                  {repo}
+                </Link>
+              ))}
+            </div>
+            <p className="text-ink-2 mt-4 text-center text-sm">
+              Any public GitHub repository. Where to start, who replies, and whether
+              outside work gets merged.
+            </p>
+          </div>
+        ) : null}
+
+        <form
+          action="/match"
+          className={`mt-4 w-full max-w-xl text-left ${mode === "find" ? "" : "hidden"}`}
+        >
           <label htmlFor="home-stack" className="sr-only">
             What do you code in?
           </label>
@@ -134,7 +198,9 @@ export function Field({ chips, children }: { chips: string[]; children: ReactNod
           </div>
         </form>
 
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+        <div
+          className={`mt-4 flex flex-wrap items-center justify-center gap-2 ${mode === "find" ? "" : "hidden"}`}
+        >
           <span className="text-ink-3 mr-1 text-sm">Try</span>
           {chips.map((chip) => {
             const on = query.includes(chip);
@@ -157,7 +223,7 @@ export function Field({ chips, children }: { chips: string[]; children: ReactNod
         </div>
 
         <div className="mt-4 min-h-[3rem] sm:mt-5 sm:min-h-[4.5rem]" aria-live="polite">
-          {query.length > 0 && data ? (
+          {mode === "find" && query.length > 0 && data ? (
             <>
               <p className="text-ink-2 text-sm">
                 {matched.length === 0
