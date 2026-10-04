@@ -98,6 +98,14 @@ export default async function OrgPage({ params }: Props) {
             </a>
           </>
         ) : null}
+        {" · "}
+        <a
+          href={`/feed/issues?org=${org.slug}`}
+          className="link"
+          title="An Atom feed for a feed reader (Feedly, Inoreader, Thunderbird): new free first issues at this organisation, without checking the site."
+        >
+          Follow free first issues
+        </a>
         {stats.updatedAt ? ` · Updated ${date(stats.updatedAt)}` : ""}
       </p>
       <p className="mt-4 flex flex-wrap gap-1.5">
