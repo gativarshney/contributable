@@ -34,17 +34,15 @@ const typingIn = (target: EventTarget | null) =>
  * Ctrl+K (or Cmd+K, or "/") opens a box that jumps to any page, searches the index or
  * opens a repository by owner/name.
  */
-export function CommandPalette({
-  orgs,
-}: {
-  /** GSoC organisations as [name, slug], so a name typed here opens its page. */
-  orgs: readonly (readonly [string, string])[];
-}) {
+export function CommandPalette() {
   const router = useRouter();
   const dialog = useRef<HTMLDialogElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const [text, setText] = useState("");
   const [active, setActive] = useState(0);
+  // GSoC organisations as [name, slug], loaded the first time the box opens.
+  const [orgs, setOrgs] = useState<[string, string][]>([]);
+  const loaded = useRef(false);
 
   const items = useMemo<Item[]>(() => {
     const q = text.trim().toLowerCase();
@@ -91,6 +89,15 @@ export function CommandPalette({
       setActive(0);
       dialog.current?.showModal();
       input.current?.focus();
+      if (!loaded.current) {
+        loaded.current = true;
+        fetch("/api/v1/orgs")
+          .then((response) => (response.ok ? response.json() : []))
+          .then(setOrgs)
+          .catch(() => {
+            loaded.current = false;
+          });
+      }
     };
     const onKey = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {

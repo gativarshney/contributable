@@ -3,7 +3,6 @@ import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { CommandPalette } from "@/components/site/CommandPalette";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
-import { GSOC_ORGS } from "@/lib/gsoc/orgs";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -89,7 +88,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <SiteFooter />
-        <CommandPalette orgs={GSOC_ORGS.map((org) => [org.name, org.slug] as const)} />
+        <CommandPalette />
       </body>
     </html>
   );

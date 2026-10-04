@@ -90,8 +90,12 @@ export function Skyline({
           requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number;
         }
       ).requestIdleCallback;
-      const later = () => (idle ? idle(run, { timeout: 2000 }) : setTimeout(run, 200));
-      // The scene is the heaviest thing on the page, so the words paint first.
+      // Phones have less to spare, so they wait longer for a quiet moment.
+      const timeout = window.innerWidth < 1024 ? 3500 : 2000;
+      const whenQuiet = () => (idle ? idle(run, { timeout }) : setTimeout(run, 200));
+      // The scene is the heaviest thing on the page, so the words paint first. "load" can
+      // fire before the first frame is on screen; two animation frames make sure it is.
+      const later = () => requestAnimationFrame(() => requestAnimationFrame(whenQuiet));
       if (document.readyState === "complete") later();
       else window.addEventListener("load", later, { once: true });
     };
@@ -105,13 +109,17 @@ export function Skyline({
 
         let renderer: import("three").WebGLRenderer;
         try {
-          renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+          // Smoothing costs a lot on a phone's GPU and is barely visible on its dense screen.
+          renderer = new THREE.WebGLRenderer({
+            antialias: window.innerWidth >= 1024,
+            alpha: true,
+          });
         } catch {
           return; // WebGL unavailable: the page simply renders without the scene.
         }
         const canvas = renderer.domElement;
         renderer.setPixelRatio(
-          Math.min(window.devicePixelRatio, window.innerWidth < 640 ? 1.5 : 2),
+          Math.min(window.devicePixelRatio, window.innerWidth < 1024 ? 1.5 : 2),
         );
         canvas.style.cssText = "display:block;width:100%;height:100%;touch-action:pan-y";
         if (interactive) canvas.style.cursor = "grab";

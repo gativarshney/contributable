@@ -102,6 +102,7 @@ export default async function CheckPage() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={`https://github.com/${example.id.split("/")[0]}.png?size=88`}
+                  loading="lazy"
                   alt=""
                   width={44}
                   height={44}

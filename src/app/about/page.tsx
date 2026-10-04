@@ -92,6 +92,7 @@ export default async function AboutPage() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://github.com/gativarshney.png?size=240"
+            loading="lazy"
             alt="Gati Varshney"
             width={112}
             height={112}

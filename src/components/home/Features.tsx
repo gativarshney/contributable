@@ -3,8 +3,8 @@ import { OrgLogo } from "@/components/data/OrgLogo";
 import type { AvailableIssue, IndexRow } from "@/core/published";
 import { duration, inTen, percent } from "@/lib/format";
 import { allOrgStats, GSOC_ORGS, isRanked, rankOrgs } from "@/lib/gsoc/orgs";
-import { Drift } from "@/components/site/Drift";
 import { GsocMark } from "@/components/data/GsocMark";
+import { LogoDrift } from "./LogoDrift";
 import { famousPair } from "./Story";
 
 /** Enough outside pull requests that a figure is not luck. */
@@ -69,7 +69,7 @@ export function Features({
     withLogos
       .filter((_, i) => i % 2 === half)
       .slice(0, 26)
-      .map((org) => <OrgLogo key={org.slug} src={org.logo} name={org.name} size={52} />);
+      .map((org) => [org.name, org.logo!] as const);
 
   const solid = rows.filter((r) => r.replyN >= SOLID && r.replyHours !== null);
   const fastest = [...solid]
@@ -107,8 +107,8 @@ export function Features({
           </span>
         </Link>
         <div className="mt-6 mb-20 space-y-4 md:mb-28">
-          <Drift seconds={80} items={logoRow(0)} />
-          <Drift seconds={95} reverse items={logoRow(1)} />
+          <LogoDrift seconds={80} logos={logoRow(0)} />
+          <LogoDrift seconds={95} reverse logos={logoRow(1)} />
         </div>
 
         <p className="eyebrow">Everything here</p>

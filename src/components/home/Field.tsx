@@ -157,11 +157,12 @@ export function Field({
             <RepoInput />
             <div className="flex flex-wrap items-center justify-center gap-2">
               <span className="text-ink-3 mr-1 text-sm">Try</span>
-              {examples.map((repo) => (
+              {examples.map((repo, i) => (
                 <Link
                   key={repo}
                   href={`/repo/${repo}`}
-                  className="border-hair-strong text-ink-2 hover:text-ink hover:border-ink-3 inline-flex min-h-8 items-center rounded-full border px-3 font-mono text-xs transition-colors"
+                  // On a phone two examples fit on one row, which keeps the hero short.
+                  className={`border-hair-strong text-ink-2 hover:text-ink hover:border-ink-3 inline-flex min-h-8 items-center rounded-full border px-3 font-mono text-xs transition-colors ${i >= 2 ? "max-sm:hidden" : ""}`}
                 >
                   {repo}
                 </Link>
@@ -183,7 +184,7 @@ export function Field({
                 </svg>
                 Any public GitHub repo, not only GSoC
               </p>
-              <p className="text-ink-2 text-center text-sm">
+              <p className="text-ink-2 text-center text-sm max-sm:hidden">
                 Where to start, who replies, and whether outside work gets merged.
               </p>
             </div>
