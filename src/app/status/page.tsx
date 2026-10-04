@@ -13,8 +13,8 @@ export const revalidate = 300;
 
 const STOPPED: Record<string, string> = {
   done: "Everything due was refreshed.",
-  budget: "It used that hour's GitHub allowance and will continue next hour.",
-  time: "It reached its time limit and will continue next hour.",
+  budget: "It used that hour's GitHub allowance and will continue on the next run.",
+  time: "It reached its time limit and will continue on the next run.",
 };
 
 const REASONS: Record<string, string> = {

@@ -6,9 +6,11 @@ name: Sweep
 
 on:
   schedule:
-    # GitHub starts scheduled runs late and skips some, so several times are listed.
-    # A run that finds the allowance spent ends within a minute.
-    - cron: "8,23,38,53 * * * *"
+    # Four times a day: the figures cover months of pull requests and change slowly.
+    # GitHub starts scheduled runs late and skips some, so each slot has a backup half an
+    # hour later; a run that finds nothing due ends within a minute.
+    - cron: "8 0,6,12,18 * * *"
+    - cron: "38 0,6,12,18 * * *"
   workflow_dispatch:
   push:
     branches: [main]
