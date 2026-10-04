@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { GsocMark } from "@/components/data/GsocMark";
+import { GsocTimeline } from "@/components/data/GsocTimeline";
 import { OrgLogo } from "@/components/data/OrgLogo";
 import { FilterForm } from "@/components/explore/FilterForm";
 import { getIndex } from "@/lib/data";
@@ -183,6 +184,8 @@ export default async function GsocPage({
           .
         </p>
       </section>
+
+      <GsocTimeline />
 
       <FilterForm
         action="/gsoc"

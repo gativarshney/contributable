@@ -48,7 +48,7 @@ export function SavedLink() {
     <Link
       href="/saved"
       aria-label={`Saved repositories${count ? `: ${count}` : ""}`}
-      className="border-hair-strong text-ink-2 hover:text-ink relative grid size-9 place-items-center rounded-full border transition-colors"
+      className="border-hair-strong text-ink-2 hover:text-ink relative hidden size-9 place-items-center rounded-full border transition-colors min-[400px]:grid"
     >
       <Bookmark filled={count > 0} />
       {count > 0 ? (

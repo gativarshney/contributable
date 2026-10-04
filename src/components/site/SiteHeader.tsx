@@ -24,7 +24,7 @@ export function SiteHeader() {
           </div>
           <nav aria-label="Primary" className="contents">
             <HeaderNav />
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <PaletteButton />
               <SavedLink />
               <ThemeToggle />

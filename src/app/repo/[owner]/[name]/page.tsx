@@ -308,6 +308,8 @@ export default async function RepoPage({ params }: Props) {
   const issueReply = metrics.issueFirstResponse;
   const starter = metrics.starter;
   const beginner = starter.issues.filter((i) => i.label === "beginner");
+  const starterTotal = Object.values(starter.counts).reduce((a, b) => a + b, 0);
+  const steps = firstSteps(detail, id);
   const totalBytes = Object.values(facts.languages).reduce((a, b) => a + b, 0);
   const languages = Object.entries(facts.languages)
     .sort((a, b) => b[1] - a[1])
@@ -448,14 +450,18 @@ export default async function RepoPage({ params }: Props) {
         title="Your first steps here"
         note="If you have never contributed to this project, do these in order."
       >
-        <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {firstSteps(detail, id).map((step, i) => (
+        <ol
+          className={`grid gap-4 sm:grid-cols-2 ${steps.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}
+        >
+          {steps.map((step, i) => (
             <li
               key={step.title}
               className="border-hair bg-bg/40 flex flex-col rounded-xl border p-5"
             >
-              <span className="text-accent num text-sm">Step {i + 1}</span>
-              <h3 className="mt-2 font-medium">{step.title}</h3>
+              <span className="bg-accent-soft text-accent num grid size-8 place-items-center rounded-full text-sm font-medium">
+                {i + 1}
+              </span>
+              <h3 className="mt-4 font-medium">{step.title}</h3>
               <p className="text-ink-2 mt-1.5 flex-1 text-sm">{step.text}</p>
               {step.href ? (
                 <a
@@ -518,17 +524,21 @@ export default async function RepoPage({ params }: Props) {
         title="Starter issues"
         note="Issues labelled for beginners, with their real state. Available means open, unassigned, no linked pull request, nobody has claimed it in the last 14 days, and it was updated in the last 60 days."
       >
-        <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {(Object.keys(STATE_LABEL) as StarterIssue["state"][]).map((state) => (
-            <div key={state} className="border-hair bg-bg/40 rounded-xl border p-4">
-              <dt className={`flex items-center gap-2 text-sm ${STATE_LABEL[state][1]}`}>
-                <span className="size-2 rounded-full bg-current" aria-hidden="true" />
-                {STATE_LABEL[state][0]}
-              </dt>
-              <dd className="num mt-2 text-4xl font-medium">{starter.counts[state]}</dd>
-            </div>
-          ))}
-        </dl>
+        {starterTotal === 0 ? null : (
+          <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {(Object.keys(STATE_LABEL) as StarterIssue["state"][]).map((state) => (
+              <div key={state} className="border-hair bg-bg/40 rounded-xl border p-4">
+                <dt
+                  className={`flex items-center gap-2 text-sm ${STATE_LABEL[state][1]}`}
+                >
+                  <span className="size-2 rounded-full bg-current" aria-hidden="true" />
+                  {STATE_LABEL[state][0]}
+                </dt>
+                <dd className="num mt-2 text-4xl font-medium">{starter.counts[state]}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
         {beginner.length > 0 ? (
           <ul className="border-hair mt-6 divide-y divide-[var(--hair)] rounded-2xl border">
             {beginner.slice(0, 12).map((issue) => (
@@ -549,7 +559,9 @@ export default async function RepoPage({ params }: Props) {
             ))}
           </ul>
         ) : (
-          <p className="text-ink-2 mt-6 text-sm">
+          <p
+            className={`text-ink-2 text-sm ${starterTotal === 0 ? "border-hair bg-bg/40 rounded-xl border p-5" : "mt-6"}`}
+          >
             No open issue carries a beginner label.
             {starter.helpWantedAvailable > 0
               ? ` ${starter.helpWantedAvailable} issues marked "help wanted" are available.`
@@ -702,7 +714,7 @@ export default async function RepoPage({ params }: Props) {
         note="Two ways to use these figures outside this page."
       >
         <div className="grid gap-4 lg:grid-cols-2">
-          <div className="border-hair bg-bg/40 rounded-xl border p-5">
+          <div className="border-hair bg-bg/40 min-w-0 rounded-xl border p-5">
             <h3 className="font-medium">For maintainers: a README badge</h3>
             <p className="text-ink-2 mt-1 text-sm">
               Shows newcomers how quickly this project answers and how often it merges.
@@ -736,7 +748,7 @@ export default async function RepoPage({ params }: Props) {
             </div>
           </div>
 
-          <div className="border-hair bg-bg/40 rounded-xl border p-5">
+          <div className="border-hair bg-bg/40 min-w-0 rounded-xl border p-5">
             <h3 className="font-medium">For contributors: follow new issues</h3>
             <p className="text-ink-2 mt-1 text-sm">
               Add the feed to a feed reader (Feedly, Inoreader, Thunderbird) and you hear

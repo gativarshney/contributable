@@ -18,40 +18,6 @@ const EXAMPLES = [
   "OpenPrinting/cups",
 ];
 
-/** The six questions a report answers, each with the picture it answers them with. */
-const QUESTIONS: { question: string; answer: string; icon: string }[] = [
-  {
-    question: "Should I contribute here?",
-    answer: "A ten-point checklist, each answer with its evidence.",
-    icon: "M5 12.5 10 17 19 7",
-  },
-  {
-    question: "Where do I start?",
-    answer: "Starter issues, and whether each one is really free.",
-    icon: "M12 4v16M4 12h16",
-  },
-  {
-    question: "Will my pull request be merged?",
-    answer: "What happened to recent pull requests from outsiders.",
-    icon: "M7 4v10a4 4 0 0 0 4 4h6M7 4 4 7m3-3 3 3",
-  },
-  {
-    question: "Will anyone reply?",
-    answer: "How long outsiders waited for a first human reply.",
-    icon: "M4 6h16v10H9l-5 4z",
-  },
-  {
-    question: "Who maintains it?",
-    answer: "How many people share the work, and how recently.",
-    icon: "M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 19c0-3 2-5 5-5s5 2 5 5m1-5c3 0 5 2 5 5",
-  },
-  {
-    question: "When do replies arrive?",
-    answer: "The project's reply hours, in your time zone.",
-    icon: "M12 7v5l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z",
-  },
-];
-
 export const revalidate = 900;
 
 export default async function CheckPage() {
@@ -89,35 +55,9 @@ export default async function CheckPage() {
 
       <FourThings rows={index.rows} />
 
-      <section className="border-hair border-t py-20 md:py-28">
-        <div className="shell reveal">
-          <p className="eyebrow">In a full report</p>
-          <h2 className="display mt-5 max-w-3xl text-[clamp(2rem,4.6vw,3.25rem)]">
-            Six questions, <em>answered.</em>
-          </h2>
-          <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {QUESTIONS.map((item) => (
-              <li key={item.question} className="card p-6">
-                <span className="border-hair-strong text-accent grid size-10 place-items-center rounded-full border">
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="size-5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d={item.icon} />
-                  </svg>
-                </span>
-                <h3 className="font-display mt-5 text-xl">{item.question}</h3>
-                <p className="text-ink-2 mt-2 text-[15px]">{item.answer}</p>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-10 flex flex-wrap gap-3">
+      <section className="pb-20 md:pb-28">
+        <div className="shell">
+          <div className="flex flex-wrap gap-3">
             <Link href="/repo/OpenPrinting/cups" className="btn btn-ghost">
               See an example report
             </Link>
