@@ -42,6 +42,7 @@ function Figure({
   className = "",
   info,
   infoAlign,
+  extra,
 }: {
   label: string;
   value: string;
@@ -49,6 +50,8 @@ function Figure({
   className?: string;
   info?: string;
   infoAlign?: "left" | "right";
+  /** Extra visual under the figure, such as a bar; hidden from screen readers. */
+  extra?: React.ReactNode;
 }) {
   const missing = value === NOT_ENOUGH || value === UNANSWERED;
   return (
@@ -67,6 +70,7 @@ function Figure({
         {value}
       </dd>
       <dd className="text-ink-3 num text-[11px]">{note}</dd>
+      {extra ? <dd aria-hidden="true">{extra}</dd> : null}
     </div>
   );
 }
@@ -120,25 +124,22 @@ export function RepoCard({ row }: { row: IndexRow }) {
           note={`${row.replyN} outside PRs`}
           className={SPEED_CLASS[replySpeed(row.replyHours)]}
         />
-        <div>
-          <Figure
-            label="Merged"
-            info={MERGED_INFO}
-            value={percent(row.mergeRate)}
-            note={`of ${row.decided} decided`}
-          />
-          {row.mergeRate !== null ? (
-            <span
-              className="bg-bg-3 mt-1.5 block h-1 overflow-hidden rounded-full"
-              aria-hidden="true"
-            >
-              <span
-                className="bg-accent block h-full rounded-full"
-                style={{ width: `${Math.round(row.mergeRate * 100)}%` }}
-              />
-            </span>
-          ) : null}
-        </div>
+        <Figure
+          label="Merged"
+          info={MERGED_INFO}
+          value={percent(row.mergeRate)}
+          note={`of ${row.decided} decided`}
+          extra={
+            row.mergeRate !== null ? (
+              <span className="bg-bg-3 mt-1.5 block h-1 overflow-hidden rounded-full">
+                <span
+                  className="bg-accent block h-full rounded-full"
+                  style={{ width: `${Math.round(row.mergeRate * 100)}%` }}
+                />
+              </span>
+            ) : null
+          }
+        />
         <Figure
           label="Free issues"
           info={STARTER_INFO}
