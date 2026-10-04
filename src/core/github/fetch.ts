@@ -100,10 +100,14 @@ const INSTANT_MIN_PULLS = 5;
 const BLANKET_SHARE = 0.6;
 const BLANKET_MIN_PULLS = 20;
 const BLANKET_MEDIAN_MINUTES = 15;
+/** A median first comment this fast, over this many pull requests, is not a person. */
+const RAPID_MEDIAN_SECONDS = 180;
+const RAPID_MIN_PULLS = 10;
 
 /**
  * Finds automation that runs under an ordinary user account, from behaviour alone.
- * Two patterns, both far outside what a person does:
+ * Three patterns, all far outside what a person does (the third: a median first
+ * comment within three minutes across ten or more pull requests):
  *  - the account's first comment lands within a minute of the pull request opening,
  *    on at least 5 pull requests and at least half of those it comments on;
  *  - the account comments on at least 60% of all pull requests (20 or more), with a
@@ -143,7 +147,10 @@ export function detectAutomation(
       pulls.length >= BLANKET_MIN_PULLS &&
       list.length / pulls.length >= BLANKET_SHARE &&
       median <= BLANKET_MEDIAN_MINUTES * 60;
-    if (instantly || blanket) found.push(login);
+    // A greeter that only speaks to outsiders never reaches 60% of all pull requests,
+    // but nobody keeps a three-minute median over ten pull requests by hand.
+    const rapid = list.length >= RAPID_MIN_PULLS && median <= RAPID_MEDIAN_SECONDS;
+    if (instantly || blanket || rapid) found.push(login);
   }
   return found.sort();
 }

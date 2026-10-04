@@ -117,3 +117,12 @@ describe("a merge is an answer", () => {
     expect(toPullSummary(bot, hash).firstResponseAt).toBeNull();
   });
 });
+
+describe("a greeter that only answers some pull requests", () => {
+  it("is found from a median first comment of a few minutes", () => {
+    const pulls = Array.from({ length: 40 }, (_, i) =>
+      rawPull(i + 1, i < 12 ? [{ login: "welcome-desk", minutes: 2 }] : []),
+    );
+    expect(detectAutomation(pulls)).toEqual(["welcome-desk"]);
+  });
+});

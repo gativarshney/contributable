@@ -1,15 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from "react";
-import { FieldScene } from "@/components/three/FieldScene";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { Skyline } from "@/components/three/Skyline";
 
 type Point = [
   id: string,
@@ -20,25 +13,10 @@ type Point = [
   pulls: number,
 ];
 
-const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
-const subscribeMotion = (notify: () => void) => {
-  const media = window.matchMedia(REDUCED_MOTION);
-  media.addEventListener("change", notify);
-  return () => media.removeEventListener("change", notify);
-};
-
 interface FieldData {
   total: number;
   points: Point[];
 }
-
-/** Reply time runs on a log scale from 1 hour to 60 days; faster is further right. */
-const MIN_HOURS = 1;
-const MAX_HOURS = 60 * 24;
-const xOf = (hours: number) =>
-  1 -
-  Math.log(Math.min(MAX_HOURS, Math.max(MIN_HOURS, hours)) / MIN_HOURS) /
-    Math.log(MAX_HOURS / MIN_HOURS);
 
 const words = (text: string) =>
   text
@@ -51,40 +29,19 @@ function matches(point: Point, query: string[]): boolean {
   return query.length > 0 && query.every((word) => point[4].includes(word));
 }
 
-function hoursText(hours: number): string {
-  if (hours < 48) return `${Math.round(hours)} h`;
-  return `${Math.round(hours / 24)} days`;
-}
+const hoursText = (hours: number) =>
+  hours < 48 ? `${Math.max(1, Math.round(hours))} h` : `${Math.round(hours / 24)} days`;
 
 /**
- * Every measured repository as a point: first reply speed across, outside merge rate
- * up. Typing a stack lights up the repositories that use it. The same result is given
- * as text and links below, so the picture is never the only way in.
+ * The first screen: one question, and under it a skyline with one bar for every
+ * measured repository. A taller bar answers a larger share of outside pull requests
+ * within 48 hours. Typing a stack brings the repositories that use it forward, and
+ * the best of them are listed as links, so the picture is never the only way in.
  */
-export function Field() {
-  const canvas = useRef<HTMLCanvasElement>(null);
-  const levels = useRef<Float32Array | null>(null);
+export function Field({ chips, children }: { chips: string[]; children: ReactNode }) {
   const [data, setData] = useState<FieldData | null>(null);
   const [text, setText] = useState("");
   const query = useMemo(() => words(text), [text]);
-  // The 3D skyline is the default. The flat chart is drawn instead when the visitor
-  // asks for reduced motion, or when the device cannot run WebGL.
-  const reduced = useSyncExternalStore(
-    subscribeMotion,
-    () => window.matchMedia(REDUCED_MOTION).matches,
-    () => false,
-  );
-  const [unsupported, setUnsupported] = useState(false);
-  const flat = reduced || unsupported;
-  const onUnavailable = useCallback(() => setUnsupported(true), []);
-  const columns = useMemo(
-    () => (data?.points ?? []).map((p) => ({ x: xOf(p[1]), z: p[2], n: p[5] ?? 5 })),
-    [data],
-  );
-  const lit = useMemo(
-    () => (data?.points ?? []).map((p) => matches(p, query)),
-    [data, query],
-  );
 
   useEffect(() => {
     let alive = true;
@@ -99,194 +56,138 @@ export function Field() {
     };
   }, []);
 
+  const points = useMemo(() => data?.points ?? [], [data]);
+  // One bar per repository, in whole columns of seven.
+  const bars = useMemo(
+    () => points.slice(0, Math.floor(points.length / 7) * 7),
+    [points],
+  );
+  const values = useMemo(() => bars.map((p) => Math.round((p[3] ?? 0) * 100)), [bars]);
+  const lit = useMemo(() => bars.map((p) => matches(p, query)), [bars, query]);
   const matched = useMemo(
     () =>
-      data
-        ? data.points
-            .filter((p) => matches(p, query))
-            .sort((a, b) => (b[3] ?? -1) - (a[3] ?? -1) || b[2] - a[2])
-        : [],
-    [data, query],
+      points
+        .filter((p) => matches(p, query))
+        .sort((a, b) => (b[3] ?? -1) - (a[3] ?? -1) || b[2] - a[2]),
+    [points, query],
   );
 
-  useEffect(() => {
-    const el = canvas.current;
-    if (!el || !data || !flat) return;
-    const ctx = el.getContext("2d");
-    if (!ctx) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const points = data.points;
-    const lit = points.map((p) => matches(p, query));
-    // Each point eases between dim and lit; `level` holds where it is now and is
-    // kept between keystrokes, so a point that stays lit does not flicker.
-    if (!levels.current || levels.current.length !== points.length) {
-      levels.current = new Float32Array(points.length);
-    }
-    const level = levels.current;
-    let raf = 0;
-    let width = 0;
-    let height = 0;
-
-    const colours = () => {
-      const style = getComputedStyle(document.documentElement);
-      return {
-        dot: style.getPropertyValue("--ink-3").trim(),
-        accent: style.getPropertyValue("--accent").trim(),
-      };
-    };
-    let colour = colours();
-
-    const resize = () => {
-      const ratio = Math.min(2, window.devicePixelRatio || 1);
-      width = el.clientWidth;
-      height = el.clientHeight;
-      el.width = Math.round(width * ratio);
-      el.height = Math.round(height * ratio);
-      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-    };
-
-    const draw = () => {
-      ctx.clearRect(0, 0, width, height);
-      const pad = 14;
-      const searching = query.length > 0;
-      let moving = false;
-      for (let pass = 0; pass < 2; pass += 1) {
-        for (let i = 0; i < points.length; i += 1) {
-          // Lit points are drawn last so they sit on top.
-          if ((pass === 1) !== lit[i]) continue;
-          const target = lit[i] ? 1 : 0;
-          if (reduce) level[i] = target;
-          else if (Math.abs(level[i] - target) > 0.01) {
-            level[i] += (target - level[i]) * 0.16;
-            moving = true;
-          } else level[i] = target;
-          const t = level[i];
-          const x = pad + xOf(points[i][1]) * (width - pad * 2);
-          // A lit point rises a little, the "best matches rise" of the brief.
-          const y = pad + (1 - points[i][2]) * (height - pad * 2) - t * 6;
-          if (t > 0.02) {
-            ctx.globalAlpha = 0.16 * t;
-            ctx.fillStyle = colour.accent;
-            ctx.beginPath();
-            ctx.arc(x, y, 3 + 7 * t, 0, Math.PI * 2);
-            ctx.fill();
-          }
-          ctx.globalAlpha = t > 0.02 ? 0.4 + 0.6 * t : searching ? 0.18 : 0.6;
-          ctx.fillStyle = t > 0.5 ? colour.accent : colour.dot;
-          ctx.beginPath();
-          ctx.arc(x, y, 2.2 + 1.8 * t, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-      ctx.globalAlpha = 1;
-      if (moving) raf = requestAnimationFrame(draw);
-    };
-
-    const redraw = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(draw);
-    };
-    const onResize = () => {
-      resize();
-      redraw();
-    };
-    const theme = new MutationObserver(() => {
-      colour = colours();
-      redraw();
-    });
-
-    resize();
-    redraw();
-    window.addEventListener("resize", onResize);
-    theme.observe(document.documentElement, { attributeFilter: ["data-theme"] });
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", onResize);
-      theme.disconnect();
-    };
-  }, [data, query, flat]);
-
-  const stack = text.trim();
-  const description = data
-    ? `${data.points.length} repositories placed by first reply time and outside merge rate. Faster replies are to the right, higher merge rates ${flat ? "at the top" : "further back"}.`
-    : "Loading";
+  const toggle = (chip: string) => {
+    const next = query.includes(chip)
+      ? query.filter((w) => w !== chip)
+      : [...query, chip];
+    setText(next.join(", "));
+  };
+  const stack = query.join(", ");
 
   return (
-    <div>
-      <form action="/match" className="mx-auto w-full max-w-xl">
-        <label htmlFor="home-stack" className="sr-only">
-          What do you code in?
-        </label>
-        <div className="repo-input border-hair-strong bg-bg flex items-center gap-2 rounded-full border p-1.5 pl-5">
-          <input
-            id="home-stack"
-            name="stack"
-            value={text}
-            onChange={(event) => setText(event.target.value)}
-            placeholder="What do you code in? python, react, rust"
-            className="placeholder:text-ink-3 h-11 min-w-0 flex-1 bg-transparent text-base outline-none"
-            autoComplete="off"
-            autoCapitalize="none"
-            spellCheck={false}
-          />
-          <button className="btn shrink-0">Find projects</button>
-        </div>
-      </form>
+    <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col overflow-hidden">
+      <div className="hero-glow" aria-hidden="true" />
+      {values.length > 0 ? (
+        <Skyline
+          values={values}
+          lit={lit}
+          anchor="bottom"
+          reactive
+          className="skyline-fade pointer-events-none absolute inset-x-0 bottom-0 h-[clamp(13rem,36svh,25rem)]"
+        />
+      ) : null}
 
-      <p className="text-ink-2 mt-4 min-h-6 text-center text-sm" aria-live="polite">
-        {!data
-          ? "Loading the index"
-          : data.points.length === 0
-            ? "The index is being prepared. Points appear here as repositories are measured."
-            : query.length === 0
-              ? `${data.points.length.toLocaleString("en-US")} repositories, one ${flat ? "point" : "column"} each. Type a language to light yours up.`
-              : matched.length === 0
-                ? `No measured repository uses "${stack}" yet.`
-                : `${matched.length.toLocaleString("en-US")} ${matched.length === 1 ? "repository uses" : "repositories use"} ${stack}.`}
-      </p>
+      <div className="shell relative flex flex-col items-center pt-[clamp(2rem,7svh,6rem)] pb-[clamp(11rem,31svh,21rem)] text-center">
+        {children}
 
-      <div className="relative mx-auto mt-3 max-w-4xl">
-        {flat ? (
-          <canvas
-            ref={canvas}
-            role="img"
-            aria-label={description}
-            className="h-[clamp(11rem,34svh,20rem)] w-full"
-          />
-        ) : (
-          <div role="img" aria-label={description}>
-            <FieldScene
-              points={columns}
-              lit={lit}
-              searching={query.length > 0}
-              onUnavailable={onUnavailable}
-              className="skyline-fade h-[clamp(11rem,34svh,20rem)] w-full"
+        <form action="/match" className="mt-9 w-full max-w-xl text-left">
+          <label htmlFor="home-stack" className="sr-only">
+            What do you code in?
+          </label>
+          <div className="repo-input border-hair-strong bg-bg-2 flex items-center gap-1 rounded-full border p-1.5 pl-5">
+            <svg
+              viewBox="0 0 16 16"
+              className="text-ink-3 size-[18px] shrink-0"
+              fill="none"
+              aria-hidden="true"
+            >
+              <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+              <path
+                d="m10.5 10.5 3 3"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
+            <input
+              id="home-stack"
+              name="stack"
+              value={text}
+              onChange={(event) => setText(event.target.value)}
+              placeholder="What do you code in?"
+              className="placeholder:text-ink-3 h-11 min-w-0 flex-1 bg-transparent px-2 text-base outline-none"
+              autoComplete="off"
+              autoCapitalize="none"
+              spellCheck={false}
             />
+            <button className="btn shrink-0">
+              Find projects <span aria-hidden="true">→</span>
+            </button>
           </div>
-        )}
-        <span className="text-ink-3 pointer-events-none absolute right-1 bottom-0 text-[11px]">
-          Faster first reply →
-        </span>
-        <span className="text-ink-3 pointer-events-none absolute top-0 left-1 text-[11px]">
-          {flat ? "↑ More outside PRs merged" : "Further back: more outside PRs merged"}
-        </span>
+        </form>
+
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+          <span className="text-ink-3 mr-1 text-sm">Try</span>
+          {chips.map((chip) => {
+            const on = query.includes(chip);
+            return (
+              <button
+                key={chip}
+                type="button"
+                onClick={() => toggle(chip)}
+                aria-pressed={on}
+                className={`min-h-8 rounded-full border px-3 font-mono text-xs transition-colors ${
+                  on
+                    ? "border-accent text-accent"
+                    : "border-hair-strong text-ink-2 hover:text-ink hover:border-ink-3"
+                }`}
+              >
+                {chip}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-5 min-h-[4.5rem]" aria-live="polite">
+          {query.length > 0 && data ? (
+            <>
+              <p className="text-ink-2 text-sm">
+                {matched.length === 0
+                  ? `No measured repository uses ${stack} yet.`
+                  : `${matched.length.toLocaleString("en-US")} ${matched.length === 1 ? "repository uses" : "repositories use"} ${stack}. Best at answering:`}
+              </p>
+              <ul className="mt-2.5 flex flex-wrap justify-center gap-2 text-sm">
+                {matched.slice(0, 3).map((point) => (
+                  <li key={point[0]}>
+                    <Link
+                      href={`/repo/${point[0]}`}
+                      className="border-hair-strong bg-bg/70 hover:border-accent inline-flex min-h-9 items-center gap-2 rounded-full border px-3.5 backdrop-blur transition-colors"
+                    >
+                      <span>{point[0]}</span>
+                      <span className="num text-accent text-xs">
+                        {hoursText(point[1])} · {Math.round(point[2] * 100)}%
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+        </div>
       </div>
 
-      <ul className="mx-auto mt-3 flex min-h-8 max-w-3xl flex-wrap justify-center gap-2 text-sm">
-        {matched.slice(0, 4).map((point) => (
-          <li key={point[0]}>
-            <Link
-              href={`/repo/${point[0]}`}
-              className="border-hair-strong hover:border-accent inline-flex min-h-9 items-center gap-2 rounded-full border px-3 transition-colors"
-            >
-              <span>{point[0]}</span>
-              <span className="num text-ink-3 text-xs">
-                {hoursText(point[1])} · {Math.round(point[2] * 100)}%
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+      {values.length > 0 ? (
+        <p className="text-ink-3 pointer-events-none absolute inset-x-0 bottom-3 px-6 text-center text-[11px]">
+          One bar per measured repository. Taller: more outside pull requests answered
+          within 48 hours.
+        </p>
+      ) : null}
+    </section>
   );
 }

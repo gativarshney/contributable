@@ -13,6 +13,11 @@ interface SkylineProps {
   interactive?: boolean;
   /** Bars swell under the cursor, wherever it is on the page. */
   reactive?: boolean;
+  /**
+   * Bars to bring forward, one flag per value. While any is set, the flagged bars
+   * grow and brighten and the rest step back.
+   */
+  lit?: boolean[];
   /** Text shown when a bar is hovered. Return null for no tooltip. */
   tooltip?: (index: number, value: number) => string | null;
   className?: string;
@@ -52,6 +57,7 @@ export function Skyline({
   anchor = "center",
   interactive = false,
   reactive = false,
+  lit,
   tooltip,
   className = "",
 }: SkylineProps) {
@@ -62,6 +68,13 @@ export function Skyline({
   useEffect(() => {
     tooltipRef.current = tooltip;
   }, [tooltip]);
+  // The same for the lit flags: a new set repaints the scene without rebuilding it.
+  const litRef = useRef(lit);
+  const repaint = useRef<() => void>(() => {});
+  useEffect(() => {
+    litRef.current = lit;
+    repaint.current();
+  }, [lit]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -121,8 +134,23 @@ export function Skyline({
       const highlight = new THREE.Color();
       let hovered = -1;
 
+      // Where each bar is between resting (0) and lit (1).
+      const level = new Float32Array(values.length);
+      const dim = new THREE.Color();
+      const litColor = new THREE.Color();
+      const mixed = new THREE.Color();
+      const anyLit = () => litRef.current?.some(Boolean) ?? false;
+
+      function shade(index: number) {
+        if (index === hovered) return highlight;
+        if (!litRef.current) return colors[index];
+        mixed.copy(colors[index]);
+        if (anyLit()) mixed.lerp(dim, 0.8 * (1 - level[index]));
+        return mixed.lerp(litColor, level[index] * 0.85);
+      }
+
       function paint(index: number) {
-        mesh.setColorAt(index, index === hovered ? highlight : colors[index]);
+        mesh.setColorAt(index, shade(index));
         if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
       }
 
@@ -143,6 +171,8 @@ export function Skyline({
           mesh.setColorAt(i, colors[i]);
         });
         highlight.set(palette.highlight);
+        dim.set(palette.empty);
+        litColor.set(palette.ramp[palette.ramp.length - 1]);
         if (hovered >= 0) mesh.setColorAt(hovered, highlight);
         if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
         hemisphere.color.set(palette.sky);
@@ -167,12 +197,22 @@ export function Skyline({
             height *= 1 + focus.strength * 0.9 * Math.exp(-d2 / 14);
           }
           if (i === hovered) height *= 1.12;
+          if (litRef.current) {
+            const target = litRef.current[i] ? 1 : 0;
+            if (reduceMotion) level[i] = target;
+            else if (Math.abs(level[i] - target) > 0.01) {
+              level[i] += (target - level[i]) * 0.14;
+            } else level[i] = target;
+            height *= 1 + level[i] * 0.45;
+            mesh.setColorAt(i, shade(i));
+          }
           dummy.position.set((column - (columns - 1) / 2) * STEP, 0, (row - 3) * STEP);
           dummy.scale.set(1, Math.max(0.02, height), 1);
           dummy.updateMatrix();
           mesh.setMatrixAt(i, dummy.matrix);
         }
         mesh.instanceMatrix.needsUpdate = true;
+        if (litRef.current && mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
       }
 
       function resize() {
@@ -337,6 +377,7 @@ export function Skyline({
         if (!frame) frame = requestAnimationFrame(render);
       }
 
+      repaint.current = schedule;
       group.rotation.y = baseYaw;
       applyTheme();
       layout(reduceMotion ? Infinity : 0);
@@ -378,6 +419,7 @@ export function Skyline({
 
       cleanup = () => {
         cancelAnimationFrame(frame);
+        repaint.current = () => {};
         resizeObserver.disconnect();
         themeObserver.disconnect();
         visibilityObserver.disconnect();

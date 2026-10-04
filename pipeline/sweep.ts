@@ -31,7 +31,7 @@ import {
 } from "../src/core/published";
 import { repoState, type RepoState } from "../src/core/schema";
 import { trend, weeklySeries } from "../src/core/trends";
-import { discoverUniverse } from "./universe/discover";
+import { discoverUniverse, MAX_REPOS_PER_ACCOUNT } from "./universe/discover";
 import type { GsocOrg } from "./universe/gsoc";
 
 const HOUR_MS = 3_600_000;
@@ -146,9 +146,13 @@ async function main() {
   const universeAge = universe
     ? startedAt.getTime() - Date.parse(universe.generatedAt)
     : Infinity;
-  // A change to the organisation list (a corrected mapping, say) also rebuilds it.
+  // A change to the organisation list (a corrected mapping, say) or to how many
+  // repositories are taken per account also rebuilds it.
   const orgsText = await readFile("universe/gsoc.json", "utf8");
-  const source = createHash("sha256").update(orgsText).digest("hex").slice(0, 16);
+  const source = createHash("sha256")
+    .update(orgsText + MAX_REPOS_PER_ACCOUNT)
+    .digest("hex")
+    .slice(0, 16);
   if (
     !universe ||
     !universe.complete ||

@@ -245,11 +245,11 @@ describe("repository discovery", () => {
     expect(picked).toEqual(["big", "small"]);
   });
 
-  it("keeps at most eight per account", () => {
+  it("keeps at most twelve per account", () => {
     const many = Array.from({ length: 20 }, (_, i) =>
       repo(`r${i}`, { stargazerCount: i }),
     );
-    expect(pickRepos(many, NOW)).toHaveLength(8);
+    expect(pickRepos(many, NOW)).toHaveLength(12);
     expect(pickRepos(many, NOW)[0]).toBe("r19");
   });
 });

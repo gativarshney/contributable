@@ -11,7 +11,7 @@ import type { GsocOrg } from "./gsoc";
 /** A repository nobody pushed to in this long is not somewhere to start. */
 export const ACTIVE_WITHIN_DAYS = 180;
 /** Most starred active repositories kept per GitHub account. */
-export const MAX_REPOS_PER_ACCOUNT = 8;
+export const MAX_REPOS_PER_ACCOUNT = 12;
 
 const DAY_MS = 86_400_000;
 

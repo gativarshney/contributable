@@ -508,3 +508,29 @@ body {
 .palette::backdrop {
   background: oklch(0% 0 0 / 0.45);
 }
+
+/* Bottom tab bar on a phone, and room for it under the page. */
+.tabbar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--hair-strong);
+  background: color-mix(in oklch, var(--bg) 88%, transparent);
+  backdrop-filter: blur(16px);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (max-width: 639px) {
+  body {
+    padding-bottom: calc(3.5rem + env(safe-area-inset-bottom));
+  }
+}
+
+@media (min-width: 640px) {
+  .tabbar {
+    display: none;
+  }
+}
