@@ -64,20 +64,15 @@ export default async function HomePage() {
     <>
       <Field chips={chips} examples={EXAMPLES}>
         <Link
-          href="/gsoc"
+          href="/start"
           className="rise border-hair-strong text-ink-2 hover:text-ink bg-bg-2/60 inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] transition-colors"
         >
           <span className="bg-accent size-1.5 rounded-full" aria-hidden="true" />
-          {index.rows.length > 0
-            ? `${count(index.rows.length)} repositories measured`
-            : "For open source contributors"}
-          <span className="text-ink-3 hidden sm:inline" aria-hidden="true">
+          New to open source?
+          <span className="text-ink-3" aria-hidden="true">
             ·
           </span>
-          <span className="hidden sm:inline">See GSoC organisations →</span>
-          <span className="sm:hidden" aria-hidden="true">
-            →
-          </span>
+          Start here →
         </Link>
         <h1 className="display mt-5 max-w-4xl text-[clamp(2.4rem,min(6.6vw,8.6svh),4.75rem)]">
           Find a project that <em>answers newcomers.</em>

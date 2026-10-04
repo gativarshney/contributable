@@ -69,6 +69,9 @@ export function SiteFooter() {
             aria-label="Footer"
             className="flex flex-wrap gap-x-5 gap-y-2 md:justify-end"
           >
+            <Link href="/start" className="hover:text-ink transition-colors">
+              Start here
+            </Link>
             <Link href="/guide" className="hover:text-ink transition-colors">
               Guide
             </Link>

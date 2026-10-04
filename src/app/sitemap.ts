@@ -12,6 +12,7 @@ const STATIC = [
   "/match",
   "/check",
   "/compare",
+  "/start",
   "/guide",
   "/methodology",
   "/status",

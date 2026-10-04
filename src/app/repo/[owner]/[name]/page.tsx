@@ -152,6 +152,81 @@ const CLA_TEXT: Record<RepoDetail["facts"]["gettingStarted"]["cla"], string> = {
   unknown: "Could not tell whether a CLA or sign-off is required.",
 };
 
+interface FirstStep {
+  title: string;
+  text: string;
+  action?: string;
+  href?: string;
+}
+
+/** What a newcomer should do at this repository, from what was found in it. */
+function firstSteps(detail: RepoDetail, id: string): FirstStep[] {
+  const { facts, metrics } = detail;
+  const start = facts.gettingStarted;
+  const issue = metrics.starter.issues.find(
+    (i) => i.state === "available" && i.label === "beginner",
+  );
+  const channel = start.channels[0];
+  const reply = metrics.pullFirstResponse.medianHours;
+  const steps: FirstStep[] = [
+    start.contributing
+      ? {
+          title: "Read the contributing guide",
+          text: "It says how to set the project up and what the maintainers expect in a pull request.",
+          action: "Open the guide",
+          href: `https://github.com/${id}/contribute`,
+        }
+      : {
+          title: "Read the README",
+          text: "No contributing guide was found, so the README is where setup is explained.",
+          action: "Open the README",
+          href: `https://github.com/${id}#readme`,
+        },
+    issue
+      ? {
+          title: "Take this free issue",
+          text: issue.title,
+          action: `Open issue #${issue.n}`,
+          href: `https://github.com/${id}/issues/${issue.n}`,
+        }
+      : {
+          title: "Find something small",
+          text: "No first issue is free right now. Look for a typo, a missing test or an unclear error message, or ask where help is wanted.",
+          action: "Browse open issues",
+          href: `https://github.com/${id}/issues`,
+        },
+    channel
+      ? {
+          title: "Know where to ask",
+          text: `Questions go to the project's ${channel.kind.replace("-", " ")}, or on the issue itself. Not in private messages.`,
+          action: "Open it",
+          href: channel.url,
+        }
+      : {
+          title: "Know where to ask",
+          text: "No chat was found. Ask on the issue you are working on; that is where maintainers look.",
+        },
+  ];
+  if (start.cla === "cla" || start.cla === "dco") {
+    steps.push({
+      title:
+        start.cla === "cla" ? "Sign the contributor agreement" : "Sign off your commits",
+      text:
+        start.cla === "cla"
+          ? "A bot will ask you to sign a contributor licence agreement on your first pull request. It takes a minute."
+          : "Commit with git commit -s. Without the sign-off line the checks fail.",
+    });
+  }
+  steps.push({
+    title: "Open a small pull request",
+    text:
+      reply !== null
+        ? `Link the issue in it. A first reply here usually takes ${duration(reply)}; until then, silence is normal.`
+        : "Link the issue in it. Too few outside pull requests here to say how long a reply takes.",
+  });
+  return steps;
+}
+
 function similar(rows: IndexRow[], detail: RepoDetail): IndexRow[] {
   const id = `${detail.owner}/${detail.name}`.toLowerCase();
   const me = rows.find((r) => r.id.toLowerCase() === id);
@@ -324,6 +399,32 @@ export default async function RepoPage({ params }: Props) {
           How this is calculated
         </Link>
       </p>
+
+      <Section
+        id="first-steps"
+        title="Your first steps here"
+        note="If you have never contributed to this project, do these in order."
+      >
+        <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {firstSteps(detail, id).map((step, i) => (
+            <li key={step.title} className="card flex flex-col p-5">
+              <span className="text-accent num text-sm">Step {i + 1}</span>
+              <h3 className="mt-2 font-medium">{step.title}</h3>
+              <p className="text-ink-2 mt-1.5 flex-1 text-sm">{step.text}</p>
+              {step.href ? (
+                <a
+                  href={step.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="link mt-4 text-sm"
+                >
+                  {step.action}
+                </a>
+              ) : null}
+            </li>
+          ))}
+        </ol>
+      </Section>
 
       <Section
         id="funnel"

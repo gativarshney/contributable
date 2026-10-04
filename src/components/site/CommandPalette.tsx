@@ -12,6 +12,7 @@ const PAGES: [label: string, href: string, keys?: string][] = [
   ["Check any repository", "/check", "g r"],
   ["Saved repositories", "/saved", "g s"],
   ["Compare repositories", "/compare", "g c"],
+  ["New to open source? Start here", "/start"],
   ["Guide: how to pick an organisation", "/guide"],
   ["Methodology", "/methodology"],
   ["Status", "/status"],
