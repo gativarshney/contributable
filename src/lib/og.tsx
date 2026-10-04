@@ -68,8 +68,23 @@ export function ogCard({
             </div>
           ))}
         </div>
-        <div style={{ display: "flex", marginTop: 36, fontSize: 24, color: MUTED }}>
-          {footer}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+            gap: 40,
+            marginTop: 36,
+            fontSize: 24,
+            color: MUTED,
+          }}
+        >
+          <div style={{ display: "flex", maxWidth: 720 }}>{footer}</div>
+          <div
+            style={{ display: "flex", color: INK, fontSize: 22, whiteSpace: "nowrap" }}
+          >
+            Built by Gati Varshney
+          </div>
         </div>
       </div>
     </div>,

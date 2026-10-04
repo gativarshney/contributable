@@ -130,13 +130,56 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="border-hair scroll-mt-20 border-t py-10 md:py-12">
-      <h2 className="font-display text-2xl">{title}</h2>
-      {note ? <p className="text-ink-2 mt-2 max-w-2xl text-sm">{note}</p> : null}
-      <div className="mt-6">{children}</div>
+    <section id={id} className="card mt-6 scroll-mt-20 p-6 md:p-8">
+      <div className="flex items-start gap-4">
+        {SECTION_ICONS[id] ? (
+          <span className="border-accent/40 bg-accent-soft/40 text-accent grid size-10 shrink-0 place-items-center rounded-full border">
+            <svg
+              viewBox="0 0 24 24"
+              className="size-[18px]"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d={SECTION_ICONS[id]} />
+            </svg>
+          </span>
+        ) : null}
+        <div>
+          <h2 className="font-display text-2xl">{title}</h2>
+          {note ? <p className="text-ink-2 mt-1.5 max-w-2xl text-sm">{note}</p> : null}
+        </div>
+      </div>
+      <div className="mt-7">{children}</div>
     </section>
   );
 }
+
+/** One small picture per section, so the page can be scanned by eye. */
+const SECTION_ICONS: Record<string, string> = {
+  "first-steps": "M6 4l14 8-14 8z",
+  funnel: "M3 5h18l-7 8v6l-4 2v-8z",
+  trend: "M4 19V9m5 10V5m5 14v-7m5 7v-4",
+  issues: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm0 6a3 3 0 1 1 0 6 3 3 0 0 1 0-6z",
+  hours: "M12 7v5l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z",
+  start: "M5 12.5 10 17 19 7",
+  stack: "M12 3 3 8l9 5 9-5zM3 13l9 5 9-5",
+  share: "M4 12v7h16v-7M12 3v12m-4-4 4 4 4-4",
+  similar: "M8 4h12v12M4 8h12v12H4z",
+};
+
+/** Colours for the language bar, in order of share. */
+const LANGUAGE_COLOURS = [
+  "var(--accent)",
+  "var(--cat-1)",
+  "var(--cat-4)",
+  "var(--cat-2)",
+  "var(--cat-3)",
+  "var(--ink-3)",
+];
 
 const STATE_LABEL: Record<StarterIssue["state"], [string, string]> = {
   available: ["Available", "text-fast"],
@@ -407,7 +450,10 @@ export default async function RepoPage({ params }: Props) {
       >
         <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {firstSteps(detail, id).map((step, i) => (
-            <li key={step.title} className="card flex flex-col p-5">
+            <li
+              key={step.title}
+              className="border-hair bg-bg/40 flex flex-col rounded-xl border p-5"
+            >
               <span className="text-accent num text-sm">Step {i + 1}</span>
               <h3 className="mt-2 font-medium">{step.title}</h3>
               <p className="text-ink-2 mt-1.5 flex-1 text-sm">{step.text}</p>
@@ -472,13 +518,14 @@ export default async function RepoPage({ params }: Props) {
         title="Starter issues"
         note="Issues labelled for beginners, with their real state. Available means open, unassigned, no linked pull request, nobody has claimed it in the last 14 days, and it was updated in the last 60 days."
       >
-        <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {(Object.keys(STATE_LABEL) as StarterIssue["state"][]).map((state) => (
-            <div key={state}>
-              <dt className={`text-sm ${STATE_LABEL[state][1]}`}>
+            <div key={state} className="border-hair bg-bg/40 rounded-xl border p-4">
+              <dt className={`flex items-center gap-2 text-sm ${STATE_LABEL[state][1]}`}>
+                <span className="size-2 rounded-full bg-current" aria-hidden="true" />
                 {STATE_LABEL[state][0]}
               </dt>
-              <dd className="num mt-1 text-3xl font-medium">{starter.counts[state]}</dd>
+              <dd className="num mt-2 text-4xl font-medium">{starter.counts[state]}</dd>
             </div>
           ))}
         </dl>
@@ -546,11 +593,19 @@ export default async function RepoPage({ params }: Props) {
                 ["Dev container for one-step setup", facts.gettingStarted.devcontainer],
               ] as const
             ).map(([label, present]) => (
-              <li key={label} className="flex items-center justify-between gap-4">
-                <span>{label}</span>
-                <span className={present ? "text-fast" : "text-ink-3"}>
-                  {present ? "Yes" : "Not found"}
+              <li key={label} className="flex items-center gap-3">
+                <span
+                  className={`grid size-6 shrink-0 place-items-center rounded-full text-xs ${
+                    present
+                      ? "bg-accent text-accent-ink"
+                      : "border-hair-strong text-ink-3 border"
+                  }`}
+                  aria-hidden="true"
+                >
+                  {present ? "✓" : "–"}
                 </span>
+                <span className={present ? "" : "text-ink-3"}>{label}</span>
+                <span className="sr-only">{present ? "found" : "not found"}</span>
               </li>
             ))}
             <li className="text-ink-2 border-hair border-t pt-3">
@@ -600,13 +655,35 @@ export default async function RepoPage({ params }: Props) {
       </Section>
 
       <Section id="stack" title="Stack">
-        <div className="flex flex-wrap gap-2">
-          {languages.map(([language, bytes]) => (
+        <div
+          className="flex h-3 overflow-hidden rounded-full"
+          role="img"
+          aria-label={languages
+            .map(([language, bytes]) => `${language} ${percent(bytes / totalBytes)}`)
+            .join(", ")}
+        >
+          {languages.map(([language, bytes], i) => (
+            <span
+              key={language}
+              style={{
+                width: `${(bytes / totalBytes) * 100}%`,
+                background: LANGUAGE_COLOURS[i % LANGUAGE_COLOURS.length],
+              }}
+            />
+          ))}
+        </div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {languages.map(([language, bytes], i) => (
             <Link
               key={language}
               href={`/explore?lang=${encodeURIComponent(language)}`}
               className="tag !text-sm"
             >
+              <span
+                className="size-2 rounded-full"
+                style={{ background: LANGUAGE_COLOURS[i % LANGUAGE_COLOURS.length] }}
+                aria-hidden="true"
+              />
               {language}
               <span className="num text-ink-3">{percent(bytes / totalBytes)}</span>
             </Link>
@@ -629,7 +706,7 @@ export default async function RepoPage({ params }: Props) {
         note="Two ways to use these figures outside this page."
       >
         <div className="grid gap-4 lg:grid-cols-2">
-          <div className="card p-5">
+          <div className="border-hair bg-bg/40 rounded-xl border p-5">
             <h3 className="font-medium">For maintainers: a README badge</h3>
             <p className="text-ink-2 mt-1 text-sm">
               Shows newcomers how quickly this project answers and how often it merges.
@@ -663,7 +740,7 @@ export default async function RepoPage({ params }: Props) {
             </div>
           </div>
 
-          <div className="card p-5">
+          <div className="border-hair bg-bg/40 rounded-xl border p-5">
             <h3 className="font-medium">For contributors: follow new issues</h3>
             <p className="text-ink-2 mt-1 text-sm">
               Add the feed to a feed reader (Feedly, Inoreader, Thunderbird) and you hear
