@@ -1,14 +1,17 @@
 name: Sweep
 
-# Refreshes the index: spends the hour's GitHub budget on the stalest repositories and
-# publishes the result to the "data" branch, which the site reads. This copy runs when
-# the pipeline changes on v2; the hourly schedule lives on the main branch.
+# Refreshes the index. Every hour it spends that hour's GitHub budget on the stalest
+# repositories and publishes the result to the "data" branch, which the site reads.
 # The branch always holds a single commit, so the repository does not grow with history.
 
 on:
+  schedule:
+    # GitHub starts scheduled runs late and skips some, so several times are listed.
+    # A run that finds the allowance spent ends within a minute.
+    - cron: "8,23,38,53 * * * *"
   workflow_dispatch:
   push:
-    branches: [v2]
+    branches: [main]
     paths:
       - "pipeline/**"
       - "src/core/**"
@@ -30,7 +33,7 @@ jobs:
       - name: Check out code and data
         run: |
           set -eu
-          git clone --depth 1 --branch v2 "https://github.com/${GITHUB_REPOSITORY}.git" app
+          git clone --depth 1 --branch main "https://github.com/${GITHUB_REPOSITORY}.git" app
           if git ls-remote --exit-code --heads "https://github.com/${GITHUB_REPOSITORY}.git" data > /dev/null; then
             git clone --depth 1 --branch data "https://github.com/${GITHUB_REPOSITORY}.git" data
           else
