@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/gsoc" },
 };
 
-const PAGE_SIZE = 30;
+const PAGE_SIZE = 12;
 
 /** A slow, endless row of the organisations' logos. Decorative: the list below names them. */
 function LogoWall({
@@ -99,6 +99,10 @@ export default async function GsocPage({
   const pages = Math.max(1, Math.ceil(ranked.length / PAGE_SIZE));
   const page = Math.min(pages, Math.max(1, Number(one(params.page)) || 1));
   const shown = ranked.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const upNext = ranked.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+  const pageNumbers = [...new Set([1, page - 1, page, page + 1, pages])]
+    .filter((n) => n >= 1 && n <= pages)
+    .sort((a, b) => a - b);
   const pageHref = (target: number) => {
     const out = new URLSearchParams();
     if (q) out.set("q", q);
@@ -196,6 +200,7 @@ export default async function GsocPage({
           <input
             type="search"
             name="q"
+            id="gsoc-search"
             defaultValue={q}
             placeholder="python, rust, machine learning"
             className="field"
@@ -337,28 +342,83 @@ export default async function GsocPage({
         })}
       </ol>
 
+      {upNext.length > 0 ? (
+        <Link
+          href={pageHref(page + 1)}
+          className="card door group mt-8 flex flex-wrap items-center gap-x-6 gap-y-4 p-5 md:p-6"
+        >
+          <span className="flex shrink-0 -space-x-3" aria-hidden="true">
+            {upNext.slice(0, 5).map((s) => (
+              <span key={s.org.slug} className="ring-bg-2 rounded-xl ring-4">
+                <OrgLogo src={s.org.logo} name={s.org.name} size={44} />
+              </span>
+            ))}
+          </span>
+          <span className="min-w-0 flex-1 basis-56">
+            <span className="text-accent block text-xs">
+              Next {upNext.length} organisations
+            </span>
+            <span className="mt-1 block font-medium">
+              {upNext
+                .slice(0, 3)
+                .map((s) => s.org.name)
+                .join(", ")}
+              {upNext.length > 3 ? (
+                <span className="text-ink-2 font-normal">
+                  {" "}
+                  and {upNext.length - 3} more
+                </span>
+              ) : null}
+            </span>
+          </span>
+          <span className="border-hair-strong group-hover:bg-accent group-hover:text-accent-ink group-hover:border-accent grid size-11 shrink-0 place-items-center rounded-full border text-lg transition-colors">
+            →
+          </span>
+        </Link>
+      ) : null}
+
       {pages > 1 ? (
         <nav
           aria-label="Pages"
-          className="mt-8 flex items-center justify-between text-sm"
+          className="mt-6 flex flex-wrap items-center justify-between gap-4 text-sm"
         >
-          {page > 1 ? (
-            <Link href={pageHref(page - 1)} className="btn btn-ghost">
-              Previous
-            </Link>
-          ) : (
-            <span />
-          )}
-          <span className="text-ink-2 num">
-            Page {page} of {pages}
-          </span>
-          {page < pages ? (
-            <Link href={pageHref(page + 1)} className="btn btn-ghost">
-              Next
-            </Link>
-          ) : (
-            <span />
-          )}
+          <ol className="flex flex-wrap items-center gap-1.5">
+            {pageNumbers.map((n, i) => (
+              <li key={n} className="flex items-center gap-1.5">
+                {i > 0 && n - pageNumbers[i - 1] > 1 ? (
+                  <span className="text-ink-3 px-1" aria-hidden="true">
+                    …
+                  </span>
+                ) : null}
+                <Link
+                  href={pageHref(n)}
+                  aria-current={n === page ? "page" : undefined}
+                  className={`num grid size-9 place-items-center rounded-full border transition-colors ${
+                    n === page
+                      ? "border-accent bg-accent text-accent-ink font-medium"
+                      : "border-hair-strong text-ink-2 hover:text-ink hover:border-ink-3"
+                  }`}
+                >
+                  {n}
+                </Link>
+              </li>
+            ))}
+          </ol>
+          <a
+            href="#gsoc-search"
+            className="text-ink-2 hover:text-ink inline-flex items-center gap-2"
+          >
+            <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
+              <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+              <path
+                d="m10.5 10.5 3 3"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
+            Looking for one? Search by technology
+          </a>
         </nav>
       ) : null}
 

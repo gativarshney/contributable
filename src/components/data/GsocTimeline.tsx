@@ -13,7 +13,7 @@ export function GsocTimeline({ now = new Date() }: { now?: Date }) {
   );
 
   return (
-    <section aria-labelledby="next-gsoc" className="card mt-10 p-6 md:p-8">
+    <section id="next-gsoc-timeline" aria-labelledby="next-gsoc" className="card mt-10 scroll-mt-24 p-6 md:p-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex flex-wrap items-center gap-2">
