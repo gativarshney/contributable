@@ -119,29 +119,68 @@ export default function AboutPage() {
 
       <section className="border-hair mt-12 border-t pt-10">
         <h2 className="font-display text-2xl">What it promises</h2>
-        <ul className="text-ink-2 mt-4 space-y-3">
-          <li>Free for everyone. Nothing here needs an account.</li>
-          <li>
-            No hidden score. Every ranking states its rule, and every number links to the
-            pull requests behind it.
-          </li>
-          <li>
-            No individual is measured. Figures describe a repository, never a maintainer.
-          </li>
-          <li>
-            Maintainers can ask for a repository to be left out by{" "}
-            <a
-              href="https://github.com/gativarshney/contributable/issues/new?template=opt_out.md"
-              className="link"
-              target="_blank"
-              rel="noreferrer"
-            >
-              opening an opt-out request
-            </a>
-            .
-          </li>
+        <ul className="mt-6 grid gap-x-8 gap-y-6 sm:grid-cols-2">
+          {(
+            [
+              [
+                "M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z",
+                "Free, no account",
+                <>Everything here works without signing up.</>,
+              ],
+              [
+                "M4 6h16M4 12h10M4 18h6",
+                "No hidden score",
+                <>
+                  Every ranking states its rule, and every number links to the pull
+                  requests behind it.
+                </>,
+              ],
+              [
+                "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c0-3.5 3.5-6 8-6s8 2.5 8 6M3 3l18 18",
+                "No one is measured",
+                <>Figures describe a repository, never an individual maintainer.</>,
+              ],
+              [
+                "M5 12h14M12 5l7 7-7 7",
+                "Maintainers can opt out",
+                <>
+                  Ask for a repository to be left out by{" "}
+                  <a
+                    href="https://github.com/gativarshney/contributable/issues/new?template=opt_out.md"
+                    className="link"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    opening a request
+                  </a>
+                  .
+                </>,
+              ],
+            ] as const
+          ).map(([icon, title, text]) => (
+            <li key={title} className="flex gap-4">
+              <span className="border-hair-strong text-accent grid size-9 shrink-0 place-items-center rounded-full border">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="size-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d={icon} />
+                </svg>
+              </span>
+              <div>
+                <p className="font-medium">{title}</p>
+                <p className="text-ink-2 mt-1 text-sm">{text}</p>
+              </div>
+            </li>
+          ))}
         </ul>
-        <p className="text-ink-2 mt-6">
+        <p className="text-ink-3 border-hair mt-8 border-t pt-6 text-sm">
           The code is open source under the MIT licence. Contributable is independent and
           is not affiliated with GitHub or Google. Read{" "}
           <Link href="/methodology" className="link">
