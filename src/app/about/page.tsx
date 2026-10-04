@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { GsocMark } from "@/components/data/GsocMark";
 import { PageMark } from "@/components/site/Drift";
 import Link from "next/link";
+import { getAvailableIssues, getIndex } from "@/lib/data";
+import { count } from "@/lib/format";
+import { GSOC_ORGS } from "@/lib/gsoc/orgs";
 
 export const metadata: Metadata = {
   title: "About",
@@ -10,7 +13,29 @@ export const metadata: Metadata = {
   alternates: { canonical: "/about" },
 };
 
-export default function AboutPage() {
+export const revalidate = 900;
+
+export default async function AboutPage() {
+  const [index, issues] = await Promise.all([getIndex(), getAvailableIssues()]);
+  const numbers: [value: number, label: string, icon: string][] = [
+    [index.rows.length, "repositories measured", "M4 20V10m6 10V4m6 16v-7m4 7H2"],
+    [
+      GSOC_ORGS.length,
+      "GSoC organisations",
+      "M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z",
+    ],
+    [
+      issues.filter((i) => i.label === "beginner").length,
+      "free first issues",
+      "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-5a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z",
+    ],
+    [
+      new Set(index.rows.flatMap((r) => r.lang)).size,
+      "languages",
+      "m8 8-4 4 4 4m8-8 4 4-4 4",
+    ],
+  ];
+
   return (
     <div className="page-glow shell max-w-3xl py-10 md:py-14">
       <div className="flex items-center gap-3">
@@ -30,6 +55,31 @@ export default function AboutPage() {
           can choose one that will read your pull request.
         </p>
       </div>
+
+      <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {numbers.map(([value, label, icon]) => (
+          <li key={label} className="card p-4">
+            <span className="text-accent">
+              <svg
+                viewBox="0 0 24 24"
+                className="size-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d={icon} />
+              </svg>
+            </span>
+            <p className="num mt-3 text-3xl leading-none font-medium tracking-tight">
+              {count(value)}
+            </p>
+            <p className="text-ink-2 mt-1.5 text-xs">{label}</p>
+          </li>
+        ))}
+      </ul>
 
       <section
         aria-labelledby="who"
@@ -119,7 +169,7 @@ export default function AboutPage() {
 
       <section className="border-hair mt-12 border-t pt-10">
         <h2 className="font-display text-2xl">What it promises</h2>
-        <ul className="mt-6 grid gap-x-8 gap-y-6 sm:grid-cols-2">
+        <ul className="mt-6 grid gap-3 sm:grid-cols-2">
           {(
             [
               [
@@ -158,8 +208,8 @@ export default function AboutPage() {
               ],
             ] as const
           ).map(([icon, title, text]) => (
-            <li key={title} className="flex gap-4">
-              <span className="border-hair-strong text-accent grid size-9 shrink-0 place-items-center rounded-full border">
+            <li key={title} className="card flex gap-4 p-5">
+              <span className="border-accent/40 bg-accent-soft/40 text-accent grid size-10 shrink-0 place-items-center rounded-full border">
                 <svg
                   viewBox="0 0 24 24"
                   className="size-4"
