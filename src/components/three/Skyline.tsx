@@ -90,8 +90,10 @@ export function Skyline({
           requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number;
         }
       ).requestIdleCallback;
-      if (idle) idle(run, { timeout: 800 });
-      else setTimeout(run, 200);
+      const later = () => (idle ? idle(run, { timeout: 2000 }) : setTimeout(run, 200));
+      // The scene is the heaviest thing on the page, so the words paint first.
+      if (document.readyState === "complete") later();
+      else window.addEventListener("load", later, { once: true });
     };
     whenIdle(() => {
       if (disposed) return;

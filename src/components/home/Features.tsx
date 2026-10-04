@@ -68,7 +68,7 @@ export function Features({
   const logoRow = (half: number) =>
     withLogos
       .filter((_, i) => i % 2 === half)
-      .slice(0, 40)
+      .slice(0, 26)
       .map((org) => <OrgLogo key={org.slug} src={org.logo} name={org.name} size={52} />);
 
   const solid = rows.filter((r) => r.replyN >= SOLID && r.replyHours !== null);
