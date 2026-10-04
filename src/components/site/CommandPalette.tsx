@@ -10,6 +10,7 @@ const PAGES: [label: string, href: string, keys?: string][] = [
   ["Available first issues", "/issues", "g i"],
   ["Find my project", "/match", "g m"],
   ["Check any repository", "/check", "g r"],
+  ["Saved repositories", "/saved", "g s"],
   ["Compare repositories", "/compare", "g c"],
   ["Guide: how to pick an organisation", "/guide"],
   ["Methodology", "/methodology"],

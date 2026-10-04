@@ -2,7 +2,8 @@ import Link from "next/link";
 import { Field } from "@/components/home/Field";
 import { Story } from "@/components/home/Story";
 import { RepoInput } from "@/components/site/RepoInput";
-import { getIndex } from "@/lib/data";
+import { ThisWeek } from "@/components/home/ThisWeek";
+import { getAvailableIssues, getIndex } from "@/lib/data";
 import { facet } from "@/lib/explore/query";
 import { count, date } from "@/lib/format";
 import { GSOC_ORGS } from "@/lib/gsoc/orgs";
@@ -47,7 +48,9 @@ const NOT_A_STACK = new Set([
 ]);
 
 export default async function HomePage() {
-  const index = await getIndex();
+  const [index, issues] = await Promise.all([getIndex(), getAvailableIssues()]);
+  // The index's own clock, so the page is the same for everyone until it refreshes.
+  const now = Date.parse(index.generatedAt);
   const available = index.rows.reduce((sum, r) => sum + r.available, 0);
   const orgs = new Set(index.rows.flatMap((r) => (r.gsoc ? [r.gsoc] : []))).size;
   const chips = facet(index.rows, (r) => r.lang, 40)
@@ -85,6 +88,8 @@ export default async function HomePage() {
       </Field>
 
       <Story rows={index.rows} />
+
+      <ThisWeek rows={index.rows} issues={issues} now={now} />
 
       <section className="border-hair border-t">
         <dl className="shell grid grid-cols-2 gap-y-8 py-12 text-center md:grid-cols-4">

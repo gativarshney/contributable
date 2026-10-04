@@ -11,6 +11,7 @@ import { RepoCard } from "@/components/data/RepoList";
 import { ReplyHours } from "@/components/data/ReplyHours";
 import { ReportLoader } from "@/components/report/ReportLoader";
 import { CopyButton } from "@/components/site/CopyButton";
+import { SaveButton } from "@/components/site/Saved";
 import type { StarterIssue } from "@/core/metrics";
 import type { IndexRow, RepoDetail } from "@/core/published";
 import { getIndex, getRepoDetail } from "@/lib/data";
@@ -228,6 +229,7 @@ export default async function RepoPage({ params }: Props) {
           >
             Open on GitHub
           </a>
+          <SaveButton id={id} />
           <Link href={`/compare?repos=${id}`} className="btn btn-ghost">
             Compare
           </Link>
