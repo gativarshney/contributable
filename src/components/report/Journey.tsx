@@ -78,7 +78,7 @@ export function Journey({
     >
       <Partial days={pulls.days} what="pull requests" />
 
-      <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-20">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-20">
         <div className="space-y-12">
           <div>
             <h3 className="mb-4 font-medium tracking-tight">

@@ -36,9 +36,31 @@ export default async function CheckPage() {
               Know a repository <em>before your first pull request.</em>
             </h1>
             <p className="text-ink-2 mt-6 max-w-xl text-lg">
-              Paste any public GitHub repository. It is read and measured while you wait,
-              whether or not it is in the index.
+              Paste any public GitHub repository, from a Google Summer of Code
+              organisation or not. It is read and measured while you wait.
             </p>
+            <ul className="mt-5 flex flex-wrap gap-2 text-sm">
+              {["Any public repository", "GSoC or not", "No sign-in"].map((item) => (
+                <li
+                  key={item}
+                  className="border-hair-strong text-ink-2 inline-flex items-center gap-1.5 rounded-full border px-3 py-1"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="text-accent size-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M5 12.5 10 17 19 7.5" />
+                  </svg>
+                  {item}
+                </li>
+              ))}
+            </ul>
             <div className="mt-9 max-w-xl">
               <RepoInput />
               <div className="flex flex-wrap items-center gap-2">

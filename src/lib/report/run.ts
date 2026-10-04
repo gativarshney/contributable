@@ -5,6 +5,7 @@ import {
   fetchComments,
   fetchCommits,
   fetchCommunityFiles,
+  fetchGuideTexts,
   fetchIssuesAndPulls,
   fetchLanguages,
   fetchOpenPullRequestCount,
@@ -15,6 +16,7 @@ import {
 } from "@/lib/github/fetchers";
 import type { RepoRef } from "@/lib/github/parse";
 import { buildChecklist, type Checklist } from "@/lib/insights/checklist";
+import { pullRequestPolicy } from "@/core/policy";
 import type { Collection, Dataset, Repository, StarterIssue } from "@/types";
 
 export interface Report {
@@ -23,6 +25,8 @@ export interface Report {
   checklist: Checklist;
   fetchedAt: string;
   sample?: boolean;
+  /** The project's own words against outside pull requests, when it has any. */
+  policy?: string | null;
 }
 
 export interface ReportError {
@@ -44,8 +48,9 @@ export function buildReport(dataset: Dataset): Report {
   return {
     repository: dataset.repository,
     analysis,
-    checklist: buildChecklist(dataset.repository, analysis),
+    checklist: buildChecklist(dataset.repository, analysis, dataset.policy ?? null),
     fetchedAt: dataset.fetchedAt,
+    policy: dataset.policy ?? null,
   };
 }
 
@@ -176,6 +181,12 @@ export async function analyzeRepository(
         return result;
       }),
     ]);
+    // Read after the community profile, which says where the contributing guide lives.
+    const guideTexts = await fetchGuideTexts(
+      client,
+      canonical,
+      community?.contributing ?? null,
+    );
 
     const report = buildReport({
       repository,
@@ -187,6 +198,7 @@ export async function analyzeRepository(
       community,
       languages,
       openPullRequests,
+      policy: pullRequestPolicy(guideTexts),
       fetchedAt: now.toISOString(),
     });
     emit({

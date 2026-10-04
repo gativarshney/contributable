@@ -122,6 +122,8 @@ export interface Dataset {
   /** Bytes of code per language, as GitHub reports them. Null when unavailable. */
   languages: Record<string, number> | null;
   openPullRequests: number | null;
+  /** What the README or contributing guide says against outside pull requests, quoted. */
+  policy?: string | null;
   fetchedAt: string;
 }
 

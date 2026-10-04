@@ -528,8 +528,9 @@ describe("analyzeRepository", () => {
     expect(report.analysis.activity.windows[7].commits).toBe(1);
     expect(report.analysis.stack).toEqual([{ name: "TypeScript", share: 100 }]);
     expect(report.checklist.checks.find((c) => c.id === "license")?.state).toBe("yes");
-    // A small repository costs twelve requests, which is what makes the free tier viable.
-    expect(calls).toHaveLength(12);
+    // A small repository costs thirteen requests (one more with a contributing guide),
+    // which is what makes the free tier viable.
+    expect(calls).toHaveLength(13);
   });
 
   it("throws on a rate limit so the caller can fall back to another allowance", async () => {

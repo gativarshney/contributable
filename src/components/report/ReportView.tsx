@@ -41,6 +41,14 @@ export function ReportView({ report }: { report: Report }) {
 
       <header className="grid items-center gap-x-10 gap-y-6 pt-12 pb-12 md:pt-16 lg:grid-cols-[minmax(0,1fr)_400px]">
         <div className="min-w-0">
+          {!report.sample ? (
+            <p className="border-hair-strong text-ink-2 mb-5 inline-flex flex-wrap items-center gap-x-2 gap-y-1 rounded-full border px-3 py-1 text-xs">
+              <span className="bg-accent size-1.5 rounded-full" aria-hidden="true" />
+              Checked just now from GitHub
+              <span className="text-ink-3">·</span>
+              <span>Not in the Google Summer of Code list</span>
+            </p>
+          ) : null}
           <h1 className="display text-[clamp(2.2rem,5.6vw,4.25rem)] break-words">
             <span className="inline-block max-w-full">{repo.owner}/</span>
             <wbr />
@@ -91,6 +99,46 @@ export function ReportView({ report }: { report: Report }) {
         ) : null}
       </header>
 
+      {report.policy ? (
+        <aside
+          role="note"
+          className="border-slow/50 bg-slow/10 mb-10 flex gap-4 rounded-2xl border p-5 md:p-6"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            className="text-slow mt-0.5 size-6 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+          </svg>
+          <div>
+            <p className="font-medium">
+              This project says it does not take pull requests here.
+            </p>
+            <blockquote className="text-ink-2 border-hair-strong mt-2 border-l-2 pl-3 text-sm italic">
+              “{report.policy}”
+            </blockquote>
+            <p className="text-ink-2 mt-3 text-sm">
+              From its README or contributing guide. The figures below still describe the
+              repository, but read the project&apos;s own instructions before you open a
+              pull request.{" "}
+              <a
+                href={`${repo.url}#readme`}
+                target="_blank"
+                rel="noreferrer"
+                className="link"
+              >
+                Read them on GitHub
+              </a>
+            </p>
+          </div>
+        </aside>
+      ) : null}
       <Verdict checklist={checklist} />
       <Start report={report} />
       <Journey

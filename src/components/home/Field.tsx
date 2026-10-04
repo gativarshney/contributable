@@ -161,8 +161,8 @@ export function Field({
               ))}
             </div>
             <p className="text-ink-2 mt-4 text-center text-sm">
-              Any public GitHub repository. Where to start, who replies, and whether
-              outside work gets merged.
+              Any public GitHub repository, GSoC or not. Where to start, who replies, and
+              whether outside work gets merged.
             </p>
           </div>
 

@@ -38,7 +38,11 @@ const hours = (h: number) =>
  * guess: a partial list can prove a yes (a lower bound already meets the rule) but never
  * a no. Tone and friendliness are deliberately absent: they cannot be measured.
  */
-export function buildChecklist(repository: Repository, analysis: Analysis): Checklist {
+export function buildChecklist(
+  repository: Repository,
+  analysis: Analysis,
+  policy: string | null = null,
+): Checklist {
   const { activity, contributors, issues, pulls, maintenance, contributing } = analysis;
   const checks: Check[] = [];
   const add = (check: Check) => checks.push(check);
@@ -230,6 +234,18 @@ export function buildChecklist(repository: Repository, analysis: Analysis): Chec
     rule: "At least half of community threads older than two days were answered or closed, with a median first reply within 48 hours.",
     anchor: "journey",
   });
+
+  if (policy) {
+    add({
+      id: "takes-pulls",
+      group: "Open to contributions",
+      question: "Does it take pull requests on this repository?",
+      state: "no",
+      answer: `The project says: "${policy}"`,
+      rule: "The README or contributing guide says the project does not take pull requests here, or not for now. The project's own words come before any figure.",
+      anchor: "start",
+    });
+  }
 
   const guide = contributing.files?.find((f) => f.key === "contributing");
   add({

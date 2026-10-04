@@ -441,6 +441,44 @@ export async function fetchLanguages(
   }
 }
 
+/** File contents from the contents API, which sends them base64-encoded. */
+function decodeContent(data: Raw): string | null {
+  const content = str(data.content);
+  if (!content || data.encoding !== "base64") return null;
+  const bytes = Uint8Array.from(atob(content.replace(/\s/g, "")), (c) => c.charCodeAt(0));
+  return new TextDecoder().decode(bytes).slice(0, 40_000);
+}
+
+/**
+ * The README and contributing guide as text, for what the project says about pull
+ * requests. The guide is read from where the community profile found it, so this costs
+ * one request, or two when there is a guide.
+ */
+export async function fetchGuideTexts(
+  client: GitHubClient,
+  ref: RepoRef,
+  contributingUrl: string | null,
+): Promise<string[]> {
+  const texts: string[] = [];
+  const read = async (path: string) => {
+    try {
+      const { data } = await client.get<Raw>(`/repos/${ref.owner}/${ref.name}/${path}`);
+      return decodeContent(data);
+    } catch (error) {
+      rethrowFatal(error);
+      return null;
+    }
+  };
+  const readme = await read("readme");
+  if (readme) texts.push(readme);
+  const path = contributingUrl ? /\/blob\/[^/]+\/(.+)$/.exec(contributingUrl)?.[1] : null;
+  if (path) {
+    const guide = await read(`contents/${path}`);
+    if (guide) texts.push(guide);
+  }
+  return texts;
+}
+
 /** Which community files GitHub detects (contributing guide, code of conduct, templates). */
 export async function fetchCommunityFiles(
   client: GitHubClient,
