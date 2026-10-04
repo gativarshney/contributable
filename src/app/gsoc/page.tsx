@@ -386,6 +386,17 @@ export default async function GsocPage({
           className="mt-6 flex flex-wrap items-center justify-between gap-4 text-sm"
         >
           <ol className="flex flex-wrap items-center gap-1.5">
+            {page > 1 ? (
+              <li className="mr-1.5">
+                <Link
+                  href={pageHref(page - 1)}
+                  rel="prev"
+                  className="border-hair-strong text-ink-2 hover:text-ink hover:border-ink-3 inline-flex h-9 items-center gap-1.5 rounded-full border px-3.5 transition-colors"
+                >
+                  <span aria-hidden="true">←</span> Prev
+                </Link>
+              </li>
+            ) : null}
             {pageNumbers.map((n, i) => (
               <li key={n} className="flex items-center gap-1.5">
                 {i > 0 && n - pageNumbers[i - 1] > 1 ? (
