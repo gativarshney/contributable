@@ -126,7 +126,16 @@ export function SavedList() {
       ) : (
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {shown.map((row) => (
-            <RepoCard key={row.id} row={row} />
+            <div key={row.id} className="flex flex-col gap-2">
+              <RepoCard row={row} />
+              <button
+                type="button"
+                onClick={() => toggleSaved(row.id)}
+                className="text-ink-3 hover:text-ink self-end text-xs transition-colors"
+              >
+                Remove from saved
+              </button>
+            </div>
           ))}
         </div>
       )}
@@ -135,10 +144,18 @@ export function SavedList() {
           <p className="text-ink-2 text-sm">Saved, but not in the index:</p>
           <ul className="mt-2 flex flex-wrap gap-2 text-sm">
             {missing.map((id) => (
-              <li key={id}>
+              <li key={id} className="inline-flex items-center gap-1">
                 <Link href={`/repo/${id}`} className="tag !text-sm">
                   {id}
                 </Link>
+                <button
+                  type="button"
+                  onClick={() => toggleSaved(id)}
+                  aria-label={`Remove ${id} from saved`}
+                  className="text-ink-3 hover:text-ink grid size-6 place-items-center rounded-full transition-colors"
+                >
+                  ×
+                </button>
               </li>
             ))}
           </ul>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Drift, DriftPill, PageMark } from "@/components/site/Drift";
 import Link from "next/link";
+import { ScrollToList } from "@/components/explore/ScrollToList";
 import { RepoCard } from "@/components/data/RepoList";
 import { StackFromGitHub } from "@/components/match/StackFromGitHub";
 import { getIndex } from "@/lib/data";
@@ -84,7 +85,10 @@ export default async function MatchPage({ searchParams }: Props) {
       </div>
 
       <div className="mt-8 grid items-start gap-6 lg:grid-cols-[1fr_20rem]">
-        <form action="/match" className="card grid gap-5 p-6 sm:grid-cols-2 md:p-7">
+        <form
+          action="/match#results"
+          className="card grid gap-5 p-6 sm:grid-cols-2 md:p-7"
+        >
           <div className="sm:col-span-2">
             <label htmlFor="stack" className="text-ink-2 mb-1.5 block text-xs">
               What do you code in? Languages, frameworks or topics, separated by commas
@@ -208,7 +212,12 @@ export default async function MatchPage({ searchParams }: Props) {
       </div>
 
       {asked ? (
-        <section className="border-hair mt-12 border-t pt-10" aria-live="polite">
+        <section
+          id="results"
+          className="border-hair mt-12 border-t pt-10"
+          aria-live="polite"
+        >
+          <ScrollToList id="results" page={JSON.stringify(input)} />
           <h2 className="font-display text-2xl">
             {matches.length === 0
               ? "No project fits all of that"

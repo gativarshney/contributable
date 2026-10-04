@@ -137,6 +137,8 @@ function spark(series: WeekPoint[]): number[] {
   return out;
 }
 
+// Rates keep four decimals: with three, 0.8947 is stored as 0.895 and shows as 90% in a
+// list while the repository page, which has the exact value, shows 89%.
 const round = (value: number | null, digits: number) =>
   value === null ? null : Math.round(value * 10 ** digits) / 10 ** digits;
 
@@ -160,12 +162,12 @@ export function toIndexRow(detail: RepoDetail): IndexRow {
     gsoc: gsoc?.slug ?? null,
     years: gsoc?.years ?? [],
     updatedAt: detail.updatedAt,
-    mergeRate: round(cohort.mergeRate, 3),
+    mergeRate: round(cohort.mergeRate, 4),
     decided: cohort.merged + cohort.closedUnmerged,
-    firstTimerRate: round(metrics.outsidePulls.firstTimers.mergeRate, 3),
+    firstTimerRate: round(metrics.outsidePulls.firstTimers.mergeRate, 4),
     replyHours: round(metrics.pullFirstResponse.medianHours, 1),
-    within48h: round(metrics.pullFirstResponse.within48h, 3),
-    within7d: round(metrics.pullFirstResponse.within7d, 3),
+    within48h: round(metrics.pullFirstResponse.within48h, 4),
+    within7d: round(metrics.pullFirstResponse.within7d, 4),
     replyN: metrics.pullFirstResponse.n,
     mergeHours: round(metrics.timeToMerge.medianHours, 1),
     issueReplyHours: round(metrics.issueFirstResponse.medianHours, 1),

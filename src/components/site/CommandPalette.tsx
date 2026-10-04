@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { parseRepoInput } from "@/lib/github/parse";
 
 const PAGES: [label: string, href: string][] = [
   ["Home", "/"],
@@ -19,8 +20,6 @@ const PAGES: [label: string, href: string][] = [
   ["About", "/about"],
 ];
 
-const REPO = /^[\w.-]+\/[\w.-]+$/;
-
 interface Item {
   label: string;
   href: string;
@@ -35,7 +34,12 @@ const typingIn = (target: EventTarget | null) =>
  * Ctrl+K (or Cmd+K, or "/") opens a box that jumps to any page, searches the index or
  * opens a repository by owner/name.
  */
-export function CommandPalette() {
+export function CommandPalette({
+  orgs,
+}: {
+  /** GSoC organisations as [name, slug], so a name typed here opens its page. */
+  orgs: readonly (readonly [string, string])[];
+}) {
   const router = useRouter();
   const dialog = useRef<HTMLDialogElement>(null);
   const input = useRef<HTMLInputElement>(null);
@@ -48,14 +52,22 @@ export function CommandPalette() {
       ([label, href]) => ({ label, href }),
     );
     if (!q) return pages;
-    const cleaned = text
-      .trim()
-      .replace(/^https?:\/\/github\.com\//i, "")
-      .replace(/\/+$/, "");
+    // The same parser as the Check box, so a pasted link or clone command works here too.
+    const parsed = text.includes("/") ? parseRepoInput(text) : null;
+    const repo = parsed?.ok ? `${parsed.ref.owner}/${parsed.ref.name}` : null;
+    const orgMatches = orgs
+      .filter(([name, slug]) => name.toLowerCase().includes(q) || slug.includes(q))
+      .slice(0, 4)
+      .map(([name, slug]) => ({
+        label: name,
+        href: `/gsoc/${slug}`,
+        hint: "GSoC organisation",
+      }));
     return [
-      ...(REPO.test(cleaned)
-        ? [{ label: `Open ${cleaned}`, href: `/repo/${cleaned}`, hint: "repository" }]
+      ...(repo
+        ? [{ label: `Open ${repo}`, href: `/repo/${repo}`, hint: "repository" }]
         : []),
+      ...orgMatches,
       ...pages,
       {
         label: `Search repositories for "${text.trim()}"`,
@@ -65,8 +77,12 @@ export function CommandPalette() {
         label: `Search issues for "${text.trim()}"`,
         href: `/issues?q=${encodeURIComponent(text.trim())}`,
       },
+      {
+        label: `Search GSoC organisations for "${text.trim()}"`,
+        href: `/gsoc?q=${encodeURIComponent(text.trim())}#organisations`,
+      },
     ];
-  }, [text]);
+  }, [text, orgs]);
 
   useEffect(() => {
     const open = () => {

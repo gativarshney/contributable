@@ -88,7 +88,14 @@ export function Field({
     () =>
       points
         .filter((p) => matches(p, query))
-        .sort((a, b) => (b[3] ?? -1) - (a[3] ?? -1) || b[2] - a[2]),
+        // Same order as the shortlist: well-measured projects first, so a perfect record
+        // over five pull requests does not outrank one over fifty.
+        .sort(
+          (a, b) =>
+            Number(b[5] >= 20) - Number(a[5] >= 20) ||
+            (b[3] ?? -1) - (a[3] ?? -1) ||
+            b[2] - a[2],
+        ),
     [points, query],
   );
 
@@ -186,7 +193,7 @@ export function Field({
             className={`col-start-1 row-start-1 flex w-full flex-col items-center ${panel(mode === "find")}`}
             inert={mode !== "find"}
           >
-            <form action="/match" className="mt-4 w-full max-w-xl text-left">
+            <form action="/match#results" className="mt-4 w-full max-w-xl text-left">
               <label htmlFor="home-stack" className="sr-only">
                 What do you code in?
               </label>
@@ -268,7 +275,8 @@ export function Field({
                         >
                           <span>{point[0]}</span>
                           <span className="num text-accent text-xs">
-                            {hoursText(point[1])} · {Math.round(point[2] * 100)}%
+                            {hoursText(point[1])} reply · {Math.round(point[2] * 100)}%
+                            merged
                           </span>
                         </Link>
                       </li>
