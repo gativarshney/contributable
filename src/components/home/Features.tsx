@@ -81,7 +81,7 @@ export function Features({
     )[0];
 
   return (
-    <section className="border-hair border-t py-20 md:py-28">
+    <section id="inside" className="relative scroll-mt-20 pt-6 pb-20 md:pt-10 md:pb-28">
       <div className="shell reveal">
         <p className="eyebrow">Everything here</p>
         <h2 className="display mt-5 max-w-3xl text-[clamp(2rem,4.6vw,3.25rem)]">

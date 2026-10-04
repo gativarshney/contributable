@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Drift, DriftPill, PageMark } from "@/components/site/Drift";
 import Link from "next/link";
 import { FilterForm } from "@/components/explore/FilterForm";
 import type { IndexRow } from "@/core/published";
@@ -96,8 +97,11 @@ export default async function IssuesPage({
   return (
     <div className="shell py-10 md:py-14">
       <header className="max-w-3xl">
-        <p className="eyebrow">Good first issues</p>
-        <h1 className="display mt-3 text-[clamp(2rem,5vw,3.25rem)]">
+        <div className="flex items-center gap-3">
+          <PageMark icon="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm0 6a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
+          <p className="eyebrow">Good first issues, checked</p>
+        </div>
+        <h1 className="display mt-5 text-[clamp(2rem,5vw,3.25rem)]">
           Issues nobody has <em>taken yet.</em>
         </h1>
         <p className="text-ink-2 mt-4">
@@ -106,6 +110,20 @@ export default async function IssuesPage({
           come first.
         </p>
       </header>
+
+      <div className="mt-10">
+        <Drift
+          seconds={110}
+          items={issues
+            .filter((i) => i.label === "beginner")
+            .slice(0, 24)
+            .map((i) => (
+              <DriftPill key={`${i.id}#${i.n}`} accent>
+                <span className="max-w-[22rem] truncate">{i.title}</span>
+              </DriftPill>
+            ))}
+        />
+      </div>
 
       <FilterForm
         action="/issues"

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Drift, DriftPill, PageMark } from "@/components/site/Drift";
 import Link from "next/link";
 import { RepoCard } from "@/components/data/RepoList";
 import { StackFromGitHub } from "@/components/match/StackFromGitHub";
@@ -46,8 +47,11 @@ export default async function MatchPage({ searchParams }: Props) {
   return (
     <div className="shell py-10 md:py-14">
       <header className="max-w-2xl">
-        <p className="eyebrow">Find my project</p>
-        <h1 className="display mt-3 text-[clamp(2rem,5vw,3.25rem)]">
+        <div className="flex items-center gap-3">
+          <PageMark icon="M12 3l2.6 5.6 6 .8-4.4 4.2 1.1 6L12 16.8 6.7 19.6l1.1-6L3.4 9.4l6-.8z" />
+          <p className="eyebrow">Help me choose</p>
+        </div>
+        <h1 className="display mt-5 text-[clamp(2rem,5vw,3.25rem)]">
           A shortlist, <em>with reasons.</em>
         </h1>
         <p className="text-ink-2 mt-4">
@@ -55,6 +59,29 @@ export default async function MatchPage({ searchParams }: Props) {
           to people outside its team. The link to your result can be shared.
         </p>
       </header>
+
+      <div className="mt-10">
+        <Drift
+          items={[
+            "python",
+            "javascript",
+            "typescript",
+            "rust",
+            "go",
+            "java",
+            "c++",
+            "kotlin",
+            "react",
+            "django",
+            "machine-learning",
+            "compilers",
+            "web",
+            "android",
+          ].map((s) => (
+            <DriftPill key={s}>{s}</DriftPill>
+          ))}
+        />
+      </div>
 
       <form action="/match" className="mt-8 grid max-w-3xl gap-5 sm:grid-cols-2">
         <div className="sm:col-span-2">

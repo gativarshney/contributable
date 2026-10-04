@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Drift, DriftPill, PageMark } from "@/components/site/Drift";
 import Link from "next/link";
 import { CopyButton } from "@/components/site/CopyButton";
 import { getAvailableIssues, getIndex } from "@/lib/data";
@@ -61,8 +62,11 @@ export default async function StartPage() {
   return (
     <div className="shell py-10 md:py-14">
       <header className="max-w-3xl">
-        <p className="eyebrow">New here</p>
-        <h1 className="display mt-3 text-[clamp(2.2rem,5.6vw,3.75rem)]">
+        <div className="flex items-center gap-3">
+          <PageMark icon="M6 4l14 8-14 8z" />
+          <p className="eyebrow">New to open source</p>
+        </div>
+        <h1 className="display mt-5 text-[clamp(2.2rem,5.6vw,3.75rem)]">
           Your first pull request, <em>in five steps.</em>
         </h1>
         <p className="text-ink-2 mt-5 text-lg">
@@ -70,6 +74,24 @@ export default async function StartPage() {
           project that answers, a small task, and one clear message.
         </p>
       </header>
+
+      <div className="mt-10">
+        <Drift
+          seconds={60}
+          items={[
+            "Pick a project",
+            "Check it replies",
+            "Find a free issue",
+            "Say you are on it",
+            "Open a small pull request",
+            "Wait calmly",
+          ].map((s, i) => (
+            <DriftPill key={s} accent={i === 0}>
+              <span className="num text-ink-3">{(i % 6) + 1}</span> {s}
+            </DriftPill>
+          ))}
+        />
+      </div>
 
       <ol className="mt-12">
         <Step n={1} title="Pick a project that uses what you already know">

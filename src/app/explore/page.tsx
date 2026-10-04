@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Drift, DriftPill, PageMark } from "@/components/site/Drift";
 import Link from "next/link";
 import { RepoCard, RepoTable } from "@/components/data/RepoList";
 import { FilterClose, FilterForm, FilterToggle } from "@/components/explore/FilterForm";
@@ -214,8 +215,11 @@ export default async function ExplorePage({
   return (
     <div className="shell py-10 md:py-14">
       <header className="max-w-2xl">
-        <p className="eyebrow">Explore</p>
-        <h1 className="display mt-3 text-[clamp(2rem,5vw,3.25rem)]">
+        <div className="flex items-center gap-3">
+          <PageMark icon="M10.5 3a7.5 7.5 0 1 0 4.7 13.3L20 21l1-1-4.7-4.8A7.5 7.5 0 0 0 10.5 3z" />
+          <p className="eyebrow">Explore every measured repository</p>
+        </div>
+        <h1 className="display mt-5 text-[clamp(2rem,5vw,3.25rem)]">
           Find a project that <em>answers newcomers.</em>
         </h1>
         <p className="text-ink-2 mt-4">
@@ -224,6 +228,29 @@ export default async function ExplorePage({
             : "The index is being prepared. Repositories appear here as they are measured."}
         </p>
       </header>
+
+      <div className="mt-10 space-y-3">
+        <Drift
+          items={facet(index.rows, (r) => r.lang, 24).map((f) => (
+            <DriftPill key={f.value}>
+              {f.value} <span className="num text-ink-3">{f.count}</span>
+            </DriftPill>
+          ))}
+        />
+        <Drift
+          reverse
+          seconds={90}
+          items={index.rows
+            .filter((r) => r.within48h !== null && r.replyN >= 20)
+            .sort((a, b) => b.stars - a.stars)
+            .slice(0, 24)
+            .map((r) => (
+              <DriftPill key={r.id} accent>
+                {r.id}
+              </DriftPill>
+            ))}
+        />
+      </div>
 
       <FilterForm
         action="/explore"

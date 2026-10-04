@@ -264,10 +264,27 @@ export function Field({
       </div>
 
       {values.length > 0 ? (
-        <p className="text-ink-3 pointer-events-none absolute inset-x-0 bottom-3 px-6 text-center text-[11px]">
-          One bar per measured repository. Taller: more outside pull requests answered
-          within 48 hours.
-        </p>
+        <a
+          href="#inside"
+          className="scroll-cue text-ink-2 hover:text-ink absolute bottom-5 left-1/2 inline-flex -translate-x-1/2 flex-col items-center gap-1.5 text-xs transition-colors"
+        >
+          See everything inside
+          <svg
+            viewBox="0 0 24 24"
+            className="size-4"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            aria-hidden="true"
+          >
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+          <span className="sr-only">
+            The bars above are the measured repositories; a taller bar answers more
+            outside pull requests within 48 hours.
+          </span>
+        </a>
       ) : null}
     </section>
   );

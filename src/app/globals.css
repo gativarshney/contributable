@@ -230,7 +230,7 @@ body {
 .skyline-fade {
   mask-image:
     linear-gradient(to right, transparent, #000 14%, #000 86%, transparent),
-    linear-gradient(to bottom, #000 86%, transparent);
+    linear-gradient(to bottom, #000 55%, transparent);
   mask-composite: intersect;
 }
 
@@ -717,4 +717,22 @@ body {
   background:
     radial-gradient(ellipse 70% 120% at 0% 0%, var(--glow), transparent 60%),
     color-mix(in oklch, var(--bg-2) 60%, transparent);
+}
+
+/* The scroll cue under the hero nudges down once in a while. */
+@media (prefers-reduced-motion: no-preference) {
+  .scroll-cue svg {
+    animation: cue 2.4s var(--ease-out) infinite;
+  }
+}
+
+@keyframes cue {
+  0%,
+  60%,
+  100% {
+    transform: none;
+  }
+  30% {
+    transform: translateY(4px);
+  }
 }
