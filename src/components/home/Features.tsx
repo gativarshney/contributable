@@ -24,7 +24,7 @@ function Tile({
   children: React.ReactNode;
 }) {
   return (
-    <li className={className}>
+    <li className={`min-w-0 ${className}`}>
       <Link href={href} className="card door group flex h-full flex-col p-6 md:p-7">
         <div className="flex items-center justify-between gap-4">
           <p className="eyebrow !text-accent">{label}</p>
@@ -116,7 +116,7 @@ export function Features({
           One place to pick, <em>check and start.</em>
         </h2>
 
-        <ul className="mt-12 grid gap-4 md:grid-cols-6">
+        <ul className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-6">
           <Tile
             href="/explore"
             label="Explore"

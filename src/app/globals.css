@@ -731,3 +731,35 @@ body {
     )
     no-repeat;
 }
+
+/* The menu of every page: a full-width panel that drops from the top. */
+.menu-panel {
+  width: 100%;
+  max-width: 100%;
+  max-height: 100dvh;
+  margin: 0 0 auto;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--hair-strong);
+  background: color-mix(in oklch, var(--bg) 94%, transparent);
+  color: var(--ink);
+  overflow-y: auto;
+  backdrop-filter: blur(18px);
+}
+
+.menu-panel::backdrop {
+  background: oklch(0% 0 0 / 0.55);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .menu-panel[open] {
+    animation: menu-in 0.22s var(--ease-out);
+  }
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}

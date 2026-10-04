@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PaletteButton } from "./CommandPalette";
 import { Logo } from "./Logo";
+import { Menu } from "./Menu";
 import { HeaderNav, TabBar } from "./Nav";
 import { SavedLink } from "./Saved";
 import { ThemeToggle } from "./ThemeToggle";
@@ -19,6 +20,7 @@ export function SiteHeader() {
               <PaletteButton />
               <SavedLink />
               <ThemeToggle />
+              <Menu />
             </div>
           </nav>
         </div>
