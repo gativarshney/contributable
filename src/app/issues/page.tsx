@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 const PAGE_SIZE = 40;
+const PER_REPO = 3;
 type Params = Record<string, string | string[] | undefined>;
 const one = (v: string | string[] | undefined) =>
   (Array.isArray(v) ? v[0] : v)?.trim() ?? "";
@@ -43,7 +44,7 @@ export default async function IssuesPage({
   const [index, issues] = await Promise.all([getIndex(), getAvailableIssues()]);
   const repos = new Map<string, IndexRow>(index.rows.map((r) => [r.id, r]));
 
-  const matched = issues
+  const ordered = issues
     .flatMap((issue) => {
       const repo = repos.get(issue.id);
       return repo ? [{ issue, repo }] : [];
@@ -67,6 +68,18 @@ export default async function IssuesPage({
       const y = b.repo.replyHours ?? Infinity;
       return x - y || b.issue.updatedAt.localeCompare(a.issue.updatedAt);
     });
+
+  // One busy repository should not fill the first page. Each repository shows its
+  // three most recently updated issues; a search or the repo page reaches the rest.
+  const perRepo = new Map<string, number>();
+  const matched = q
+    ? ordered
+    : ordered.filter(({ issue }) => {
+        const seen = perRepo.get(issue.id) ?? 0;
+        perRepo.set(issue.id, seen + 1);
+        return seen < PER_REPO;
+      });
+  const hidden = ordered.length - matched.length;
 
   const pages = Math.max(1, Math.ceil(matched.length / PAGE_SIZE));
   const current = Math.min(page, pages);
@@ -149,16 +162,16 @@ export default async function IssuesPage({
             defaultValue={sort === "new" ? "new" : ""}
             className="field"
           >
-            <option value="">Fastest-replying repository</option>
+            <option value="">Fastest repo first</option>
             <option value="new">Newest issue</option>
           </select>
         </label>
       </FilterForm>
 
       <p className="mt-6 text-sm" aria-live="polite">
-        <span className="num font-medium">{count(matched.length)}</span>{" "}
+        <span className="num font-medium">{count(ordered.length)}</span>{" "}
         <span className="text-ink-2">
-          available {matched.length === 1 ? "issue" : "issues"}
+          available {ordered.length === 1 ? "issue" : "issues"}
           {index.rows.length > 0 ? `. Index updated ${date(index.generatedAt)}.` : ""}
         </span>
       </p>
@@ -213,6 +226,14 @@ export default async function IssuesPage({
           ))}
         </ul>
       )}
+
+      {hidden > 0 ? (
+        <p className="text-ink-3 mt-3 text-xs">
+          Showing at most {PER_REPO} issues per repository, so one project does not fill
+          the page. {count(hidden)} more are on the repository pages, or search for a
+          repository by name.
+        </p>
+      ) : null}
 
       {pages > 1 ? (
         <nav
