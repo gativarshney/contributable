@@ -335,7 +335,7 @@ export default async function ExplorePage({
                 </p>
                 <p className="text-ink-2 mx-auto mt-2 max-w-md text-sm">
                   {index.rows.length === 0
-                    ? "Repositories are measured in batches every hour. This page fills in on its own."
+                    ? "Repositories are measured in batches through the day. This page fills in on its own."
                     : "Loosen one filter at a time. Reply time and merge rate need at least 5 outside pull requests, so small projects drop out of those two."}
                 </p>
               </div>

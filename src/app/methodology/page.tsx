@@ -224,8 +224,8 @@ export default function MethodologyPage() {
           <p>
             Source: the GitHub GraphQL API, public data only, read by a scheduled job in
             the project&apos;s own repository. The list of organisations comes from the
-            Google Summer of Code programme site. The index refreshes every hour, stalest
-            repositories first; see{" "}
+            Google Summer of Code programme site. The index refreshes several times a day,
+            stalest repositories first; see{" "}
             <Link href="/status" className="link">
               status
             </Link>

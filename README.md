@@ -5,7 +5,7 @@ Find an open source project that answers newcomers.
 Contributable measures how projects treat people outside their core team: how fast a
 person replies to a first pull request, and how often that pull request is merged. It
 indexes the repositories of every Google Summer of Code organisation from 2024 to 2026
-and refreshes them every hour.
+and refreshes them several times a day.
 
 Live: https://contributable.vercel.app
 
