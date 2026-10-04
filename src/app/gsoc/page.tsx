@@ -207,13 +207,15 @@ export default async function GsocPage({
         className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_auto_auto_auto_auto]"
       >
         <label className="block">
-          <span className="text-ink-2 mb-1.5 block text-xs">Technology or name</span>
+          <span className="text-ink-2 mb-1.5 block text-xs">
+            Organisation or technology
+          </span>
           <input
             type="search"
             name="q"
             id="gsoc-search"
             defaultValue={q}
-            placeholder="python, rust, machine learning"
+            placeholder="Linux Foundation, python, rust"
             className="field"
             autoComplete="off"
           />
@@ -468,7 +470,7 @@ export default async function GsocPage({
                 strokeLinecap="round"
               />
             </svg>
-            Looking for one? Search by technology
+            Looking for one? Search by name or technology
           </a>
         </nav>
       ) : null}
