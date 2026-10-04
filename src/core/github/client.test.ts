@@ -49,3 +49,39 @@ describe("createClient", () => {
     await expect(client.query("query {}", {})).rejects.toThrow("incomplete response");
   });
 });
+
+describe("paginate", () => {
+  it("asks for smaller pages when GitHub keeps cutting a page short", async () => {
+    const { paginate } = await import("./fetch");
+    const { GitHubError } = await import("./client");
+    const sizes: number[] = [];
+    const client = {
+      budget: { spent: 0, calls: 0, last: null },
+      async query(_text: string, variables: Record<string, unknown>) {
+        const first = variables.first as number;
+        sizes.push(first);
+        if (first > 10)
+          throw new GitHubError("GitHub sent an incomplete response", "upstream");
+        return {
+          list: { nodes: [1, 2, 3], pageInfo: { hasNextPage: false, endCursor: null } },
+        };
+      },
+    };
+    const result = await paginate<number>(
+      client as never,
+      "query",
+      {},
+      (d: {
+        list: {
+          nodes: number[];
+          pageInfo: { hasNextPage: boolean; endCursor: string | null };
+        };
+      }) => d.list,
+      () => true,
+      5,
+      40,
+    );
+    expect(sizes).toEqual([40, 20, 10]);
+    expect(result.items).toEqual([1, 2, 3]);
+  });
+});

@@ -92,9 +92,9 @@ const REPLIES = `
       }`;
 
 export const PULLS = `
-query Pulls($owner: String!, $name: String!, $cursor: String) {
+query Pulls($owner: String!, $name: String!, $cursor: String, $first: Int = ${PULLS_PAGE}) {
   repository(owner: $owner, name: $name) {
-    pullRequests(first: ${PULLS_PAGE}, after: $cursor, orderBy: { field: UPDATED_AT, direction: DESC }) {
+    pullRequests(first: $first, after: $cursor, orderBy: { field: UPDATED_AT, direction: DESC }) {
       pageInfo { hasNextPage endCursor }
       nodes {
         number
@@ -115,9 +115,9 @@ query Pulls($owner: String!, $name: String!, $cursor: String) {
 }`;
 
 export const ISSUES = `
-query Issues($owner: String!, $name: String!, $cursor: String, $since: DateTime) {
+query Issues($owner: String!, $name: String!, $cursor: String, $since: DateTime, $first: Int = ${ISSUES_PAGE}) {
   repository(owner: $owner, name: $name) {
-    issues(first: ${ISSUES_PAGE}, after: $cursor, orderBy: { field: UPDATED_AT, direction: DESC }, filterBy: { since: $since }) {
+    issues(first: $first, after: $cursor, orderBy: { field: UPDATED_AT, direction: DESC }, filterBy: { since: $since }) {
       pageInfo { hasNextPage endCursor }
       nodes {
         number

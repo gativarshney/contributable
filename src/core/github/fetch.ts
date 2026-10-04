@@ -12,7 +12,17 @@ import { detectChannels, detectFrameworks, detectSignOff } from "../stack";
 import { isClaimComment, starterLabelClass } from "../starter";
 import type { GraphQLClient } from "./client";
 import { GitHubError } from "./client";
-import { ISSUES, PULLS, REPO_FACTS, STARTER_ISSUES } from "./queries";
+import {
+  ISSUES,
+  ISSUES_PAGE,
+  PULLS,
+  PULLS_PAGE,
+  REPO_FACTS,
+  STARTER_ISSUES,
+} from "./queries";
+
+/** The smallest page asked for when GitHub cannot send a full one. */
+const MIN_PAGE = 5;
 
 const DAY_MS = 86_400_000;
 export const BACKFILL_DAYS = 365;
@@ -411,18 +421,42 @@ export async function fetchFacts(
   return { facts, starterLabels: labels.filter((l) => starterLabelClass(l) !== null) };
 }
 
-async function paginate<T>(
+export async function paginate<T>(
   client: GraphQLClient,
   query: string,
   variables: Record<string, unknown>,
   pick: (data: never) => Page<T>,
   keepGoing: (page: T[]) => boolean,
   maxPages: number,
+  /** The query's usual page size, when it takes a $first variable. */
+  pageSize?: number,
 ): Promise<{ items: T[]; complete: boolean }> {
   const items: T[] = [];
   let cursor: string | null = null;
+  let size = pageSize;
   for (let page = 0; page < maxPages; page += 1) {
-    const data: unknown = await client.query(query, { ...variables, cursor });
+    let data: unknown;
+    try {
+      data = await client.query(query, {
+        ...variables,
+        cursor,
+        ...(size ? { first: size } : {}),
+      });
+    } catch (error) {
+      // A page of busy threads with long comments can be too big for GitHub to send
+      // whole. Ask for the same page in halves until it fits.
+      if (
+        size &&
+        size > MIN_PAGE &&
+        error instanceof GitHubError &&
+        error.message.includes("incomplete response")
+      ) {
+        size = Math.max(MIN_PAGE, Math.floor(size / 2));
+        page -= 1;
+        continue;
+      }
+      throw error;
+    }
     const connection = pick(data as never);
     items.push(...connection.nodes);
     if (!connection.pageInfo.hasNextPage || !keepGoing(connection.nodes)) {
@@ -461,6 +495,7 @@ export async function fetchRepo(
     (d: { repository: { pullRequests: Page<RawPull> } }) => d.repository.pullRequests,
     (page) => page.length > 0 && page[page.length - 1].updatedAt >= since,
     maxPages,
+    PULLS_PAGE,
   );
   const issues = await paginate<RawIssue>(
     client,
@@ -469,6 +504,7 @@ export async function fetchRepo(
     (d: { repository: { issues: Page<RawIssue> } }) => d.repository.issues,
     () => true,
     maxPages,
+    ISSUES_PAGE,
   );
 
   // Accounts that behave like automation, remembered between refreshes because a

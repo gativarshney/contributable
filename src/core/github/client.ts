@@ -111,8 +111,9 @@ export function createClient(options: Options): GraphQLClient {
       try {
         payload = await response.json();
       } catch {
-        // GitHub sometimes cuts a large response short; the same query usually completes.
-        if (attempt < retries) {
+        // GitHub sometimes cuts a large response short. One quick retry; when the same
+        // page is cut off again, the caller asks for a smaller one.
+        if (attempt < Math.min(1, retries)) {
           await sleep(2 ** attempt * 2000 + Math.random() * 1000);
           continue;
         }
