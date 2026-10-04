@@ -13,7 +13,7 @@ export function OrgLogo({
 }) {
   return (
     <span
-      className="grid shrink-0 place-items-center overflow-hidden rounded-xl bg-white text-base font-medium text-neutral-700"
+      className="org-logo grid shrink-0 place-items-center overflow-hidden rounded-xl bg-white text-base font-medium text-neutral-700"
       style={{ width: size, height: size }}
       aria-hidden="true"
     >

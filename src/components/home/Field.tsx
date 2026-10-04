@@ -80,7 +80,7 @@ export function Field({
     [points],
   );
   const values = useMemo(
-    () => bars.map((p) => Math.round((p[3] ?? 0) ** 1.3 * 100)),
+    () => bars.map((p) => Math.max(6, Math.round((p[3] ?? 0) ** 1.3 * 100))),
     [bars],
   );
   const lit = useMemo(() => bars.map((p) => matches(p, query)), [bars, query]);

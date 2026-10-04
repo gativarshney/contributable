@@ -2,7 +2,7 @@
 
 :root {
   --bg: oklch(98.2% 0.003 95);
-  --bg-2: oklch(96% 0.004 95);
+  --bg-2: oklch(97% 0.004 95);
   --bg-3: oklch(92.5% 0.005 95);
   --ink: oklch(19% 0.01 240);
   --ink-2: oklch(42% 0.012 240);
@@ -14,7 +14,7 @@
   --accent-soft: oklch(93% 0.03 195);
   --series-2: oklch(60% 0.11 62);
   --danger: oklch(52% 0.16 28);
-  --glow: oklch(70% 0.1 195 / 0.16);
+  --glow: oklch(72% 0.11 190 / 0.26);
   --shadow: 0 30px 80px -30px oklch(19% 0.01 240 / 0.25);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   color-scheme: light;
@@ -762,4 +762,36 @@ body {
     opacity: 0;
     transform: translateY(-12px);
   }
+}
+
+/*
+ * Light theme: surfaces sit on the page as white sheets with a soft shadow, because a
+ * hairline alone barely separates near-white from near-white.
+ */
+:root:not([data-theme="dark"]) .card {
+  background: #ffffff;
+  border-color: oklch(19% 0.01 240 / 0.08);
+  box-shadow:
+    0 1px 2px oklch(19% 0.01 240 / 0.04),
+    0 12px 32px -18px oklch(19% 0.02 220 / 0.18);
+}
+
+:root:not([data-theme="dark"]) .door:hover {
+  box-shadow:
+    0 1px 2px oklch(19% 0.01 240 / 0.05),
+    0 22px 48px -22px oklch(45% 0.08 195 / 0.35);
+}
+
+:root:not([data-theme="dark"]) .hero-glow-card {
+  background:
+    radial-gradient(ellipse 70% 120% at 0% 0%, var(--glow), transparent 60%), #ffffff;
+}
+
+:root:not([data-theme="dark"]) .header-fade {
+  background: linear-gradient(to bottom, var(--bg) 45%, transparent);
+}
+
+/* Logos are drawn on white; on a light page they need an edge to sit on. */
+:root:not([data-theme="dark"]) .org-logo {
+  box-shadow: 0 0 0 1px oklch(19% 0.01 240 / 0.1);
 }

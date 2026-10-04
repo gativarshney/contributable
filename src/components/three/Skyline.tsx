@@ -35,13 +35,13 @@ const PALETTES = {
     fill: 0.55,
   },
   light: {
-    empty: "#e4e2dc",
-    ramp: ["#c9e6e2", "#86cbc5", "#35978f", "#0f5a55"],
+    empty: "#e8ece9",
+    ramp: ["#9fd4c9", "#6cc0b2", "#38a294", "#1b7a6f"],
     fog: "#faf9f6",
-    highlight: "#0b2f2d",
+    highlight: "#0b3b36",
     sky: "#ffffff",
-    ground: "#cfcabf",
-    key: 1.9,
+    ground: "#d9e3df",
+    key: 1.5,
     fill: 1.25,
   },
 };
@@ -201,6 +201,12 @@ export function Skyline({
           });
           highlight.set(palette.highlight);
           fog.color.set(palette.fog);
+          // On a light page, fading into white leaves flat tiles at the far edge; the
+          // depth reads well enough from the lighting alone.
+          scene.fog = palette === PALETTES.light ? null : fog;
+          // Shine reads as depth on a dark page but as glare on a light one.
+          material.roughness = palette === PALETTES.light ? 0.85 : 0.34;
+          material.metalness = palette === PALETTES.light ? 0 : 0.18;
           dim.set(palette.empty);
           litColor.set(palette.ramp[palette.ramp.length - 1]);
           if (hovered >= 0) mesh.setColorAt(hovered, highlight);
