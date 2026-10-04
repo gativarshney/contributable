@@ -5,6 +5,12 @@ import { GsocTimeline } from "@/components/data/GsocTimeline";
 import { OrgLogo } from "@/components/data/OrgLogo";
 import { FilterForm } from "@/components/explore/FilterForm";
 import { ScrollToList } from "@/components/explore/ScrollToList";
+import {
+  InfoTip,
+  MERGED_INFO,
+  REPLY_7D_INFO,
+  STARTER_INFO,
+} from "@/components/site/InfoTip";
 import { getIndex } from "@/lib/data";
 import { count, date, percent } from "@/lib/format";
 import {
@@ -299,7 +305,10 @@ export default async function GsocPage({
                 </div>
                 <dl className="grid shrink-0 grid-cols-3 gap-x-6 text-right">
                   <div>
-                    <dt className="text-ink-3 text-xs">Reply in 7 days</dt>
+                    <dt className="text-ink-3 flex items-center justify-end gap-1 text-xs whitespace-nowrap">
+                      Reply in 7 days
+                      <InfoTip text={REPLY_7D_INFO} align="right" />
+                    </dt>
                     <dd className="num text-xl font-medium">
                       {stats.within7d === null ? (
                         <span className="text-ink-3 text-sm font-normal">n/a</span>
@@ -310,7 +319,10 @@ export default async function GsocPage({
                     <dd className="text-ink-3 num text-[11px]">{stats.replyN} PRs</dd>
                   </div>
                   <div>
-                    <dt className="text-ink-3 text-xs">Merged</dt>
+                    <dt className="text-ink-3 flex items-center justify-end gap-1 text-xs whitespace-nowrap">
+                      Merged
+                      <InfoTip text={MERGED_INFO} align="right" />
+                    </dt>
                     <dd className="num text-xl font-medium">
                       {stats.mergeRate === null ? (
                         <span className="text-ink-3 text-sm font-normal">n/a</span>
@@ -323,7 +335,10 @@ export default async function GsocPage({
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-ink-3 text-xs">Starter issues</dt>
+                    <dt className="text-ink-3 flex items-center justify-end gap-1 text-xs whitespace-nowrap">
+                      Starter issues
+                      <InfoTip text={STARTER_INFO} align="right" />
+                    </dt>
                     <dd className="num text-xl font-medium">{stats.available}</dd>
                     <dd className="text-ink-3 text-[11px]">available</dd>
                   </div>

@@ -2,6 +2,12 @@
 export const FIRST_REPLY_INFO =
   "Median time until a person from the project comments on, or merges, a pull request from an outside contributor. Bots do not count. Pull requests opened 30 to 120 days ago.";
 
+export const REPLY_7D_INFO =
+  "Share of pull requests from outside contributors, across the organisation's measured repositories, that got a reply from a person within 7 days. Bots do not count. The ranking is ordered by this.";
+
+export const REPLY_48H_INFO =
+  "Share of pull requests from outside contributors, across the organisation's measured repositories, that got a reply from a person within 48 hours. Bots do not count.";
+
 export const MERGED_INFO =
   "Share of pull requests from outside contributors that were merged, out of those the project has decided on (merged or closed). Ones still open are left out. Pull requests opened 30 to 120 days ago.";
 

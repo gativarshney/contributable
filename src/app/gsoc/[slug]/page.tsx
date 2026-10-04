@@ -3,6 +3,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { OrgLogo } from "@/components/data/OrgLogo";
 import { RepoTable } from "@/components/data/RepoList";
+import {
+  InfoTip,
+  MERGED_INFO,
+  REPLY_48H_INFO,
+  REPLY_7D_INFO,
+  STARTER_INFO,
+} from "@/components/site/InfoTip";
 import { getIndex } from "@/lib/data";
 import { date, percent } from "@/lib/format";
 import { GSOC_ORGS, MIN_ORG_SAMPLE, orgStats } from "@/lib/gsoc/orgs";
@@ -26,14 +33,19 @@ function Figure({
   label,
   value,
   sample,
+  info,
 }: {
   label: string;
   value: string;
   sample: string;
+  info: string;
 }) {
   return (
     <div className="card p-5">
-      <h2 className="text-ink-2 text-sm">{label}</h2>
+      <h2 className="text-ink-2 flex items-center gap-1.5 text-sm">
+        {label}
+        <InfoTip text={info} />
+      </h2>
       <p className="num mt-2 text-[2.25rem] leading-none font-medium">{value}</p>
       <p className="text-ink-3 num mt-2 text-xs">{sample}</p>
     </div>
@@ -129,21 +141,25 @@ export default async function OrgPage({ params }: Props) {
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <Figure
               label="Replied within 7 days"
+              info={REPLY_7D_INFO}
               value={na(stats.within7d)}
               sample={`${stats.replyN} outside PRs`}
             />
             <Figure
               label="Replied within 48 hours"
+              info={REPLY_48H_INFO}
               value={na(stats.within48h)}
               sample={`${stats.replyN} outside PRs`}
             />
             <Figure
               label="Outside PRs merged"
+              info={MERGED_INFO}
               value={na(stats.mergeRate)}
               sample={`${stats.decided} decided`}
             />
             <Figure
               label="Starter issues available"
+              info={STARTER_INFO}
               value={String(stats.available)}
               sample={`across ${stats.repos.length} repositories`}
             />
