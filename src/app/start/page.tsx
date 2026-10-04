@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Drift, DriftPill, PageMark } from "@/components/site/Drift";
+import { PageMark } from "@/components/site/Drift";
 import Link from "next/link";
 import { CopyButton } from "@/components/site/CopyButton";
 import { getAvailableIssues, getIndex } from "@/lib/data";
@@ -16,6 +16,21 @@ export const revalidate = 3600;
 
 const CLAIM = `Hi! I would like to work on this. My plan is to <one sentence on what you will change>. Is that the right direction? I will open a pull request this week.`;
 
+/** The five steps, each with a short label for the overview and an icon. */
+const STEPS: { short: string; icon: string }[] = [
+  { short: "Pick a project", icon: "M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14Zm9 16-4.3-4.3" },
+  {
+    short: "Check it replies",
+    icon: "M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z",
+  },
+  {
+    short: "Find a free issue",
+    icon: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-5a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z",
+  },
+  { short: "Say you are on it", icon: "M4 6h16v10H9l-5 4Z" },
+  { short: "Open a small PR", icon: "M7 4v10a4 4 0 0 0 4 4h6M7 4 4 7m3-3 3 3" },
+];
+
 const WORDS: [term: string, meaning: string][] = [
   ["Repository (repo)", "A project's folder of code on GitHub, with its history."],
   ["Issue", "A note describing a bug or a task. This is where work is discussed."],
@@ -30,6 +45,23 @@ const WORDS: [term: string, meaning: string][] = [
   ],
 ];
 
+function Icon({ d, className = "size-5" }: { d: string; className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d={d} />
+    </svg>
+  );
+}
+
 function Step({
   n,
   title,
@@ -39,13 +71,27 @@ function Step({
   title: string;
   children: React.ReactNode;
 }) {
+  const last = n === STEPS.length;
   return (
-    <li className="border-hair grid gap-4 border-t py-10 md:grid-cols-[5rem_1fr] md:gap-8">
-      <span className="text-accent text-5xl leading-none font-medium tracking-tight">
-        {n}
+    <li
+      id={`step-${n}`}
+      className="relative grid scroll-mt-4 grid-cols-[3rem_1fr] gap-4 pb-8 md:gap-8"
+    >
+      {last ? null : (
+        <span
+          className="from-accent/40 to-accent/10 absolute top-14 bottom-0 left-6 w-px bg-gradient-to-b"
+          aria-hidden="true"
+        />
+      )}
+      <span className="border-accent/40 bg-accent-soft/40 text-accent relative grid size-12 place-items-center rounded-full border">
+        <Icon d={STEPS[n - 1].icon} />
+        <span className="bg-accent text-accent-ink num absolute -top-1 -right-1 grid size-5 place-items-center rounded-full text-[11px] font-medium">
+          {n}
+        </span>
       </span>
-      <div>
-        <h2 className="font-display text-2xl">{title}</h2>
+      <div className="card p-6 md:p-7">
+        <p className="eyebrow !text-accent">Step {n}</p>
+        <h2 className="font-display mt-2 text-2xl">{title}</h2>
         <div className="text-ink-2 mt-3 max-w-2xl space-y-4">{children}</div>
       </div>
     </li>
@@ -75,23 +121,30 @@ export default async function StartPage() {
         </p>
       </header>
 
-      <div className="mt-10">
-        <Drift
-          seconds={60}
-          items={[
-            "Pick a project",
-            "Check it replies",
-            "Find a free issue",
-            "Say you are on it",
-            "Open a small pull request",
-            "Wait calmly",
-          ].map((s, i) => (
-            <DriftPill key={s} accent={i === 0}>
-              <span className="num text-ink-3">{(i % 6) + 1}</span> {s}
-            </DriftPill>
+      {/* The whole path at a glance; each stop jumps to its step. */}
+      <nav aria-label="Steps" className="-mx-4 mt-10 overflow-x-auto px-4 pb-2">
+        <ol className="relative flex min-w-[36rem] justify-between">
+          <span
+            className="bg-accent/30 absolute top-6 right-[10%] left-[10%] h-px"
+            aria-hidden="true"
+          />
+          {STEPS.map((step, i) => (
+            <li key={step.short} className="relative w-1/5">
+              <a
+                href={`#step-${i + 1}`}
+                className="group flex flex-col items-center gap-2.5 text-center"
+              >
+                <span className="border-hair-strong bg-bg text-ink-2 group-hover:border-accent group-hover:text-accent relative grid size-12 place-items-center rounded-full border transition-colors">
+                  <Icon d={step.icon} />
+                </span>
+                <span className="text-ink-2 group-hover:text-ink text-xs transition-colors">
+                  <span className="text-accent num">{i + 1}</span> {step.short}
+                </span>
+              </a>
+            </li>
           ))}
-        />
-      </div>
+        </ol>
+      </nav>
 
       <ol className="mt-12">
         <Step n={1} title="Pick a project that uses what you already know">
@@ -136,7 +189,7 @@ export default async function StartPage() {
             Comment on the issue itself, not in a private message. Say what you plan to
             change. Then start; you do not have to wait for an answer on a small task.
           </p>
-          <div className="card flex flex-col gap-3 p-4 sm:flex-row sm:items-start">
+          <div className="border-hair bg-bg/40 flex flex-col gap-3 rounded-xl border p-4 sm:flex-row sm:items-start">
             <p className="text-ink flex-1 text-sm">{CLAIM}</p>
             <CopyButton text={CLAIM} label="Copy message" />
           </div>
@@ -158,13 +211,13 @@ export default async function StartPage() {
         </Step>
       </ol>
 
-      <section className="border-hair border-t pt-12">
+      <section className="border-hair mt-8 border-t pt-12">
         <h2 className="font-display text-2xl">The words, in plain language</h2>
-        <dl className="mt-6 grid gap-x-12 gap-y-5 sm:grid-cols-2">
+        <dl className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {WORDS.map(([term, meaning]) => (
-            <div key={term}>
+            <div key={term} className="card p-4">
               <dt className="font-medium">{term}</dt>
-              <dd className="text-ink-2 mt-1 text-[15px]">{meaning}</dd>
+              <dd className="text-ink-2 mt-1 text-sm">{meaning}</dd>
             </div>
           ))}
         </dl>

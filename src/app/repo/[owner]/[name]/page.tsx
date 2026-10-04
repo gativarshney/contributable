@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { JumpBar } from "@/components/site/JumpBar";
 import {
   Funnel,
   PositionStrip,
@@ -130,7 +131,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="card mt-6 scroll-mt-20 p-6 md:p-8">
+    <section id={id} className="card mt-6 p-6 md:p-8">
       <div className="flex items-start gap-4">
         {SECTION_ICONS[id] ? (
           <span className="border-accent/40 bg-accent-soft/40 text-accent grid size-10 shrink-0 place-items-center rounded-full border">
@@ -317,6 +318,17 @@ export default async function RepoPage({ params }: Props) {
     .slice(0, 6);
   const trendLabel = TREND_LABEL[detail.trend.flag];
   const alike = similar(index.rows, detail);
+  const jumps = [
+    { id: "first-steps", label: "First steps" },
+    { id: "funnel", label: "Pull requests" },
+    { id: "trend", label: "52 weeks" },
+    { id: "issues", label: "Starter issues" },
+    ...(metrics.responseWindow.hours ? [{ id: "hours", label: "Reply hours" }] : []),
+    { id: "start", label: "How to start" },
+    { id: "stack", label: "Stack" },
+    { id: "share", label: "Badge and feed" },
+    ...(alike.length > 0 ? [{ id: "similar", label: "Similar" }] : []),
+  ];
 
   return (
     <article className="page-glow shell py-10 md:py-14">
@@ -444,6 +456,8 @@ export default async function RepoPage({ params }: Props) {
           How this is calculated
         </Link>
       </p>
+
+      <JumpBar items={jumps} />
 
       <Section
         id="first-steps"
