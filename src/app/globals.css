@@ -736,3 +736,17 @@ body {
     transform: translateY(4px);
   }
 }
+
+/* While momentum scrolling runs, the browser's own smooth scrolling steps aside. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
