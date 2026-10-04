@@ -101,7 +101,7 @@ function Tile({
   const missing = value === NOT_ENOUGH || value === UNANSWERED;
   return (
     <div className="card p-5">
-      <h3 className="text-ink-2 text-sm">{label}</h3>
+      <h2 className="text-ink-2 text-sm font-normal">{label}</h2>
       <p
         className={
           missing

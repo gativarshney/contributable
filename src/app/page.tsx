@@ -73,10 +73,10 @@ export default async function HomePage() {
             →
           </span>
         </Link>
-        <h1 className="display mt-7 max-w-4xl text-[clamp(2.5rem,min(7.4vw,10svh),5.25rem)]">
+        <h1 className="display mt-5 max-w-4xl text-[clamp(2.4rem,min(6.6vw,8.6svh),4.75rem)]">
           Find a project that <em>answers newcomers.</em>
         </h1>
-        <p className="text-ink-2 mt-5 max-w-xl text-balance sm:mt-6 sm:text-lg">
+        <p className="text-ink-2 mt-4 max-w-xl text-balance sm:mt-5 sm:text-lg">
           How fast a person replies to your first pull request, and how often it gets
           merged. Measured for every GSoC organisation, with the evidence behind each
           number.

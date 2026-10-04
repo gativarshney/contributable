@@ -89,14 +89,14 @@ export function Field({ chips, children }: { chips: string[]; children: ReactNod
           lit={lit}
           anchor="bottom"
           reactive
-          className="skyline-fade pointer-events-none absolute inset-x-0 bottom-0 h-[clamp(10rem,34svh,25rem)]"
+          className="skyline-fade pointer-events-none absolute inset-x-0 bottom-0 h-[clamp(12rem,46svh,31rem)]"
         />
       ) : null}
 
-      <div className="shell relative flex flex-col items-center pt-[clamp(1.5rem,6svh,6rem)] pb-[clamp(9rem,29svh,21rem)] text-center">
+      <div className="shell relative flex flex-col items-center pt-[clamp(1.25rem,4.5svh,4.5rem)] pb-[clamp(10rem,38svh,26rem)] text-center">
         {children}
 
-        <form action="/match" className="mt-7 w-full max-w-xl text-left sm:mt-9">
+        <form action="/match" className="mt-6 w-full max-w-xl text-left sm:mt-7">
           <label htmlFor="home-stack" className="sr-only">
             What do you code in?
           </label>
@@ -127,13 +127,14 @@ export function Field({ chips, children }: { chips: string[]; children: ReactNod
               spellCheck={false}
             />
             <button className="btn shrink-0">
-              Find<span className="max-[420px]:sr-only"> projects</span>{" "}
+              <span className="max-[420px]:hidden">Find projects</span>
+              <span className="min-[421px]:hidden">Find</span>
               <span aria-hidden="true">→</span>
             </button>
           </div>
         </form>
 
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
           <span className="text-ink-3 mr-1 text-sm">Try</span>
           {chips.map((chip) => {
             const on = query.includes(chip);

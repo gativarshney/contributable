@@ -298,6 +298,7 @@ export default async function ExplorePage({
           </div>
 
           <div className="mt-5">
+            <h2 className="sr-only">Results</h2>
             {result.rows.length === 0 ? (
               <div className="card p-8 text-center">
                 <p className="font-medium">

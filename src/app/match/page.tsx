@@ -164,7 +164,7 @@ export default async function MatchPage({ searchParams }: Props) {
               </Link>
             </p>
           ) : (
-            <ol className="mt-8 space-y-5">
+            <ol className="mt-8 space-y-5" aria-label="Shortlist">
               {matches.slice(0, SHOWN).map((match, i) => (
                 <li key={match.row.id} className="grid gap-4 lg:grid-cols-[22rem_1fr]">
                   <RepoCard row={match.row} />
