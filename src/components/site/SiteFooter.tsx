@@ -130,7 +130,10 @@ export function SiteFooter() {
               Pick the project that answers newcomers, not the most famous one.
             </p>
           </div>
-          <nav aria-label="Footer" className="grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-4">
+          <nav
+            aria-label="Footer"
+            className="grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-4"
+          >
             {COLUMNS.map((column) => (
               <div key={column.title}>
                 <h2 className="eyebrow">{column.title}</h2>
