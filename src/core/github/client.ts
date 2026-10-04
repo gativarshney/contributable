@@ -58,15 +58,25 @@ export function createClient(options: Options): GraphQLClient {
 
   async function query<T>(text: string, variables: Record<string, unknown>): Promise<T> {
     for (let attempt = 0; ; attempt += 1) {
-      const response = await fetchImpl(ENDPOINT, {
-        method: "POST",
-        headers: {
-          authorization: `bearer ${options.token}`,
-          "content-type": "application/json",
-          "user-agent": options.userAgent ?? "contributable",
-        },
-        body: JSON.stringify({ query: withRate(text), variables }),
-      });
+      let response: Response;
+      try {
+        response = await fetchImpl(ENDPOINT, {
+          method: "POST",
+          headers: {
+            authorization: `bearer ${options.token}`,
+            "content-type": "application/json",
+            "user-agent": options.userAgent ?? "contributable",
+          },
+          body: JSON.stringify({ query: withRate(text), variables }),
+        });
+      } catch (error) {
+        // A dropped connection is worth another try, like a server error.
+        if (attempt < retries) {
+          await sleep(2 ** attempt * 2000 + Math.random() * 1000);
+          continue;
+        }
+        throw new GitHubError(`network error: ${(error as Error).message}`, "upstream");
+      }
 
       const retryAfter = Number(response.headers.get("retry-after")) || null;
       const transient =
@@ -94,10 +104,20 @@ export function createClient(options: Options): GraphQLClient {
         );
       }
 
-      const payload = (await response.json()) as {
+      let payload: {
         data?: (T & { rateLimit?: RateState }) | null;
         errors?: { type?: string; message: string }[];
       };
+      try {
+        payload = await response.json();
+      } catch {
+        // GitHub sometimes cuts a large response short; the same query usually completes.
+        if (attempt < retries) {
+          await sleep(2 ** attempt * 2000 + Math.random() * 1000);
+          continue;
+        }
+        throw new GitHubError("GitHub sent an incomplete response", "upstream");
+      }
       budget.calls += 1;
       const rate = payload.data?.rateLimit;
       if (rate) {
