@@ -5,7 +5,14 @@ import { FilterForm } from "@/components/explore/FilterForm";
 import type { IndexRow } from "@/core/published";
 import { getAvailableIssues, getIndex } from "@/lib/data";
 import { facet, matchesText } from "@/lib/explore/query";
-import { count, date, firstReply, percent } from "@/lib/format";
+import { count, date, firstReply, percent, replySpeed, type Speed } from "@/lib/format";
+
+const SPEED_CLASS: Record<Speed, string> = {
+  fast: "text-fast",
+  ok: "text-ink",
+  slow: "text-slow",
+  unknown: "text-ink-3",
+};
 
 export const metadata: Metadata = {
   title: "Good first issues that are actually available",
@@ -208,38 +215,74 @@ export default async function IssuesPage({
       ) : (
         <ul className="border-hair mt-4 divide-y divide-[var(--hair)] rounded-2xl border">
           {shown.map(({ issue, repo }) => (
-            <li key={`${issue.id}#${issue.n}`} className="p-4 sm:px-5">
-              <a
-                href={`https://github.com/${issue.id}/issues/${issue.n}`}
-                target="_blank"
-                rel="noreferrer"
-                className="link font-medium"
-              >
-                {issue.title}
-              </a>
-              <p className="text-ink-2 mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-                <Link href={`/repo/${issue.id}`} className="link">
-                  {issue.id}
-                </Link>
-                <span className="num text-ink-3">#{issue.n}</span>
-                {repo.lang[0] ? <span className="tag">{repo.lang[0]}</span> : null}
-                {issue.label === "help-wanted" ? (
-                  <span className="tag">help wanted</span>
-                ) : null}
-              </p>
-              <p className="text-ink-3 num mt-1.5 text-xs">
-                This repository: first reply{" "}
-                <span className="text-ink-2">
-                  {repo.replyHours === null && repo.replyN < 5
-                    ? "n/a"
-                    : firstReply(repo.replyHours, repo.replyN).toLowerCase()}
-                </span>
-                , outside PRs merged{" "}
-                <span className="text-ink-2">
-                  {repo.mergeRate === null ? "n/a" : percent(repo.mergeRate)}
-                </span>
-                . Opened {date(issue.createdAt)}.
-              </p>
+            <li
+              key={`${issue.id}#${issue.n}`}
+              className="hover:bg-bg-2/60 relative flex items-start gap-4 p-4 transition-colors sm:px-5"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`https://github.com/${issue.id.split("/")[0]}.png?size=80`}
+                alt=""
+                width={40}
+                height={40}
+                loading="lazy"
+                decoding="async"
+                referrerPolicy="no-referrer"
+                className="border-hair bg-bg-3 mt-0.5 size-10 shrink-0 rounded-xl border"
+              />
+              <div className="min-w-0 flex-1">
+                <a
+                  href={`https://github.com/${issue.id}/issues/${issue.n}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-medium [overflow-wrap:anywhere] after:absolute after:inset-0 hover:underline"
+                >
+                  {issue.title}
+                </a>
+                <p className="text-ink-2 mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+                  <Link href={`/repo/${issue.id}`} className="link relative z-10">
+                    {issue.id}
+                  </Link>
+                  <span className="num text-ink-3">#{issue.n}</span>
+                  {repo.lang[0] ? <span className="tag">{repo.lang[0]}</span> : null}
+                  {issue.label === "help-wanted" ? (
+                    <span className="tag">help wanted</span>
+                  ) : null}
+                  <span className="text-ink-3 num text-xs">
+                    Opened {date(issue.createdAt)}
+                  </span>
+                </p>
+                <p className="text-ink-3 num mt-1.5 text-xs sm:hidden">
+                  First reply{" "}
+                  <span className={SPEED_CLASS[replySpeed(repo.replyHours)]}>
+                    {repo.replyHours === null && repo.replyN < 5
+                      ? "n/a"
+                      : firstReply(repo.replyHours, repo.replyN)}
+                  </span>
+                  {" · "}Merged{" "}
+                  <span className="text-ink-2">
+                    {repo.mergeRate === null ? "n/a" : percent(repo.mergeRate)}
+                  </span>
+                </p>
+              </div>
+              <dl className="hidden shrink-0 grid-cols-2 gap-x-5 text-right sm:grid">
+                <div>
+                  <dt className="text-ink-3 text-[11px]">First reply</dt>
+                  <dd
+                    className={`num font-medium ${SPEED_CLASS[replySpeed(repo.replyHours)]}`}
+                  >
+                    {repo.replyHours === null && repo.replyN < 5
+                      ? "n/a"
+                      : firstReply(repo.replyHours, repo.replyN)}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-ink-3 text-[11px]">Merged</dt>
+                  <dd className="num font-medium">
+                    {repo.mergeRate === null ? "n/a" : percent(repo.mergeRate)}
+                  </dd>
+                </div>
+              </dl>
             </li>
           ))}
         </ul>
