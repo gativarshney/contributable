@@ -23,6 +23,7 @@ function rawPull(
     comments: {
       totalCount: replies.length,
       nodes: replies.map((r) => ({
+        bodyText: undefined as string | undefined,
         createdAt: at(r.minutes),
         authorAssociation: r.association ?? "MEMBER",
         author: { __typename: "User", login: r.login },
@@ -124,5 +125,39 @@ describe("a greeter that only answers some pull requests", () => {
       rawPull(i + 1, i < 12 ? [{ login: "welcome-desk", minutes: 2 }] : []),
     );
     expect(detectAutomation(pulls)).toEqual(["welcome-desk"]);
+  });
+});
+
+describe("a CLA bot that posts the same message a few minutes in", () => {
+  it("is found from its repeated opening words", () => {
+    const pulls = Array.from({ length: 12 }, (_, i) => {
+      const pull = rawPull(i + 1, [
+        { login: "welcome-desk-2", minutes: 3 + (i % 3), association: "NONE" },
+      ]);
+      pull.comments.nodes[0].bodyText =
+        "Hi, thanks for your contribution! Please sign our CLA.";
+      return pull;
+    });
+    // Twelve pull requests in forty: too few for the blanket rule, too slow for the
+    // instant one; the template gives it away.
+    const quiet = Array.from({ length: 28 }, (_, i) => rawPull(100 + i, []));
+    expect(detectAutomation([...pulls, ...quiet])).toEqual(["welcome-desk-2"]);
+  });
+
+  it("leaves a maintainer who writes different replies alone", () => {
+    const pulls = Array.from({ length: 12 }, (_, i) => {
+      const pull = rawPull(i + 1, [{ login: "alice", minutes: 4 + i }]);
+      pull.comments.nodes[0].bodyText = `Thanks, one note on line ${i * 7}: please add a test.`;
+      return pull;
+    });
+    expect(detectAutomation(pulls)).toEqual([]);
+  });
+
+  it("recognises build accounts by name", () => {
+    const user = (login: string) => ({ login, typename: "User", association: null });
+    expect(isBot(user("jitsi-jenkins"))).toBe(true);
+    expect(isBot(user("project-ci"))).toBe(true);
+    expect(isBot(user("lucia"))).toBe(false);
+    expect(isBot(user("cicero"))).toBe(false);
   });
 });

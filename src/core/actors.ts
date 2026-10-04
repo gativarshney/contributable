@@ -101,6 +101,8 @@ export function isBot(actor: Actor): boolean {
   if (!login) return false;
   if (login.endsWith("[bot]") || login.endsWith("-bot") || login.endsWith("_bot"))
     return true;
+  // Build and CI accounts: "jitsi-jenkins", "ci-builder", "project-ci".
+  if (login.includes("jenkins") || /(^|[-_])ci($|[-_])/.test(login)) return true;
   // "flinkbot", "llvmbot", "k8s-ci-robot": project bots that are ordinary user accounts.
   // The length floor keeps short surnames such as "abbot" out.
   if (login.length >= 7 && login.endsWith("bot")) return true;

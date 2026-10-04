@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /** Bumped whenever a stored or published shape changes in a way readers must handle. */
-export const SCHEMA_VERSION = 3;
+export const SCHEMA_VERSION = 4;
 
 export const authorClass = z.enum(["core", "outside", "bot"]);
 

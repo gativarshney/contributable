@@ -88,7 +88,7 @@ query RepoFacts($owner: String!, $name: String!, $since90: GitTimestamp!) {
 const REPLIES = `
       comments(first: ${REPLIES_PER_ITEM}) {
         totalCount
-        nodes { createdAt authorAssociation author { ${ACTOR} } }
+        nodes { createdAt bodyText authorAssociation author { ${ACTOR} } }
       }`;
 
 export const PULLS = `

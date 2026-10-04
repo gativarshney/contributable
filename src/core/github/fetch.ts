@@ -100,6 +100,18 @@ const INSTANT_MIN_PULLS = 5;
 const BLANKET_SHARE = 0.6;
 const BLANKET_MIN_PULLS = 20;
 const BLANKET_MEDIAN_MINUTES = 15;
+/**
+ * The same opening words posted on this many pull requests, within minutes of each
+ * opening, is a template sent by a machine (a CLA or welcome bot).
+ */
+const TEMPLATE_MIN_PULLS = 6;
+const TEMPLATE_SHARE = 0.6;
+const TEMPLATE_MEDIAN_MINUTES = 15;
+
+/** The first words of a comment, for comparing templated messages. */
+const opening = (text: string | undefined) =>
+  (text ?? "").toLowerCase().replace(/\s+/g, " ").trim().slice(0, 48);
+
 /** A median first comment this fast, over this many pull requests, is not a person. */
 const RAPID_MEDIAN_SECONDS = 180;
 const RAPID_MIN_PULLS = 10;
@@ -123,18 +135,29 @@ export function detectAutomation(
   }[],
 ): string[] {
   const delays = new Map<string, number[]>();
+  const openings = new Map<string, Map<string, number>>();
   for (const pull of pulls) {
     const opened = Date.parse(pull.createdAt);
     const firstBy = new Map<string, number>();
+    const firstText = new Map<string, string>();
     for (const reply of [...pull.comments.nodes, ...pull.reviews.nodes]) {
       const at = reply.createdAt ?? reply.submittedAt;
       const login = reply.author?.login.toLowerCase();
       if (!at || !login || login === pull.author?.login.toLowerCase()) continue;
       const delay = (Date.parse(at) - opened) / 1000;
-      if (!firstBy.has(login) || delay < firstBy.get(login)!) firstBy.set(login, delay);
+      if (!firstBy.has(login) || delay < firstBy.get(login)!) {
+        firstBy.set(login, delay);
+        firstText.set(login, opening(reply.bodyText));
+      }
     }
     for (const [login, delay] of firstBy) {
       delays.set(login, [...(delays.get(login) ?? []), delay]);
+      const text = firstText.get(login);
+      if (text) {
+        const seen = openings.get(login) ?? new Map<string, number>();
+        seen.set(text, (seen.get(text) ?? 0) + 1);
+        openings.set(login, seen);
+      }
     }
   }
   const found: string[] = [];
@@ -150,7 +173,12 @@ export function detectAutomation(
     // A greeter that only speaks to outsiders never reaches 60% of all pull requests,
     // but nobody keeps a three-minute median over ten pull requests by hand.
     const rapid = list.length >= RAPID_MIN_PULLS && median <= RAPID_MEDIAN_SECONDS;
-    if (instantly || blanket || rapid) found.push(login);
+    const topOpening = Math.max(0, ...(openings.get(login)?.values() ?? []));
+    const templated =
+      topOpening >= TEMPLATE_MIN_PULLS &&
+      topOpening / list.length >= TEMPLATE_SHARE &&
+      median <= TEMPLATE_MEDIAN_MINUTES * 60;
+    if (instantly || blanket || rapid || templated) found.push(login);
   }
   return found.sort();
 }
