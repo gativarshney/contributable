@@ -1,13 +1,6 @@
-import type { Metadata } from "next";
-import { ReportView } from "@/components/report/ReportView";
-import { buildSampleReport } from "@/lib/sample/dataset";
+import { permanentRedirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Example report",
-  description:
-    "An example Contributable engineering report built from illustrative data.",
-};
-
+/** The example report is a real, measured repository; this address is kept for old links. */
 export default function SamplePage() {
-  return <ReportView report={buildSampleReport()} />;
+  permanentRedirect("/repo/OpenPrinting/cups");
 }

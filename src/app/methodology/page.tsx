@@ -278,7 +278,7 @@ export default function MethodologyPage() {
           three people contributed to it, because it would then be one maintainer&apos;s
           schedule.
         </p>
-        <Link href="/sample" className="btn btn-ghost mt-8">
+        <Link href="/repo/OpenPrinting/cups" className="btn btn-ghost mt-8">
           See it in the example report →
         </Link>
       </Block>

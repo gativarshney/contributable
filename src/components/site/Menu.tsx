@@ -23,7 +23,7 @@ const GROUPS: { title: string; links: [label: string, note: string, href: string
       links: [
         ["Check a repo", "Any public GitHub repository", "/check"],
         ["Saved", "Your shortlist, kept current", "/saved"],
-        ["Example report", "What a full report looks like", "/sample"],
+        ["Example report", "A real one: OpenPrinting/cups", "/repo/OpenPrinting/cups"],
       ],
     },
     {

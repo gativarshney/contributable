@@ -54,23 +54,54 @@ export default async function StatusPage() {
       ) : (
         <>
           <p className="text-ink-2 mt-4">
-            The index refreshes every hour. Each run measures the stalest repositories
-            first, within the free allowance GitHub gives the project.
+            The index refreshes several times a day. Each run measures the stalest
+            repositories first, within the free allowance GitHub gives the project.
           </p>
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            {(
+              [
+                [
+                  "Measured",
+                  status.indexed,
+                  status.universe,
+                  "of the repositories in the index",
+                ],
+                [
+                  "Fresh, 2 days",
+                  status.fresh2d,
+                  status.indexed,
+                  "refreshed in the last 2 days",
+                ],
+                [
+                  "Fresh, 7 days",
+                  status.fresh7d,
+                  status.indexed,
+                  "refreshed in the last week",
+                ],
+              ] as const
+            ).map(([label, part, whole, note]) => {
+              const share = whole ? part / whole : 0;
+              return (
+                <div key={label} className="card p-5">
+                  <p className="text-ink-2 text-sm">{label}</p>
+                  <p className="mt-2 text-4xl leading-none font-medium tracking-tight">
+                    {percent(share)}
+                  </p>
+                  <div className="bg-bg-3 mt-4 h-2 overflow-hidden rounded-full">
+                    <div
+                      className="bg-accent h-full rounded-full"
+                      style={{ width: `${Math.max(2, share * 100)}%` }}
+                    />
+                  </div>
+                  <p className="text-ink-3 num mt-2 text-xs">
+                    {count(part)} {note}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
           <dl className="mt-8">
             <Row label="Repositories in the index" value={count(status.universe)} />
-            <Row
-              label="Measured so far"
-              value={`${count(status.indexed)} (${percent(status.universe ? status.indexed / status.universe : 0)})`}
-            />
-            <Row
-              label="Refreshed in the last 2 days"
-              value={`${count(status.fresh2d)} of ${count(status.indexed)}`}
-            />
-            <Row
-              label="Refreshed in the last 7 days"
-              value={`${count(status.fresh7d)} of ${count(status.indexed)}`}
-            />
             <Row
               label="Oldest figure"
               value={status.oldestUpdatedAt ? dateTime(status.oldestUpdatedAt) : "n/a"}

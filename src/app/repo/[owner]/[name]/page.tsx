@@ -562,12 +562,12 @@ export default async function RepoPage({ params }: Props) {
         </p>
       </Section>
 
-      <Section
-        id="hours"
-        title="When replies arrive"
-        note="All maintainers counted together. Shown only when at least 3 people replied in the last 90 days, so it never describes one person."
-      >
-        {metrics.responseWindow.hours ? (
+      {metrics.responseWindow.hours ? (
+        <Section
+          id="hours"
+          title="When replies arrive"
+          note="All maintainers counted together. Shown only when at least 3 people replied in the last 90 days, so it never describes one person."
+        >
           <div className="max-w-3xl">
             <ReplyHours
               hours={metrics.responseWindow.hours}
@@ -575,12 +575,8 @@ export default async function RepoPage({ params }: Props) {
               people={metrics.responseWindow.people}
             />
           </div>
-        ) : (
-          <p className="text-ink-2 text-sm">
-            Not shown: fewer than 3 maintainers replied in the last 90 days.
-          </p>
-        )}
-      </Section>
+        </Section>
+      ) : null}
 
       <Section id="start" title="How to start">
         <div className="grid gap-8 md:grid-cols-2">

@@ -38,7 +38,7 @@ const COLUMNS: { title: string; links: [label: string, href: string][] }[] = [
     title: "Check",
     links: [
       ["Check a repo", "/check"],
-      ["Example report", "/sample"],
+      ["Example report", "/repo/OpenPrinting/cups"],
       ["Saved", "/saved"],
     ],
   },

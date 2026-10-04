@@ -725,8 +725,8 @@ body {
 /* A soft light behind each page's heading, like the hero on the home page. */
 .page-glow {
   /* Fades to nothing well inside its own edges, so it never shows a border. */
-  background: radial-gradient(closest-side, var(--glow), transparent) 0 -300px / 1100px
-    640px no-repeat;
+  background: radial-gradient(closest-side, var(--glow), transparent) 0 -300px /
+    min(100%, 1100px) 640px no-repeat;
 }
 
 /* The menu of every page: a full-width panel that drops from the top. */

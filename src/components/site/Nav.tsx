@@ -33,7 +33,7 @@ export const PAGES = [
     href: "/check",
     label: "Check a repo",
     short: "Check",
-    paths: ["/check", "/repo", "/report", "/sample"],
+    paths: ["/check", "/repo", "/report"],
     icon: "M5 12.5 10 17 19 7",
   },
   {

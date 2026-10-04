@@ -333,7 +333,7 @@ export function ReportLoader({ owner, name }: { owner: string; name: string }) {
               Try again
             </button>
           ) : null}
-          <Link href="/sample" className="btn btn-ghost">
+          <Link href="/repo/OpenPrinting/cups" className="btn btn-ghost">
             See the example report
           </Link>
         </div>

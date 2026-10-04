@@ -118,7 +118,7 @@ export default async function CheckPage() {
             ))}
           </ul>
           <div className="mt-10 flex flex-wrap gap-3">
-            <Link href="/sample" className="btn btn-ghost">
+            <Link href="/repo/OpenPrinting/cups" className="btn btn-ghost">
               See an example report
             </Link>
             <Link href="/methodology" className="btn btn-ghost">
