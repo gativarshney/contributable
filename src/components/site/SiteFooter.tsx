@@ -65,8 +65,8 @@ const COLUMNS: { title: string; links: [label: string, href: string][] }[] = [
 export function SiteFooter() {
   return (
     <footer className="border-hair border-t">
-      <div className="shell py-14 md:py-16">
-        <div className="card hero-glow-card mb-14 flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+      <div className="shell py-10 md:py-12">
+        <div className="card hero-glow-card mb-10 flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
           <div className="flex items-center gap-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -123,18 +123,18 @@ export function SiteFooter() {
           </ul>
         </div>
 
-        <div className="grid gap-12 lg:grid-cols-[1.3fr_2fr]">
+        <div className="grid gap-8 lg:grid-cols-[1.3fr_2fr]">
           <div>
             <Logo />
             <p className="text-ink-2 mt-4 max-w-xs text-sm">
               Pick the project that answers newcomers, not the most famous one.
             </p>
           </div>
-          <nav aria-label="Footer" className="grid grid-cols-2 gap-8 sm:grid-cols-4">
+          <nav aria-label="Footer" className="grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-4">
             {COLUMNS.map((column) => (
               <div key={column.title}>
                 <h2 className="eyebrow">{column.title}</h2>
-                <ul className="mt-4 space-y-1">
+                <ul className="mt-3 space-y-0.5">
                   {column.links.map(([label, href]) => {
                     const external = href.startsWith("http");
                     const Tag = external ? "a" : Link;
@@ -156,7 +156,7 @@ export function SiteFooter() {
           </nav>
         </div>
 
-        <p className="border-hair text-ink-3 mt-12 border-t pt-8 text-xs">
+        <p className="border-hair text-ink-3 mt-8 border-t pt-6 text-xs">
           © 2026 Gati Varshney. Open source under the GNU AGPL-3.0. Data under CC BY 4.0.
           An independent project, not affiliated with GitHub or Google.
         </p>
