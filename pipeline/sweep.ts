@@ -201,6 +201,15 @@ async function main() {
   const known = new Map(
     (await listDetails()).map((d) => [idOf(d).toLowerCase(), d.updatedAt]),
   );
+  // Repositories listed by hand, outside any programme: this project itself, for one.
+  const listed = new Set(universe.repos.map((repo) => idOf(repo).toLowerCase()));
+  for (const entry of (await readJson<string[]>("universe/extra.json")) ?? []) {
+    const [owner, name] = entry.split("/");
+    if (!owner || !name || listed.has(entry.toLowerCase())) continue;
+    if (optedOut.has(owner.toLowerCase()) || optedOut.has(entry.toLowerCase())) continue;
+    universe.repos.push({ owner, name, programs: [] });
+  }
+
   // Stored results written under older rules are re-read now, not when they fall due.
   const outdated = new Set<string>();
   for (const id of known.keys()) {

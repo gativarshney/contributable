@@ -103,7 +103,7 @@ const definitions = [
   ],
   [
     "Which repositories",
-    "For every GSoC organisation from 2024 to 2026 that is on GitHub: up to 8 of its most starred repositories that are not forks, archives or mirrors, had a push in the last 180 days and have at least 5 pull requests.",
+    "For every GSoC organisation from 2024 to 2026 that is on GitHub: up to 12 of its most starred repositories that are not forks, archives or mirrors, had a push in the last 180 days and have at least 5 pull requests.",
   ],
   [
     "Sample size",
