@@ -81,36 +81,49 @@ export default async function CheckPage() {
                 </span>
               </div>
               <ul className="mt-6 space-y-3">
-                {[
+                {(
                   [
-                    "First human reply",
-                    firstReply(example.replyHours, example.replyN),
-                    `median of ${example.replyN} outside PRs`,
-                  ],
-                  [
-                    "Outside PRs merged",
-                    percent(example.mergeRate),
-                    `of ${example.decided} decided`,
-                  ],
-                  [
-                    "Free first issues",
-                    String(example.available),
-                    "open, unassigned, unclaimed",
-                  ],
-                  [
-                    "Contributing guide",
-                    example.guide ? "Yes" : "No",
-                    example.guide
-                      ? "setup and rules written down"
-                      : "the README explains setup",
-                  ],
-                ].map(([label, value, note], i) => (
+                    [
+                      "First human reply",
+                      firstReply(example.replyHours, example.replyN),
+                      `median of ${example.replyN} outside PRs`,
+                      example.replyHours !== null && example.replyHours <= 72,
+                    ],
+                    [
+                      "Outside PRs merged",
+                      percent(example.mergeRate),
+                      `of ${example.decided} decided`,
+                      (example.mergeRate ?? 0) >= 0.5,
+                    ],
+                    [
+                      "Free first issues",
+                      String(example.available),
+                      "open, unassigned, unclaimed",
+                      example.available > 0,
+                    ],
+                    [
+                      "Contributing guide",
+                      example.guide ? "Yes" : "No",
+                      example.guide
+                        ? "setup and rules written down"
+                        : "the README explains setup",
+                      example.guide,
+                    ],
+                  ] as const satisfies readonly (readonly [
+                    string,
+                    string,
+                    string,
+                    boolean,
+                  ])[]
+                ).map(([label, value, note, good], i) => (
                   <li
                     key={label}
                     className="rise border-hair bg-bg/40 flex items-center gap-4 rounded-xl border px-4 py-3"
                     style={{ animationDelay: `${200 + i * 140}ms` }}
                   >
-                    <span className="bg-accent text-accent-ink grid size-6 shrink-0 place-items-center rounded-full">
+                    <span
+                      className={`grid size-6 shrink-0 place-items-center rounded-full ${good ? "bg-accent text-accent-ink" : "border-hair-strong text-ink-3 border"}`}
+                    >
                       <svg
                         viewBox="0 0 24 24"
                         className="size-3.5"
@@ -121,14 +134,18 @@ export default async function CheckPage() {
                         strokeLinejoin="round"
                         aria-hidden="true"
                       >
-                        <path d="M5 12.5 10 17 19 7.5" />
+                        <path d={good ? "M5 12.5 10 17 19 7.5" : "M7 12h10"} />
                       </svg>
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block text-sm">{label}</span>
                       <span className="text-ink-3 block text-xs">{note}</span>
                     </span>
-                    <span className="num text-accent text-lg font-medium">{value}</span>
+                    <span
+                      className={`num text-lg font-medium ${good ? "text-accent" : "text-ink-2"}`}
+                    >
+                      {value}
+                    </span>
                   </li>
                 ))}
               </ul>
