@@ -173,7 +173,7 @@ that disagrees with what GitHub shows.
 Built by [Gati Varshney](https://gativarshney.github.io/), a final-year B.Tech CSE
 student and
 [Google Summer of Code 2026](https://summerofcode.withgoogle.com/programs/2026/projects/k0bZOR1y)
-contributor with The Linux Foundation (OpenPrinting). Contributable is an independent
+contributor with The Linux Foundation. Contributable is an independent
 project and is not affiliated with GitHub or Google.
 
 [GitHub](https://github.com/gativarshney) ·

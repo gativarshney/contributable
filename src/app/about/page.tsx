@@ -38,7 +38,7 @@ export default function AboutPage() {
           >
             Google Summer of Code 2026 contributor
           </a>{" "}
-          with The Linux Foundation (OpenPrinting).
+          with The Linux Foundation.
         </p>
         <ul className="mt-5 flex flex-wrap gap-2 text-sm">
           {[

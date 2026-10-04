@@ -34,7 +34,7 @@
     "unmappable": "Umbrella organisation: sub-organisations change every year and apply through python-gsoc.org."
   },
   "the-linux-foundation": {
-    "github": ["OpenPrinting"]
+    "github": ["OpenPrinting", "thesofproject", "zephyrproject-rtos", "spdx"]
   },
   "alaska": {
     "github": ["uaanchorage"]
@@ -46,6 +46,27 @@
     "github": ["gc-os-ai"]
   },
   "numfocus": {
-    "unmappable": "Umbrella organisation: its member projects apply separately and change every year."
+    "github": [
+      "aiidateam/aiida-core",
+      "arviz-devs",
+      "cvxpy/cvxpy",
+      "weecology/retriever",
+      "gammapy/gammapy",
+      "OSGeo/grass",
+      "gridap/Gridap.jl",
+      "holoviz",
+      "jump-dev",
+      "matplotlib/matplotlib",
+      "pvlib/pvlib-python",
+      "pymc-devs/pymc",
+      "pysal/pysal",
+      "pytorch/ignite",
+      "qutip/qutip",
+      "sbi-dev/sbi",
+      "scikit-bio/scikit-bio",
+      "SciML",
+      "stan-dev",
+      "vprusso/toqito"
+    ]
   }
 }

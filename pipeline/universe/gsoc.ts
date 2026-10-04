@@ -146,6 +146,11 @@ export async function buildGsocUniverse(years = GSOC_YEARS): Promise<GsocOrg[]> 
       entry.unmappable = rule.unmappable;
     } else if (parsed?.repo) {
       entry.repos.push(`${parsed.owner}/${parsed.repo}`);
+      // A repository named after its own account (sympy/sympy) means the account is
+      // the project, so its other active repositories are indexed as well.
+      if (parsed.owner.toLowerCase() === parsed.repo.toLowerCase()) {
+        entry.orgs.push(parsed.owner);
+      }
     } else if (parsed) {
       entry.orgs.push(parsed.owner);
     } else {

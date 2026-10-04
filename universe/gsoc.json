@@ -434,7 +434,7 @@
     "tagline": "C++ library of computational geometry",
     "categories": ["Science and medicine"],
     "ideas": "https://github.com/CGAL/cgal/wiki/Project-Ideas",
-    "orgs": [],
+    "orgs": ["CGAL"],
     "repos": ["CGAL/cgal"],
     "unmappable": null
   },
@@ -781,7 +781,7 @@
     "tagline": "Democratize AI for drug discovery.",
     "categories": ["Science and medicine", "Artificial Intelligence"],
     "ideas": "https://github.com/deepchem/deepchem/discussions/4703",
-    "orgs": [],
+    "orgs": ["deepchem"],
     "repos": ["deepchem/deepchem"],
     "unmappable": null
   },
@@ -811,7 +811,7 @@
     "tagline": "Web framework for perfectionists with deadlines",
     "categories": ["Web"],
     "ideas": "https://code.djangoproject.com/wiki/SummerOfCode2026",
-    "orgs": [],
+    "orgs": ["django"],
     "repos": ["django/django"],
     "unmappable": null
   },
@@ -877,7 +877,7 @@
     "tagline": "Cross-platform desktop apps with web technologies",
     "categories": ["End user applications", "Web"],
     "ideas": "https://electronhq.notion.site/Electron-Google-Summer-of-Code-2025-Ideas-List-1851459d1bd1811894dad8b48a68596d",
-    "orgs": [],
+    "orgs": ["electron"],
     "repos": ["electron/electron"],
     "unmappable": null
   },
@@ -1021,7 +1021,7 @@
     "tagline": "Open Source License Compliance by OSS",
     "categories": ["Web", "Security"],
     "ideas": "https://github.com/fossology/fossology/discussions/3267",
-    "orgs": [],
+    "orgs": ["fossology"],
     "repos": ["fossology/fossology"],
     "unmappable": null
   },
@@ -1051,7 +1051,7 @@
     "tagline": "Cross-platform 3D parametric modeler",
     "categories": ["End user applications", "Media"],
     "ideas": "https://wiki.freecad.org/Google_Summer_of_Code_2026",
-    "orgs": [],
+    "orgs": ["freecad"],
     "repos": ["freecad/freecad"],
     "unmappable": null
   },
@@ -1183,7 +1183,7 @@
     "tagline": "Fast,Scalable,Distributed revision control system",
     "categories": ["Programming languages", "Development tools"],
     "ideas": "https://git.github.io/SoC-2026-Ideas/",
-    "orgs": [],
+    "orgs": ["git"],
     "repos": ["git/git"],
     "unmappable": null
   },
@@ -1249,7 +1249,7 @@
     "tagline": "An open source GNSS software-defined receiver",
     "categories": ["Science and medicine", "Other"],
     "ideas": "https://gnss-sdr.org/google-summer-code-2025-ideas-list/",
-    "orgs": [],
+    "orgs": ["gnss-sdr"],
     "repos": ["gnss-sdr/gnss-sdr"],
     "unmappable": null
   },
@@ -1372,7 +1372,7 @@
     "tagline": "The free & open software radio ecosystem",
     "categories": ["Science and medicine"],
     "ideas": "https://wiki.gnuradio.org/index.php/GSoCIdeas",
-    "orgs": [],
+    "orgs": ["gnuradio"],
     "repos": ["gnuradio/gnuradio"],
     "unmappable": null
   },
@@ -1408,7 +1408,7 @@
     "tagline": "Simulating electromagnetic wave propagation",
     "categories": ["Science and medicine", "Artificial Intelligence"],
     "ideas": "https://github.com/gprMax/GSoC/blob/main/project-ideas-2026.md",
-    "orgs": [],
+    "orgs": ["gprMax"],
     "repos": ["gprMax/gprMax"],
     "unmappable": null
   },
@@ -1649,7 +1649,7 @@
     "tagline": "Stay on top of your Literature",
     "categories": ["Science and medicine", "Artificial Intelligence"],
     "ideas": "https://jabref.github.io/GSoC/projects/",
-    "orgs": [],
+    "orgs": ["JabRef"],
     "repos": ["JabRef/jabref"],
     "unmappable": null
   },
@@ -1823,7 +1823,7 @@
     "tagline": "Unit, API test generation agent using AI & EBPF",
     "categories": ["Programming languages", "Development tools"],
     "ideas": "https://github.com/keploy/gsoc/tree/main/2026",
-    "orgs": [],
+    "orgs": ["keploy"],
     "repos": ["keploy/keploy"],
     "unmappable": null
   },
@@ -2203,7 +2203,7 @@
     "tagline": "Free your Marketing with Open Source!",
     "categories": ["End user applications", "Web"],
     "ideas": "https://docs.google.com/document/d/1iqjmKcIelXCnDcfdD7ZxSE6H1VV1gMOKnnft7gD30Dk/edit?usp=sharing",
-    "orgs": [],
+    "orgs": ["mautic"],
     "repos": ["mautic/mautic"],
     "unmappable": null
   },
@@ -2245,7 +2245,7 @@
     "tagline": "Analysis of molecular simulations data with Python",
     "categories": ["Science and medicine", "Data"],
     "ideas": "https://github.com/MDAnalysis/mdanalysis/wiki/GSoC-2026-Project-Ideas",
-    "orgs": [],
+    "orgs": ["MDAnalysis"],
     "repos": ["MDAnalysis/mdanalysis"],
     "unmappable": null
   },
@@ -2407,7 +2407,7 @@
     "tagline": "a fast, flexible machine learning library",
     "categories": ["Science and medicine", "Artificial Intelligence"],
     "ideas": "https://github.com/mlpack/mlpack/wiki/SummerOfCodeIdeas",
-    "orgs": [],
+    "orgs": ["mlpack"],
     "repos": ["mlpack/mlpack"],
     "unmappable": null
   },
@@ -2471,7 +2471,7 @@
     "tagline": "The World’s Most Popular Music Notation Software",
     "categories": ["End user applications", "Media"],
     "ideas": "https://github.com/musescore/MuseScore/wiki/Project-ideas-for-GSoC",
-    "orgs": [],
+    "orgs": ["musescore"],
     "repos": ["musescore/MuseScore"],
     "unmappable": null
   },
@@ -2507,7 +2507,7 @@
     "tagline": "hyperextensible Vim-based text editor",
     "categories": ["End user applications", "Development tools"],
     "ideas": "https://github.com/neovim/neovim/wiki/Google-Summer-of-Code",
-    "orgs": [],
+    "orgs": ["neovim"],
     "repos": ["neovim/neovim"],
     "unmappable": null
   },
@@ -2612,9 +2612,25 @@
     "tagline": "NumFOCUS promotes open source scientific software.",
     "categories": ["Science and medicine", "Data"],
     "ideas": "https://github.com/numfocus/gsoc/blob/master/2026/ideas-list.md",
-    "orgs": [],
-    "repos": [],
-    "unmappable": "Umbrella organisation: its member projects apply separately and change every year."
+    "orgs": ["arviz-devs", "holoviz", "jump-dev", "SciML", "stan-dev"],
+    "repos": [
+      "aiidateam/aiida-core",
+      "cvxpy/cvxpy",
+      "weecology/retriever",
+      "gammapy/gammapy",
+      "OSGeo/grass",
+      "gridap/Gridap.jl",
+      "matplotlib/matplotlib",
+      "pvlib/pvlib-python",
+      "pymc-devs/pymc",
+      "pysal/pysal",
+      "pytorch/ignite",
+      "qutip/qutip",
+      "sbi-dev/sbi",
+      "scikit-bio/scikit-bio",
+      "vprusso/toqito"
+    ],
+    "unmappable": null
   },
   {
     "slug": "omegaup",
@@ -2884,7 +2900,7 @@
     "tagline": "++ beneficial uses of computer vision in society",
     "categories": ["Media", "Artificial Intelligence"],
     "ideas": "https://github.com/opencv/opencv/wiki/GSoC_2026",
-    "orgs": [],
+    "orgs": ["opencv"],
     "repos": ["opencv/opencv"],
     "unmappable": null
   },
@@ -2955,7 +2971,7 @@
     "tagline": "Advancing Algorithms & AI for Biomedical Insights",
     "categories": ["Science and medicine", "Data"],
     "ideas": "https://openms.de/news/gsoc2026/",
-    "orgs": [],
+    "orgs": ["OpenMS"],
     "repos": ["OpenMS/OpenMS"],
     "unmappable": null
   },
@@ -2970,7 +2986,7 @@
     "tagline": "A power tool for working with messy data",
     "categories": ["Data"],
     "ideas": "https://github.com/OpenRefine/OpenRefine/wiki/GSoC-Outreachy-2024-Ideas",
-    "orgs": [],
+    "orgs": ["OpenRefine"],
     "repos": ["OpenRefine/OpenRefine"],
     "unmappable": null
   },
@@ -3051,7 +3067,7 @@
     "tagline": "Free platform for interactive, tutor-like lessons",
     "categories": ["End user applications", "Artificial Intelligence"],
     "ideas": "https://github.com/oppia/oppia/wiki/Google-Summer-of-Code-2026",
-    "orgs": [],
+    "orgs": ["oppia"],
     "repos": ["oppia/oppia"],
     "unmappable": null
   },
@@ -3066,7 +3082,7 @@
     "tagline": "Offline maps app for tourists, cyclers, hikers and drivers",
     "categories": ["End user applications"],
     "ideas": "https://github.com/organicmaps/organicmaps/wiki/GSoC-2026-ideas",
-    "orgs": [],
+    "orgs": ["organicmaps"],
     "repos": ["organicmaps/organicmaps"],
     "unmappable": null
   },
@@ -3258,7 +3274,7 @@
     "tagline": "Managing Prometheus atop Kubernetes",
     "categories": ["Infrastructure and cloud"],
     "ideas": "https://github.com/prometheus-operator/community/blob/main/mentoring/gsoc/2026/project_ideas.md",
-    "orgs": [],
+    "orgs": ["prometheus-operator"],
     "repos": ["prometheus-operator/prometheus-operator"],
     "unmappable": null
   },
@@ -3411,7 +3427,7 @@
     "tagline": "Fast unit testing runtime for Android",
     "categories": ["Operating systems", "Development tools"],
     "ideas": "https://docs.google.com/presentation/d/1Wyqkef0bK3c9EbZzTdFw7S9Hx5-fq9iRgNbVWozQ2q0/edit#slide=id.p",
-    "orgs": [],
+    "orgs": ["robolectric"],
     "repos": ["robolectric/robolectric"],
     "unmappable": null
   },
@@ -3447,7 +3463,7 @@
     "tagline": "Rspamd is an email framework and spam filter",
     "categories": ["Security", "Social and communication"],
     "ideas": "https://rspamd.com/gsoc2025_ideas.html",
-    "orgs": [],
+    "orgs": ["rspamd"],
     "repos": ["rspamd/rspamd"],
     "unmappable": null
   },
@@ -3615,7 +3631,7 @@
     "tagline": "Automatically testing database systems",
     "categories": ["Data", "Programming languages"],
     "ideas": "https://github.com/sqlancer/sqlancer/wiki/GSoC-2025-Ideas",
-    "orgs": [],
+    "orgs": ["sqlancer"],
     "repos": ["sqlancer/sqlancer"],
     "unmappable": null
   },
@@ -3794,7 +3810,7 @@
     "tagline": "SymPy is a Python library for symbolic mathematics",
     "categories": ["Science and medicine"],
     "ideas": "https://github.com/sympy/sympy/wiki/GSoC-Ideas",
-    "orgs": [],
+    "orgs": ["sympy"],
     "repos": ["sympy/sympy"],
     "unmappable": null
   },
@@ -3809,7 +3825,7 @@
     "tagline": "Open-source 2D animation software",
     "categories": ["Media"],
     "ideas": "https://github.com/synfig/synfig-docs-dev/blob/master/docs/gsoc/2026/ideas.rst",
-    "orgs": [],
+    "orgs": ["synfig"],
     "repos": ["synfig/synfig"],
     "unmappable": null
   },
@@ -3839,7 +3855,7 @@
     "tagline": "A free rapid game development environment.",
     "categories": ["Programming languages", "Development tools"],
     "ideas": "https://enigma-dev.org/tracker/gsoc.php",
-    "orgs": [],
+    "orgs": ["enigma-dev"],
     "repos": ["enigma-dev/enigma-dev"],
     "unmappable": null
   },
@@ -3926,7 +3942,7 @@
     "tagline": "Encrypting the Internet with IKE / IPsec VPN",
     "categories": ["Security", "Infrastructure and cloud"],
     "ideas": "https://github.com/libreswan/libreswan/wiki/GSoC-2026-Code-Project-Ideas",
-    "orgs": [],
+    "orgs": ["libreswan"],
     "repos": ["libreswan/libreswan"],
     "unmappable": null
   },
@@ -3941,7 +3957,7 @@
     "tagline": "Non-profit consortium fostering growth of Linux",
     "categories": ["Operating systems"],
     "ideas": "https://github.com/LinuxFoundationGSoC/ProjectIdeas/wiki/Google-Summer-of-Code-2026",
-    "orgs": ["OpenPrinting"],
+    "orgs": ["OpenPrinting", "thesofproject", "zephyrproject-rtos", "spdx"],
     "repos": [],
     "unmappable": null
   },
@@ -4220,7 +4236,7 @@
     "tagline": "The powerful Python CMS for modern websites",
     "categories": ["Web"],
     "ideas": "https://github.com/wagtail/gsoc/blob/main/project-ideas.md",
-    "orgs": [],
+    "orgs": ["wagtail"],
     "repos": ["wagtail/wagtail"],
     "unmappable": null
   },
@@ -4337,7 +4353,7 @@
     "tagline": "Organized chat for distributed teams",
     "categories": ["End user applications", "Social and communication"],
     "ideas": "https://zulip.readthedocs.io/en/latest/outreach/gsoc.html",
-    "orgs": [],
+    "orgs": ["zulip"],
     "repos": ["zulip/zulip"],
     "unmappable": null
   }

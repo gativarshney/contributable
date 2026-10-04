@@ -38,7 +38,7 @@ export function SiteFooter() {
             >
               Google Summer of Code 2026 contributor
             </a>{" "}
-            at OpenPrinting, The Linux Foundation
+            at The Linux Foundation
           </p>
           <ul className="mt-5 flex flex-wrap gap-2">
             {LINKS.map((link) => (
