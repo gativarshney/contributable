@@ -29,7 +29,7 @@ export default async function CheckPage() {
     <>
       <section className="relative overflow-hidden">
         <div className="hero-glow" aria-hidden="true" />
-        <div className="shell relative grid items-center gap-12 pt-[clamp(2.5rem,9svh,7rem)] pb-16 md:pb-24 lg:grid-cols-[1.15fr_1fr]">
+        <div className="shell relative grid grid-cols-[minmax(0,1fr)] items-center gap-12 pt-[clamp(2.5rem,9svh,7rem)] pb-16 md:pb-24 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
           <div>
             <p className="eyebrow">Check any repository</p>
             <h1 className="display mt-6 text-[clamp(2.4rem,min(6vw,9svh),4.25rem)]">

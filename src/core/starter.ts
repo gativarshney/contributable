@@ -116,7 +116,7 @@ export type StarterState = "available" | "claimed" | "in-progress" | "stale";
 export interface StarterFacts {
   /** Number of people assigned. */
   assignees: number;
-  /** Open pull requests that reference or close this issue. */
+  /** Open or merged pull requests that reference or close this issue. */
   linkedOpenPulls: number;
   /** Most recent claim comment, if any. */
   lastClaimAt: string | null;

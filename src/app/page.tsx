@@ -63,7 +63,12 @@ export default async function HomePage() {
         </h1>
         <p className="text-ink-2 mt-4 max-w-xl text-balance sm:mt-5 sm:text-lg">
           See how fast a project replies to a first pull request and how often it merges
-          one. Search every Google Summer of Code organisation, or check any repository.
+          one.
+          {/* The pill above already names the programme; phones keep the line short. */}
+          <span className="max-sm:hidden">
+            {" "}
+            Search every Google Summer of Code organisation, or check any repository.
+          </span>
         </p>
       </Field>
 

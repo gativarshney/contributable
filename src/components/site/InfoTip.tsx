@@ -24,7 +24,7 @@ export function InfoTip({
   side = "top",
 }: {
   text: string;
-  /** Which edge of the icon the bubble lines up with, so it stays on screen. On phones it sits above the tab bar instead. */
+  /** Which edge of the icon the bubble lines up with, so it stays on screen. On phones and tablets it sits above the tab bar instead. */
   align?: "left" | "right";
   /** Below is for places that clip upwards, such as a table header. */
   side?: "top" | "bottom";
@@ -53,7 +53,7 @@ export function InfoTip({
         role="tooltip"
         className={`border-hair-strong bg-bg-2 text-ink-2 pointer-events-none invisible absolute z-50 w-64 rounded-xl border p-3 text-left text-xs leading-relaxed font-normal tracking-normal whitespace-normal normal-case opacity-0 shadow-lg transition-opacity duration-150 group-focus-within/tip:visible group-focus-within/tip:opacity-100 group-hover/tip:visible group-hover/tip:opacity-100 ${
           side === "top" ? "bottom-full mb-2" : "top-full mt-2"
-        } ${align === "left" ? "-left-2" : "-right-2"} max-sm:fixed max-sm:inset-x-4 max-sm:top-auto max-sm:bottom-20 max-sm:mb-0 max-sm:w-auto max-sm:text-sm`}
+        } ${align === "left" ? "-left-2" : "-right-2"} max-lg:fixed max-lg:inset-x-4 max-lg:top-auto max-lg:bottom-20 max-lg:mb-0 max-lg:w-auto max-lg:text-sm`}
       >
         {text}
       </span>

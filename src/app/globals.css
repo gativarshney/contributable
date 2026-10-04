@@ -523,13 +523,13 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   body {
     padding-bottom: calc(3.5rem + env(safe-area-inset-bottom));
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .tabbar {
     display: none;
   }

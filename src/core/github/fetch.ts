@@ -279,18 +279,23 @@ export function toIssueSummary(
   };
 }
 
-/** Open pull requests still linked to an issue, and its most recent claim comment. */
+/**
+ * Pull requests still linked to an issue, and its most recent claim comment. A merged
+ * pull request counts too: the work often lands without a "Fixes" line, and the issue
+ * is left open by mistake, so it is not free for a newcomer.
+ */
 export function starterSignals(raw: RawStarter): {
   linkedOpenPulls: number;
   lastClaimAt: string | null;
 } {
-  const open = new Set<number>();
+  const linked = new Set<number>();
   for (const event of raw.timelineItems.nodes) {
     const target = event.source ?? event.subject;
     if (!target || target.__typename !== "PullRequest" || target.number === undefined)
       continue;
-    if (event.__typename === "DisconnectedEvent") open.delete(target.number);
-    else if (target.state === "OPEN") open.add(target.number);
+    if (event.__typename === "DisconnectedEvent") linked.delete(target.number);
+    else if (target.state === "OPEN" || target.state === "MERGED")
+      linked.add(target.number);
   }
   let lastClaimAt: string | null = null;
   for (const comment of raw.comments.nodes) {
@@ -300,7 +305,7 @@ export function starterSignals(raw: RawStarter): {
         lastClaimAt = comment.createdAt;
     }
   }
-  return { linkedOpenPulls: open.size, lastClaimAt };
+  return { linkedOpenPulls: linked.size, lastClaimAt };
 }
 
 interface FactsResult {

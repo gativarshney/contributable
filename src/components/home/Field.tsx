@@ -101,7 +101,7 @@ export function Field({
   const stack = query.join(", ");
 
   return (
-    <section className="relative flex min-h-[calc(100svh-7rem)] flex-col overflow-hidden md:min-h-[calc(100svh-3.5rem)]">
+    <section className="relative flex min-h-[calc(100svh-8.5rem)] flex-col overflow-hidden lg:min-h-[calc(100svh-3.5rem)]">
       <div className="hero-glow" aria-hidden="true" />
       {values.length > 0 ? (
         <Skyline
@@ -113,7 +113,7 @@ export function Field({
         />
       ) : null}
 
-      <div className="shell relative flex flex-col items-center pt-[clamp(1.5rem,5svh,4.5rem)] pb-[clamp(7rem,20svh,16rem)] text-center">
+      <div className="shell relative flex flex-col items-center pt-[clamp(1rem,4svh,4.5rem)] pb-[clamp(3.5rem,16svh,16rem)] text-center">
         {children}
 
         <div
@@ -142,7 +142,7 @@ export function Field({
           ))}
         </div>
 
-        <div className="grid w-full justify-items-center">
+        <div className="grid w-full grid-cols-[minmax(0,1fr)] justify-items-center">
           <div
             className={`col-start-1 row-start-1 mt-4 w-full max-w-xl ${panel(mode === "check")}`}
             inert={mode !== "check"}
@@ -210,15 +210,17 @@ export function Field({
 
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
               <span className="text-ink-3 mr-1 text-sm">Try</span>
-              {chips.map((chip) => {
+              {chips.map((chip, i) => {
                 const on = query.includes(chip);
                 return (
                   <button
                     key={chip}
+                    // One row on a phone: the first three chips are enough to show the idea.
+                    data-extra={i >= 3 || undefined}
                     type="button"
                     onClick={() => toggle(chip)}
                     aria-pressed={on}
-                    className={`min-h-8 rounded-full border px-3 font-mono text-xs transition-colors ${
+                    className={`min-h-8 rounded-full border px-3 font-mono text-xs transition-colors max-sm:data-extra:hidden ${
                       on
                         ? "border-accent text-accent"
                         : "border-hair-strong text-ink-2 hover:text-ink hover:border-ink-3"
