@@ -151,10 +151,12 @@ export default async function GuidePage() {
 
       <section className="border-hair mt-12 border-t pt-10">
         <h2 className="font-display text-2xl">The checklist</h2>
-        <ol className="mt-6 space-y-5">
+        <ol className="mt-6 grid gap-3 sm:grid-cols-2">
           {CHECKLIST.map(([question, how], i) => (
-            <li key={question} className="flex gap-4">
-              <span className="num text-accent pt-0.5 text-sm">{i + 1}</span>
+            <li key={question} className="card flex gap-4 p-5">
+              <span className="bg-accent-soft text-accent num grid size-8 shrink-0 place-items-center rounded-full text-sm font-medium">
+                {i + 1}
+              </span>
               <div>
                 <p className="font-medium">{question}</p>
                 <p className="text-ink-2 mt-1 text-sm">{how}</p>
@@ -166,11 +168,11 @@ export default async function GuidePage() {
 
       <section className="border-hair mt-12 border-t pt-10">
         <h2 className="font-display text-2xl">How to read each number</h2>
-        <dl className="mt-6 space-y-5">
+        <dl className="border-hair mt-6 divide-y divide-[var(--hair)] rounded-2xl border">
           {READING.map(([term, meaning]) => (
-            <div key={term}>
+            <div key={term} className="grid gap-1 p-5 sm:grid-cols-[11rem_1fr] sm:gap-6">
               <dt className="font-medium">{term}</dt>
-              <dd className="text-ink-2 mt-1 text-sm">{meaning}</dd>
+              <dd className="text-ink-2 text-sm">{meaning}</dd>
             </div>
           ))}
         </dl>

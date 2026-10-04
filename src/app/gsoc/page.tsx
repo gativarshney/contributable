@@ -94,6 +94,9 @@ export default async function GsocPage({
   const minYears = Math.min(3, Math.max(1, Number(one(params.years)) || 1));
   const sort = (one(params.sort) in ORG_SORTS ? one(params.sort) : "reply") as OrgSort;
   const category = one(params.category);
+  const activeFilters = [category, year, minYears > 1, sort !== "reply"].filter(
+    Boolean,
+  ).length;
 
   const index = await getIndex();
   const all = allOrgStats(index.rows);
@@ -215,46 +218,65 @@ export default async function GsocPage({
             autoComplete="off"
           />
         </label>
-        <label className="block">
-          <span className="text-ink-2 mb-1.5 block text-xs">Category</span>
-          <select name="category" defaultValue={category} className="field">
-            <option value="">Any category</option>
-            {categories.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
+        {/* On a phone the other filters fold away behind one button. */}
+        <input
+          type="checkbox"
+          id="gsoc-more"
+          data-ui
+          defaultChecked={activeFilters > 0}
+          className="peer sr-only"
+        />
+        <label
+          htmlFor="gsoc-more"
+          className="btn btn-ghost w-full cursor-pointer peer-focus-visible:outline-2 sm:hidden"
+        >
+          More filters
+          {activeFilters > 0 ? (
+            <span className="num text-accent">{activeFilters}</span>
+          ) : null}
         </label>
-        <label className="block">
-          <span className="text-ink-2 mb-1.5 block text-xs">Took part in</span>
-          <select name="year" defaultValue={year ? String(year) : ""} className="field">
-            <option value="">Any year</option>
-            {GSOC_YEARS.map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="block">
-          <span className="text-ink-2 mb-1.5 block text-xs">Years participated</span>
-          <select name="years" defaultValue={String(minYears)} className="field">
-            <option value="1">1 or more</option>
-            <option value="2">2 or more</option>
-            <option value="3">All 3</option>
-          </select>
-        </label>
-        <label className="block">
-          <span className="text-ink-2 mb-1.5 block text-xs">Sort by</span>
-          <select name="sort" defaultValue={sort} className="field">
-            {Object.entries(ORG_SORTS).map(([key, label]) => (
-              <option key={key} value={key}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <div className="hidden gap-3 peer-checked:grid sm:contents">
+          <label className="block">
+            <span className="text-ink-2 mb-1.5 block text-xs">Category</span>
+            <select name="category" defaultValue={category} className="field">
+              <option value="">Any category</option>
+              {categories.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block">
+            <span className="text-ink-2 mb-1.5 block text-xs">Took part in</span>
+            <select name="year" defaultValue={year ? String(year) : ""} className="field">
+              <option value="">Any year</option>
+              {GSOC_YEARS.map((y) => (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block">
+            <span className="text-ink-2 mb-1.5 block text-xs">Years participated</span>
+            <select name="years" defaultValue={String(minYears)} className="field">
+              <option value="1">1 or more</option>
+              <option value="2">2 or more</option>
+              <option value="3">All 3</option>
+            </select>
+          </label>
+          <label className="block">
+            <span className="text-ink-2 mb-1.5 block text-xs">Sort by</span>
+            <select name="sort" defaultValue={sort} className="field">
+              {Object.entries(ORG_SORTS).map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
       </FilterForm>
 
       <ScrollToList id="organisations" page={page} />
@@ -277,7 +299,7 @@ export default async function GsocPage({
                   {rankable ? position : ""}
                 </span>
                 <OrgLogo src={stats.org.logo} name={stats.org.name} />
-                <div className="min-w-0 flex-1 basis-60">
+                <div className="min-w-0 flex-1 basis-40 sm:basis-60">
                   <h2 className="text-base font-medium">
                     <Link
                       href={`/gsoc/${stats.org.slug}`}
@@ -303,9 +325,9 @@ export default async function GsocPage({
                     ))}
                   </p>
                 </div>
-                <dl className="grid shrink-0 grid-cols-3 gap-x-6 text-right">
+                <dl className="grid w-full shrink-0 grid-cols-3 gap-x-4 text-right sm:w-auto sm:gap-x-6">
                   <div>
-                    <dt className="text-ink-3 flex items-center justify-end gap-1 text-xs whitespace-nowrap">
+                    <dt className="text-ink-3 flex items-center justify-end gap-1 text-xs sm:whitespace-nowrap">
                       Reply in 7 days
                       <InfoTip text={REPLY_7D_INFO} align="right" />
                     </dt>
@@ -319,7 +341,7 @@ export default async function GsocPage({
                     <dd className="text-ink-3 num text-[11px]">{stats.replyN} PRs</dd>
                   </div>
                   <div>
-                    <dt className="text-ink-3 flex items-center justify-end gap-1 text-xs whitespace-nowrap">
+                    <dt className="text-ink-3 flex items-center justify-end gap-1 text-xs sm:whitespace-nowrap">
                       Merged
                       <InfoTip text={MERGED_INFO} align="right" />
                     </dt>
@@ -335,8 +357,8 @@ export default async function GsocPage({
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-ink-3 flex items-center justify-end gap-1 text-xs whitespace-nowrap">
-                      Starter issues
+                    <dt className="text-ink-3 flex items-center justify-end gap-1 text-xs sm:whitespace-nowrap">
+                      Free issues
                       <InfoTip text={STARTER_INFO} align="right" />
                     </dt>
                     <dd className="num text-xl font-medium">{stats.available}</dd>

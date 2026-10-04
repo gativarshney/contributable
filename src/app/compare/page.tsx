@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Drift, DriftPill, PageMark } from "@/components/site/Drift";
 import Link from "next/link";
+import { famousPair } from "@/components/home/Story";
 import { Sparkline } from "@/components/data/Sparkline";
 import type { IndexRow } from "@/core/published";
 import { getIndex } from "@/lib/data";
@@ -139,6 +140,33 @@ export default async function ComparePage({
   const rows = wanted.flatMap((id) => byId.get(id) ?? []);
   const missing = wanted.filter((id) => !byId.has(id));
   const ids = rows.map((r) => r.id);
+  // Ready-made comparisons for an empty page, all from the current index.
+  const solid = index.rows.filter((r) => r.replyN >= 20 && r.replyHours !== null);
+  const pair = famousPair(index.rows);
+  const byStars = [...solid].sort((a, b) => b.stars - a.stars);
+  const bySpeed = [...solid].sort((a, b) => a.replyHours! - b.replyHours!);
+  const suggestions = [
+    pair
+      ? {
+          title: "Same stars, different wait",
+          note: "Two well-known projects with almost the same number of stars.",
+          rows: [pair.fast, pair.slow],
+        }
+      : null,
+    {
+      title: "The most starred",
+      note: "The two biggest projects in the index.",
+      rows: byStars.slice(0, 2),
+    },
+    {
+      title: "The fastest to reply",
+      note: "Among projects with at least 20 outside pull requests.",
+      rows: bySpeed.slice(0, 2),
+    },
+  ].filter(
+    (s): s is { title: string; note: string; rows: IndexRow[] } =>
+      s !== null && s.rows.length === 2,
+  );
   const link = (list: string[]) =>
     list.length ? `/compare?repos=${list.join(",")}` : "/compare";
 
@@ -206,16 +234,51 @@ export default async function ComparePage({
       ) : null}
 
       {rows.length === 0 ? (
-        <div className="card mt-8 max-w-xl p-6">
-          <p className="font-medium">Nothing to compare yet</p>
-          <p className="text-ink-2 mt-2 text-sm">
-            Add a repository above, or pick some from{" "}
+        <section className="mt-10">
+          <h2 className="font-medium">Nothing to compare yet. Try one of these:</h2>
+          <ul className="mt-4 grid gap-4 md:grid-cols-3">
+            {suggestions.map((s) => (
+              <li key={s.title}>
+                <Link
+                  href={link(s.rows.map((r) => r.id))}
+                  className="card door group flex h-full flex-col p-5"
+                >
+                  <span className="flex -space-x-2" aria-hidden="true">
+                    {s.rows.map((r) => (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        key={r.id}
+                        src={`https://github.com/${r.id.split("/")[0]}.png?size=72`}
+                        alt=""
+                        width={36}
+                        height={36}
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                        className="ring-bg-2 bg-bg-3 size-9 rounded-lg ring-4"
+                      />
+                    ))}
+                  </span>
+                  <span className="text-accent mt-4 text-xs">{s.title}</span>
+                  <span className="mt-1 font-medium break-words">
+                    {s.rows[0].id} <span className="text-ink-3 font-normal">vs</span>{" "}
+                    {s.rows[1].id}
+                  </span>
+                  <span className="text-ink-2 mt-2 flex-1 text-sm">{s.note}</span>
+                  <span className="text-ink-2 group-hover:text-ink mt-4 text-sm transition-colors">
+                    Compare <span aria-hidden="true">→</span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p className="text-ink-3 mt-4 text-sm">
+            Or add any repository above, or pick some from{" "}
             <Link href="/explore" className="link">
               Explore
             </Link>
             .
           </p>
-        </div>
+        </section>
       ) : (
         <div className="border-hair mt-8 overflow-x-auto rounded-2xl border">
           <table className="data-table min-w-[640px]">

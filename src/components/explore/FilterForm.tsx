@@ -21,6 +21,7 @@ export function FilterForm({
       className={className}
       onChange={(event) => {
         const form = event.currentTarget;
+        if ((event.target as HTMLElement).closest("[data-ui]")) return;
         const typing = (event.target as HTMLElement).matches('input[type="search"]');
         if (timer.current) clearTimeout(timer.current);
         // Typing waits for a pause; everything else applies at once.

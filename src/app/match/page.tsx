@@ -83,76 +83,129 @@ export default async function MatchPage({ searchParams }: Props) {
         />
       </div>
 
-      <form action="/match" className="mt-8 grid max-w-3xl gap-5 sm:grid-cols-2">
-        <div className="sm:col-span-2">
-          <label htmlFor="stack" className="text-ink-2 mb-1.5 block text-xs">
-            What do you code in? Languages, frameworks or topics, separated by commas
+      <div className="mt-8 grid items-start gap-6 lg:grid-cols-[1fr_20rem]">
+        <form action="/match" className="card grid gap-5 p-6 sm:grid-cols-2 md:p-7">
+          <div className="sm:col-span-2">
+            <label htmlFor="stack" className="text-ink-2 mb-1.5 block text-xs">
+              What do you code in? Languages, frameworks or topics, separated by commas
+            </label>
+            <input
+              id="stack"
+              name="stack"
+              defaultValue={input.stack.join(", ")}
+              placeholder="python, django, machine-learning"
+              className="field"
+              autoComplete="off"
+              required
+            />
+            <StackFromGitHub target="stack" />
+          </div>
+          <label className="block">
+            <span className="text-ink-2 mb-1.5 block text-xs">Your level</span>
+            <select name="level" defaultValue={input.level} className="field">
+              {Object.entries(LEVELS).map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </select>
           </label>
-          <input
-            id="stack"
-            name="stack"
-            defaultValue={input.stack.join(", ")}
-            placeholder="python, django, machine-learning"
-            className="field"
-            autoComplete="off"
-            required
-          />
-          <StackFromGitHub target="stack" />
-        </div>
-        <label className="block">
-          <span className="text-ink-2 mb-1.5 block text-xs">Your level</span>
-          <select name="level" defaultValue={input.level} className="field">
-            {Object.entries(LEVELS).map(([key, label]) => (
-              <option key={key} value={key}>
-                {label}
-              </option>
+          <label className="block">
+            <span className="text-ink-2 mb-1.5 block text-xs">Your goal</span>
+            <select name="goal" defaultValue={input.goal} className="field">
+              {Object.entries(GOALS).map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block">
+            <span className="text-ink-2 mb-1.5 block text-xs">Hours per week</span>
+            <input
+              type="number"
+              name="hours"
+              min={1}
+              max={80}
+              defaultValue={input.hours}
+              className="field num"
+            />
+          </label>
+          <label className="block">
+            <span className="text-ink-2 mb-1.5 block text-xs">Time zone</span>
+            <select name="tz" defaultValue={String(input.tz)} className="field">
+              {[
+                [-480, "Pacific (UTC-8)"],
+                [-300, "Eastern (UTC-5)"],
+                [0, "UTC"],
+                [60, "Central Europe (UTC+1)"],
+                [180, "East Africa, Moscow (UTC+3)"],
+                [330, "India (UTC+5:30)"],
+                [480, "China, Singapore (UTC+8)"],
+                [540, "Japan, Korea (UTC+9)"],
+              ].map(([minutes, label]) => (
+                <option key={minutes} value={minutes}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="sm:col-span-2">
+            <button className="btn">Find projects</button>
+          </div>
+        </form>
+
+        <aside className="card hero-glow-card p-6">
+          <p className="eyebrow !text-accent">What you get</p>
+          <ul className="mt-5 space-y-5">
+            {(
+              [
+                [
+                  "M4 6h16M4 12h10M4 18h6",
+                  "Projects that use your stack",
+                  `Picked from ${index.rows.length.toLocaleString("en")} measured repositories.`,
+                ],
+                [
+                  "M12 7v5l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+                  "Ordered by who answers",
+                  "The ones that reply to newcomers fastest come first.",
+                ],
+                [
+                  "M5 12.5 10 17 19 7.5",
+                  "A reason for every pick",
+                  "Each project says why it is on your list.",
+                ],
+              ] as const
+            ).map(([icon, title, text]) => (
+              <li key={title} className="flex gap-3">
+                <span className="border-accent/40 bg-accent-soft/40 text-accent grid size-9 shrink-0 place-items-center rounded-full border">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="size-4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d={icon} />
+                  </svg>
+                </span>
+                <span>
+                  <span className="block text-sm font-medium">{title}</span>
+                  <span className="text-ink-2 mt-0.5 block text-xs leading-relaxed">
+                    {text}
+                  </span>
+                </span>
+              </li>
             ))}
-          </select>
-        </label>
-        <label className="block">
-          <span className="text-ink-2 mb-1.5 block text-xs">Your goal</span>
-          <select name="goal" defaultValue={input.goal} className="field">
-            {Object.entries(GOALS).map(([key, label]) => (
-              <option key={key} value={key}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="block">
-          <span className="text-ink-2 mb-1.5 block text-xs">Hours per week</span>
-          <input
-            type="number"
-            name="hours"
-            min={1}
-            max={80}
-            defaultValue={input.hours}
-            className="field num"
-          />
-        </label>
-        <label className="block">
-          <span className="text-ink-2 mb-1.5 block text-xs">Time zone</span>
-          <select name="tz" defaultValue={String(input.tz)} className="field">
-            {[
-              [-480, "Pacific (UTC-8)"],
-              [-300, "Eastern (UTC-5)"],
-              [0, "UTC"],
-              [60, "Central Europe (UTC+1)"],
-              [180, "East Africa, Moscow (UTC+3)"],
-              [330, "India (UTC+5:30)"],
-              [480, "China, Singapore (UTC+8)"],
-              [540, "Japan, Korea (UTC+9)"],
-            ].map(([minutes, label]) => (
-              <option key={minutes} value={minutes}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <div className="sm:col-span-2">
-          <button className="btn">Find projects</button>
-        </div>
-      </form>
+          </ul>
+          <p className="text-ink-3 border-hair mt-6 border-t pt-4 text-xs">
+            No sign-in. The link to your result can be shared.
+          </p>
+        </aside>
+      </div>
 
       {asked ? (
         <section className="border-hair mt-12 border-t pt-10" aria-live="polite">
