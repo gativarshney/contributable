@@ -2,7 +2,9 @@ import Link from "next/link";
 import { OrgLogo } from "@/components/data/OrgLogo";
 import type { AvailableIssue, IndexRow } from "@/core/published";
 import { duration, inTen, percent } from "@/lib/format";
-import { allOrgStats, isRanked, rankOrgs } from "@/lib/gsoc/orgs";
+import { allOrgStats, GSOC_ORGS, isRanked, rankOrgs } from "@/lib/gsoc/orgs";
+import { Drift } from "@/components/site/Drift";
+import { GsocMark } from "@/components/data/GsocMark";
 import { famousPair } from "./Story";
 
 /** Enough outside pull requests that a figure is not luck. */
@@ -61,6 +63,14 @@ export function Features({
 }) {
   if (rows.length === 0) return null;
 
+  // Two rows of organisation logos, alternating so neighbours differ.
+  const withLogos = GSOC_ORGS.filter((o) => o.logo);
+  const logoRow = (half: number) =>
+    withLogos
+      .filter((_, i) => i % 2 === half)
+      .slice(0, 40)
+      .map((org) => <OrgLogo key={org.slug} src={org.logo} name={org.name} size={52} />);
+
   const solid = rows.filter((r) => r.replyN >= SOLID && r.replyHours !== null);
   const fastest = [...solid]
     .filter((r) => r.mergeRate !== null)
@@ -83,6 +93,24 @@ export function Features({
   return (
     <section id="inside" className="relative scroll-mt-20 pt-6 pb-20 md:pt-10 md:pb-28">
       <div className="shell reveal">
+        <Link
+          href="/gsoc"
+          className="group text-ink-2 hover:text-ink mx-auto flex w-fit items-center gap-2.5 text-sm transition-colors"
+        >
+          <GsocMark size={22} />
+          Every Google Summer of Code organisation, 2024 to 2026
+          <span
+            className="transition-transform group-hover:translate-x-1"
+            aria-hidden="true"
+          >
+            →
+          </span>
+        </Link>
+        <div className="mt-6 mb-20 space-y-4 md:mb-28">
+          <Drift seconds={80} items={logoRow(0)} />
+          <Drift seconds={95} reverse items={logoRow(1)} />
+        </div>
+
         <p className="eyebrow">Everything here</p>
         <h2 className="display mt-5 max-w-3xl text-[clamp(2rem,4.6vw,3.25rem)]">
           One place to pick, <em>check and start.</em>

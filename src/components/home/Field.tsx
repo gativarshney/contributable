@@ -109,11 +109,11 @@ export function Field({
           lit={lit}
           anchor="bottom"
           reactive
-          className="skyline-fade pointer-events-none absolute inset-x-0 bottom-0 h-[clamp(13rem,50svh,33rem)]"
+          className="skyline-fade pointer-events-none absolute inset-x-0 bottom-0 h-[clamp(10rem,36svh,24rem)]"
         />
       ) : null}
 
-      <div className="shell relative flex flex-col items-center pt-[clamp(1rem,3svh,3.5rem)] pb-[clamp(8rem,26svh,21rem)] text-center">
+      <div className="shell relative flex flex-col items-center pt-[clamp(1.5rem,5svh,4.5rem)] pb-[clamp(7rem,20svh,16rem)] text-center">
         {children}
 
         <div

@@ -119,7 +119,7 @@ export function Skyline({
         const peak = Math.max(1, ...values);
         // A year reads as a long horizon; a few weeks read better as a compact block.
         const compact = columns <= 26;
-        const maxHeight = compact ? 3.4 : 7.5;
+        const maxHeight = compact ? 3.4 : 4.6;
         // Wider blocks are turned less, so their long side stays inside the frame.
         const baseYaw = !compact ? -0.16 : columns > 14 ? -0.4 : -0.62;
         const reduceMotion = window.matchMedia(
@@ -288,8 +288,8 @@ export function Skyline({
           );
           // A wide block sits closer to the camera at one end, so look a little lower to centre it.
           camera.lookAt(0, (compact && columns > 14 ? -1.6 : maxHeight * 0.22) + lift, 0);
-          fog.near = distance * 0.97;
-          fog.far = distance * (compact ? 1.9 : 1.3);
+          fog.near = distance * 1.02;
+          fog.far = distance * (compact ? 2.2 : 1.7);
           camera.updateProjectionMatrix();
         }
 
