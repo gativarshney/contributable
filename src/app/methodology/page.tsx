@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageMark } from "@/components/site/Drift";
 import Link from "next/link";
+import { JumpBar } from "@/components/site/JumpBar";
 
 export const metadata: Metadata = {
   title: "Methodology and limitations",
@@ -132,9 +133,31 @@ const limitations = [
   "Activity is not quality. A quiet repository can be finished; a busy one can be unstable.",
 ];
 
-function Block({ title, children }: { title: string; children: React.ReactNode }) {
+/** Short labels for the section bar. */
+const JUMPS = [
+  { id: "how", label: "How it works" },
+  { id: "rules", label: "Rules" },
+  { id: "contributors", label: "For contributors" },
+  { id: "definitions", label: "Definitions" },
+  { id: "data", label: "Data and API" },
+  { id: "limits", label: "Limitations" },
+  { id: "privacy", label: "Privacy" },
+];
+
+function Block({
+  id,
+  title,
+  children,
+}: {
+  id: string;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
-    <section className="border-hair grid gap-6 border-t py-12 md:grid-cols-[220px_1fr] md:gap-12">
+    <section
+      id={id}
+      className="border-hair grid gap-6 border-t py-12 md:grid-cols-[220px_1fr] md:gap-12"
+    >
       <h2 className="text-lg font-medium tracking-tight">{title}</h2>
       <div>{children}</div>
     </section>
@@ -156,7 +179,9 @@ export default function MethodologyPage() {
         stop being useful.
       </p>
 
-      <Block title="How it works">
+      <JumpBar items={JUMPS} />
+
+      <Block id="how" title="How it works">
         <ol className="space-y-6">
           {steps.map(([title, body], i) => (
             <li key={title} className="flex gap-5">
@@ -170,7 +195,7 @@ export default function MethodologyPage() {
         </ol>
       </Block>
 
-      <Block title="Rules we hold to">
+      <Block id="rules" title="Rules we hold to">
         <dl className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
           {rules.map(([term, detail]) => (
             <div key={term}>
@@ -181,7 +206,7 @@ export default function MethodologyPage() {
         </dl>
       </Block>
 
-      <Block title="For contributors">
+      <Block id="contributors" title="For contributors">
         <dl className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
           {contributorSignals.map(([term, detail]) => (
             <div key={term}>
@@ -196,7 +221,7 @@ export default function MethodologyPage() {
         </p>
       </Block>
 
-      <Block title="The index: every definition">
+      <Block id="definitions" title="The index: every definition">
         <dl className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
           {definitions.map(([term, detail]) => (
             <div key={term}>
@@ -219,7 +244,7 @@ export default function MethodologyPage() {
         </ul>
       </Block>
 
-      <Block title="Data, API and credits">
+      <Block id="data" title="Data, API and credits">
         <div className="text-ink-2 max-w-2xl space-y-4 text-[15px]">
           <p>
             Source: the GitHub GraphQL API, public data only, read by a scheduled job in
@@ -252,7 +277,7 @@ export default function MethodologyPage() {
         </div>
       </Block>
 
-      <Block title="Limitations">
+      <Block id="limits" title="Limitations">
         <ul className="space-y-3">
           {limitations.map((item) => (
             <li key={item} className="flex gap-4">
@@ -266,7 +291,7 @@ export default function MethodologyPage() {
         </ul>
       </Block>
 
-      <Block title="Privacy">
+      <Block id="privacy" title="Privacy">
         <p className="text-ink-2 max-w-2xl">
           Contributable retrieves only what GitHub already serves publicly for the
           repository you enter. It stores nothing, sets no cookies and asks for no
