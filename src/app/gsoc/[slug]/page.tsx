@@ -46,6 +46,11 @@ export default async function OrgPage({ params }: Props) {
   if (!org) notFound();
   const index = await getIndex();
   const stats = orgStats(org, index.rows);
+  // Rows with no figure at all go below the table instead of filling it with n/a.
+  const hasFigure = (r: (typeof stats.repos)[number]) =>
+    r.replyHours !== null || r.mergeRate !== null;
+  const measured = stats.repos.filter(hasFigure);
+  const quiet = stats.repos.filter((r) => !hasFigure(r));
   const na = (value: number | null) => (value === null ? "n/a" : percent(value));
 
   return (
@@ -153,7 +158,27 @@ export default async function OrgPage({ params }: Props) {
             The most starred repositories with a push in the last 180 days and at least 5
             pull requests.
           </p>
-          <RepoTable rows={stats.repos} />
+          <RepoTable rows={measured.length > 0 ? measured : stats.repos} />
+          {measured.length > 0 && quiet.length > 0 ? (
+            <details className="border-hair group mt-4 rounded-2xl border px-5 py-4">
+              <summary className="text-ink-2 hover:text-ink cursor-pointer text-sm">
+                {quiet.length} more {quiet.length === 1 ? "repository" : "repositories"}{" "}
+                with too few outside pull requests to measure
+              </summary>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {quiet.map((row) => (
+                  <li key={row.id}>
+                    <Link
+                      href={`/repo/${row.id}`}
+                      className="border-hair-strong text-ink-2 hover:text-ink inline-flex min-h-8 items-center rounded-full border px-3 font-mono text-xs transition-colors"
+                    >
+                      {row.id}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ) : null}
         </>
       )}
     </article>
