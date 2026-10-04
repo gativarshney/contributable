@@ -160,10 +160,26 @@ export function Field({
                 </Link>
               ))}
             </div>
-            <p className="text-ink-2 mt-4 text-center text-sm">
-              Any public GitHub repository, GSoC or not. Where to start, who replies, and
-              whether outside work gets merged.
-            </p>
+            <div className="mt-5 flex flex-col items-center gap-2">
+              <p className="border-accent/50 bg-accent-soft/50 text-accent inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="size-4 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12.5 10 17 19 7.5" />
+                </svg>
+                Any public GitHub repo, not only GSoC
+              </p>
+              <p className="text-ink-2 text-center text-sm">
+                Where to start, who replies, and whether outside work gets merged.
+              </p>
+            </div>
           </div>
 
           <div

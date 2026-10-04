@@ -31,7 +31,21 @@ export default async function CheckPage() {
         <div className="hero-glow" aria-hidden="true" />
         <div className="shell relative grid grid-cols-[minmax(0,1fr)] items-center gap-12 pt-[clamp(2.5rem,9svh,7rem)] pb-16 md:pb-24 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
           <div>
-            <p className="eyebrow">Check any repository</p>
+            <p className="border-accent/50 bg-accent-soft/50 text-accent inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium">
+              <svg
+                viewBox="0 0 24 24"
+                className="size-4 shrink-0"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12.5 10 17 19 7.5" />
+              </svg>
+              Any public GitHub repo, not only GSoC
+            </p>
             <h1 className="display mt-6 text-[clamp(2.4rem,min(6vw,9svh),4.25rem)]">
               Know a repository <em>before your first pull request.</em>
             </h1>
@@ -40,7 +54,7 @@ export default async function CheckPage() {
               organisation or not. It is read and measured while you wait.
             </p>
             <ul className="mt-5 flex flex-wrap gap-2 text-sm">
-              {["Any public repository", "GSoC or not", "No sign-in"].map((item) => (
+              {["No sign-in", "Public data only", "Ready in seconds"].map((item) => (
                 <li
                   key={item}
                   className="border-hair-strong text-ink-2 inline-flex items-center gap-1.5 rounded-full border px-3 py-1"
