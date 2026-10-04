@@ -228,6 +228,16 @@ async function main() {
     perOwner.set(owner, (perOwner.get(owner) ?? 0) + 1);
   }
   const rankOf = (repo: UniverseRepo) => rank.get(idOf(repo).toLowerCase()) ?? 0;
+  // Results under older rules are re-read fastest published reply first. A reply that
+  // looks very fast is the likeliest to be a bot the newer rules catch, and those
+  // repositories sit at the top of every list on the site.
+  const published = await readJson<{ rows: IndexRow[] }>(join(DATA_DIR, "index.json"));
+  const replyHours = new Map(
+    (published?.rows ?? []).map((row) => [row.id.toLowerCase(), row.replyHours]),
+  );
+  const replyOf = (repo: UniverseRepo) =>
+    replyHours.get(idOf(repo).toLowerCase()) ?? Number.POSITIVE_INFINITY;
+  const isOutdated = (repo: UniverseRepo) => outdated.has(idOf(repo).toLowerCase());
   const queue = universe.repos
     .map((repo) => ({ repo, updatedAt: known.get(idOf(repo).toLowerCase()) ?? null }))
     .filter(({ repo, updatedAt }) => {
@@ -246,9 +256,20 @@ async function main() {
       if (a.updatedAt === null) {
         return rankOf(a.repo) - rankOf(b.repo) || latestYear(b.repo) - latestYear(a.repo);
       }
+      if (isOutdated(a.repo) !== isOutdated(b.repo)) return isOutdated(a.repo) ? -1 : 1;
+      if (isOutdated(a.repo)) {
+        const order = replyOf(a.repo) - replyOf(b.repo);
+        if (order) return order;
+      }
       return Date.parse(a.updatedAt) - Date.parse(b.updatedAt!);
     });
   console.log(`queue: ${queue.length} of ${universe.repos.length} due`);
+  console.log(
+    `first: ${queue
+      .slice(0, 8)
+      .map(({ repo }) => idOf(repo))
+      .join(", ")}`,
+  );
 
   // A repository never read, or read under older rules, costs a full year of history.
   const isFullRead = (item: { repo: UniverseRepo; updatedAt: string | null }) =>
