@@ -3,6 +3,7 @@ export default function Loading() {
   return (
     <div
       className="shell py-10 md:py-14"
+      role="status"
       aria-busy="true"
       aria-label="Loading repository"
     >

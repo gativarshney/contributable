@@ -360,7 +360,7 @@ body {
 /* Status colours. Each is always paired with a word or a number, never used alone. */
 :root {
   --fast: var(--accent);
-  --slow: oklch(58% 0.16 45);
+  --slow: oklch(54% 0.16 45);
   --merged: var(--accent);
   --stale: oklch(50% 0.01 240);
 }

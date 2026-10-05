@@ -61,7 +61,7 @@ export function buildReport(dataset: Dataset): Report {
 export const PREPARING = {
   title: "Preparing this report",
   message:
-    "This one is taking longer than usual. Leave the page open and it will fill in on its own.",
+    "Lots of people are checking repositories right now. Leave this page open: it tries again on its own.",
 };
 
 export function toReportError(error: unknown): ReportError {

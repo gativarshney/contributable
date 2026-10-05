@@ -198,7 +198,7 @@ export function ReportLoader({ owner, name }: { owner: string; name: string }) {
           code: "unavailable",
           title: "Preparing this report",
           message:
-            "This one is taking longer than usual. Leave the page open and it will fill in on its own.",
+            "Lots of people are checking repositories right now. Leave this page open: it tries again on its own.",
         },
       });
 
@@ -285,12 +285,13 @@ export function ReportLoader({ owner, name }: { owner: string; name: string }) {
   // Anything short of "this repository does not exist" is retried quietly, with a
   // growing pause, so the visitor never has to do it by hand.
   const waiting = state.status === "error" && state.error.code !== "not_found";
+  const retryIn = Math.min(300, 30 * 2 ** Math.min(attempt, 4));
   useEffect(() => {
     if (!waiting) return;
-    const seconds = Math.min(300, 30 * 2 ** Math.min(attempt, 4));
+    const seconds = retryIn;
     const timer = setTimeout(() => setAttempt((n) => n + 1), seconds * 1000);
     return () => clearTimeout(timer);
-  }, [waiting, attempt]);
+  }, [waiting, attempt, retryIn]);
 
   if (state.status === "ready") return <ReportView report={state.report} />;
 
@@ -304,6 +305,11 @@ export function ReportLoader({ owner, name }: { owner: string; name: string }) {
           Preparing <em>this report.</em>
         </h1>
         <p className="text-ink-2 mt-5 max-w-xl text-lg">{state.error.message}</p>
+        <p className="text-ink-3 mt-3 text-sm">
+          Next try in about{" "}
+          {retryIn < 60 ? `${retryIn} seconds` : `${Math.round(retryIn / 60)} minutes`}.
+          Every repository already in Explore opens instantly in the meantime.
+        </p>
         <div className="bg-bg-3 mt-8 h-1 max-w-sm overflow-hidden rounded-full">
           <div className="stage-pulse bg-accent h-full w-1/3 rounded-full" />
         </div>

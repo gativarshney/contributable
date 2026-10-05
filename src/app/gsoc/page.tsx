@@ -271,7 +271,9 @@ export default async function GsocPage({
           id="gsoc-more"
           data-ui
           defaultChecked={activeFilters > 0}
-          className="peer sr-only"
+          aria-label="Show more filters"
+          // Phones only: on wider screens every filter is already showing.
+          className="peer sr-only sm:hidden"
         />
         <label
           htmlFor="gsoc-more"
