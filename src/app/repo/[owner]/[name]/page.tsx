@@ -18,6 +18,7 @@ import { SaveButton } from "@/components/site/Saved";
 import type { StarterIssue } from "@/core/metrics";
 import type { IndexRow, RepoDetail } from "@/core/published";
 import { getIndex, getRepoDetail } from "@/lib/data";
+import { SITE_IMAGE } from "@/lib/site-image";
 import {
   compact,
   count,
@@ -53,7 +54,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${id}: reply time and merge rate for outside contributors`,
     description: verdictLine(detail),
     alternates: { canonical: `/repo/${id}` },
-    openGraph: { title: id, description: verdictLine(detail), url: `/repo/${id}` },
+    openGraph: {
+      title: id,
+      description: verdictLine(detail),
+      url: `/repo/${id}`,
+      images: [SITE_IMAGE],
+    },
   };
 }
 

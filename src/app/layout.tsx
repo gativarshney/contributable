@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { CommandPalette } from "@/components/site/CommandPalette";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
+import { SITE_IMAGE } from "@/lib/site-image";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -47,11 +48,13 @@ export const metadata: Metadata = {
     title: "Contributable",
     description,
     url: "/",
+    images: [SITE_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: "Contributable",
     description,
+    images: [SITE_IMAGE.url],
   },
   robots: { index: true, follow: true },
 };
