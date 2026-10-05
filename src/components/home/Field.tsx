@@ -154,22 +154,8 @@ export function Field({
             className={`col-start-1 row-start-1 mt-4 w-full max-w-xl ${panel(mode === "check")}`}
             inert={mode !== "check"}
           >
-            <RepoInput />
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <span className="text-ink-3 mr-1 text-sm">Try</span>
-              {examples.map((repo, i) => (
-                <Link
-                  key={repo}
-                  href={`/repo/${repo}`}
-                  // On a phone two examples fit on one row, which keeps the hero short.
-                  className={`border-hair-strong text-ink-2 hover:text-ink hover:border-ink-3 inline-flex min-h-8 items-center rounded-full border px-3 font-mono text-xs transition-colors ${i >= 2 ? "max-sm:hidden" : ""}`}
-                >
-                  {repo}
-                </Link>
-              ))}
-            </div>
-            <div className="mt-5 flex flex-col items-center gap-2">
-              <p className="border-accent/50 bg-accent-soft/50 text-accent inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium">
+            <div className="mb-3 flex justify-center">
+              <p className="border-accent/50 bg-accent-soft/50 text-accent inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium sm:text-sm">
                 <svg
                   viewBox="0 0 24 24"
                   className="size-4 shrink-0"
@@ -184,9 +170,20 @@ export function Field({
                 </svg>
                 Any public GitHub repo, not only GSoC
               </p>
-              <p className="text-ink-2 text-center text-sm max-sm:hidden">
-                Where to start, who replies, and whether outside work gets merged.
-              </p>
+            </div>
+            <RepoInput />
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <span className="text-ink-3 mr-1 text-sm">Try</span>
+              {examples.map((repo, i) => (
+                <Link
+                  key={repo}
+                  href={`/repo/${repo}`}
+                  // On a phone two examples fit on one row, which keeps the hero short.
+                  className={`border-hair-strong text-ink-2 hover:text-ink hover:border-ink-3 inline-flex min-h-8 items-center rounded-full border px-3 font-mono text-xs transition-colors ${i >= 2 ? "max-sm:hidden" : ""}`}
+                >
+                  {repo}
+                </Link>
+              ))}
             </div>
           </div>
 
