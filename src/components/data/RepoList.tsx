@@ -75,6 +75,22 @@ function Figure({
   );
 }
 
+/** A thin bar under a figure, filled 0 to 1. Decorative: the figure above says it. */
+const Meter = ({ fill, tone = "bg-accent" }: { fill: number; tone?: string }) => (
+  <span className="bg-bg-3 mt-1.5 block h-1 overflow-hidden rounded-full">
+    <span
+      className={`block h-full rounded-full ${tone}`}
+      style={{ width: `${Math.round(Math.max(0, Math.min(1, fill)) * 100)}%` }}
+    />
+  </span>
+);
+
+/** Reply speed as a fill: a week or more is empty, a quarter of an hour or less is full. */
+const speedFill = (hours: number) =>
+  1 -
+  (Math.log10(Math.max(0.25, Math.min(hours, 168))) - Math.log10(0.25)) /
+    Math.log10(168 / 0.25);
+
 export function RepoCard({ row }: { row: IndexRow }) {
   const trend = TREND_LABEL[row.trend];
   const [owner, name] = row.id.split("/");
@@ -123,23 +139,22 @@ export function RepoCard({ row }: { row: IndexRow }) {
           value={firstReply(row.replyHours, row.replyN)}
           note={`${row.replyN} outside PRs`}
           className={SPEED_CLASS[replySpeed(row.replyHours)]}
+          extra={
+            row.replyHours !== null ? (
+              <Meter
+                fill={speedFill(row.replyHours)}
+                tone={replySpeed(row.replyHours) === "slow" ? "bg-slow" : "bg-accent"}
+              />
+            ) : null
+          }
         />
         <Figure
           label="Merged"
           info={MERGED_INFO}
           infoAlign="right"
           value={percent(row.mergeRate)}
-          note={`of ${row.decided} decided`}
-          extra={
-            row.mergeRate !== null ? (
-              <span className="bg-bg-3 mt-1.5 block h-1 overflow-hidden rounded-full">
-                <span
-                  className="bg-accent block h-full rounded-full"
-                  style={{ width: `${Math.round(row.mergeRate * 100)}%` }}
-                />
-              </span>
-            ) : null
-          }
+          note={`of ${row.decided} closed`}
+          extra={row.mergeRate !== null ? <Meter fill={row.mergeRate} /> : null}
         />
         <Figure
           label="Free issues"
@@ -148,6 +163,7 @@ export function RepoCard({ row }: { row: IndexRow }) {
           value={String(row.available)}
           note="available"
           className={row.available > 0 ? "text-accent" : "text-ink-3"}
+          extra={<Meter fill={row.available / 5} />}
         />
       </dl>
       <div className="mt-4 flex flex-wrap items-center gap-1.5">

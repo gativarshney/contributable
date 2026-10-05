@@ -45,7 +45,13 @@ function LogoWall({
     <div className="logo-wall mt-10" aria-hidden="true">
       <div className="logo-wall-track">
         {[...logos, ...logos].map((org, i) => (
-          <OrgLogo key={`${org.slug}-${i}`} src={org.logo} name={org.name} size={48} />
+          <OrgLogo
+            key={`${org.slug}-${i}`}
+            src={org.logo}
+            name={org.name}
+            size={48}
+            eager
+          />
         ))}
       </div>
     </div>
@@ -126,6 +132,15 @@ export default async function GsocPage({
     return `/gsoc${text ? `?${text}` : ""}#organisations`;
   };
   const withData = measurable.filter((s) => s.repos.length > 0).length;
+  // Headline figures across every measured GSoC repository, pooled by sample size.
+  const gsocRows = index.rows.filter((r) => r.gsoc && r.within7d !== null);
+  const replySample = gsocRows.reduce((sum, r) => sum + r.replyN, 0);
+  const answered7d = replySample
+    ? gsocRows.reduce((sum, r) => sum + r.within7d! * r.replyN, 0) / replySample
+    : null;
+  const freeIssues = index.rows
+    .filter((r) => r.gsoc)
+    .reduce((sum, r) => sum + r.available, 0);
   // Rank positions, counted only for organisations with enough pull requests.
   const positions = new Map<string, number>();
   if (sort === "reply") {
@@ -157,6 +172,36 @@ export default async function GsocPage({
           outside pull requests to take a place; smaller ones follow, unranked.
         </p>
       </header>
+
+      {index.rows.length > 0 ? (
+        <dl className="border-hair mt-8 grid grid-cols-2 overflow-hidden rounded-2xl border md:grid-cols-4">
+          {(
+            [
+              [count(all.length), "organisations", "in GSoC 2024 to 2026"],
+              [count(withData), "measured", "with repositories on GitHub"],
+              [
+                percent(answered7d),
+                "answered in 7 days",
+                `of ${count(replySample)} outside PRs, all organisations`,
+              ],
+              [count(freeIssues), "free first issues", "unclaimed right now"],
+            ] as const
+          ).map(([value, label, note], i) => (
+            <div
+              key={label}
+              className={`border-hair p-5 ${i % 2 ? "border-l" : ""} ${i > 1 ? "border-t md:border-t-0" : ""} ${i === 2 ? "md:border-l" : ""}`}
+            >
+              <dt className="text-ink-3 text-xs">{label}</dt>
+              <dd
+                className={`num mt-1.5 text-3xl leading-none font-medium tracking-tight ${i >= 2 ? "text-accent" : ""}`}
+              >
+                {value}
+              </dd>
+              <dd className="text-ink-3 mt-2 text-[11px]">{note}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
 
       <LogoWall orgs={all.map((s) => s.org)} />
 
