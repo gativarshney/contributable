@@ -128,7 +128,8 @@ interface Awaiting {
 
 /**
  * Time to first human response. An item nobody has answered stays in the estimate as
- * "still waiting" up to now, or up to the moment it was closed unanswered.
+ * "still waiting" up to now, even when it was closed: closed unanswered counts as never
+ * answered rather than being dropped, so the shares match the counts on the page.
  */
 function responseTiming(items: readonly Awaiting[], now: number): ResponseTiming {
   const observations: Observation[] = items.map((item) => {
@@ -141,8 +142,7 @@ function responseTiming(items: readonly Awaiting[], now: number): ResponseTiming
         observed: true,
       };
     }
-    const until = item.closedAt !== null ? Date.parse(item.closedAt) : now;
-    return { hours: Math.max(0, hoursBetween(item.createdAt, until)), observed: false };
+    return { hours: Math.max(0, hoursBetween(item.createdAt, now)), observed: false };
   });
   const curve = kaplanMeier(observations);
   const enough = items.length >= MIN_SAMPLE;

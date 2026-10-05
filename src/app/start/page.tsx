@@ -201,6 +201,33 @@ export default async function StartPage() {
             solves the issue, and link the issue in your pull request. One good pull
             request beats five rushed ones.
           </p>
+          <div className="border-hair bg-bg-2 rounded-xl border p-4 text-sm">
+            <p className="text-ink font-medium">On GitHub, that means</p>
+            <ol className="text-ink-2 mt-2 list-decimal space-y-1 pl-5">
+              <li>
+                <strong className="text-ink font-medium">Fork</strong> the repository (the
+                Fork button, top right).
+              </li>
+              <li>
+                <strong className="text-ink font-medium">Clone</strong> your fork and make
+                a branch: <code>git checkout -b fix-issue-123</code>
+              </li>
+              <li>
+                <strong className="text-ink font-medium">Commit</strong> your change:{" "}
+                <code>git commit -m &quot;Fix …&quot;</code> (add <code>-s</code> if the
+                project asks for a DCO sign-off).
+              </li>
+              <li>
+                <strong className="text-ink font-medium">Push</strong> the branch:{" "}
+                <code>git push origin fix-issue-123</code>
+              </li>
+              <li>
+                <strong className="text-ink font-medium">Open the pull request</strong>{" "}
+                from the banner GitHub shows on your fork, and write &quot;Fixes
+                #123&quot; in the description.
+              </li>
+            </ol>
+          </div>
           <p>
             Every project page tells you how long a first reply usually takes there. If it
             says three days, silence on day two is normal.

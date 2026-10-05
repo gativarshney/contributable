@@ -315,7 +315,14 @@ export function PositionStrip({
     kind === "share"
       ? values.filter((v) => v < value).length
       : values.filter((v) => v > value).length;
-  const share = better / values.length;
+  // The repository itself is among the values, so it is compared with the others only.
+  // Rounded down, so 99.8% never reads as "faster than 100%".
+  const others = Math.max(1, values.length - 1);
+  const first = better >= others;
+  const shown = `${Math.floor((better / others) * 100)}%`;
+  const summary = first
+    ? `${kind === "hours" ? "The fastest" : "The highest"} of ${count(values.length)} measured repositories`
+    : `${kind === "hours" ? "Faster" : "Higher"} than ${shown} of ${count(others)} other measured repositories`;
   // At most 300 ticks: enough to show the shape without weighing the page down.
   const stride = Math.ceil(values.length / 300);
   return (
@@ -324,7 +331,7 @@ export function PositionStrip({
         viewBox={`0 0 ${w} 22`}
         className="w-full max-w-xs"
         role="img"
-        aria-label={`${label}: better than ${percent(share)} of ${values.length} measured repositories`}
+        aria-label={`${label}: ${summary}`}
       >
         {values
           .filter((_, i) => i % stride === 0)
@@ -350,9 +357,7 @@ export function PositionStrip({
         />
       </svg>
       <p className="text-ink-3 text-xs">
-        {kind === "hours" ? "Faster" : "Higher"} than{" "}
-        <span className="num text-ink-2">{percent(share)}</span> of {count(values.length)}{" "}
-        measured repositories
+        {summary}
         {kind === "hours" ? ` (${duration(value)})` : ""}
       </p>
     </div>

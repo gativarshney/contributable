@@ -104,6 +104,18 @@ describe("computeMetrics", () => {
     expect(timing.within48h).toBeCloseTo(0.4, 10);
   });
 
+  it("counts a pull request closed before anyone replied as never answered", () => {
+    const answered = Array.from({ length: 19 }, () =>
+      pull({ daysAgo: 60, firstResponseAt: ago(60, 10) }),
+    );
+    // Closed an hour after opening, with no reply from anyone.
+    const closed = pull({ daysAgo: 60, closedAt: ago(60, 1) });
+    const timing = computeMetrics([...answered, closed], [], NOW).pullFirstResponse;
+    expect(timing.waiting).toBe(1);
+    expect(timing.within48h).toBeCloseTo(0.95, 10);
+    expect(timing.within7d).toBeCloseTo(0.95, 10);
+  });
+
   it("reports median and p75 reply times", () => {
     const hours = [1, 2, 3, 4, 5, 6, 7, 8];
     const pulls = hours.map((h) => pull({ daysAgo: 60, firstResponseAt: ago(60, h) }));

@@ -107,8 +107,12 @@ function bestIndex(rows: IndexRow[], line: (typeof LINES)[number]): number {
   const present = scores.filter((s): s is number => s !== null);
   if (present.length < 2) return -1;
   const target = line.better === "low" ? Math.min(...present) : Math.max(...present);
-  // No winner on a tie.
-  return present.filter((s) => s === target).length === 1 ? scores.indexOf(target) : -1;
+  // No winner on a tie, including values that only differ after rounding: 89.6% and
+  // 90.0% both read "90%", so marking one better would look wrong.
+  if (present.filter((s) => s === target).length !== 1) return -1;
+  const winner = scores.indexOf(target);
+  const shown = line.value(rows[winner]);
+  return rows.some((r, i) => i !== winner && line.value(r) === shown) ? -1 : winner;
 }
 
 export default async function ComparePage({

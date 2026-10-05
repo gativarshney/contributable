@@ -250,7 +250,10 @@ export default async function IssuesPage({
                     <span className="tag">help wanted</span>
                   ) : null}
                   <span className="text-ink-3 num text-xs">
-                    Opened {date(issue.createdAt)}
+                    Active {date(issue.updatedAt)}
+                    {issue.createdAt.slice(0, 7) !== issue.updatedAt.slice(0, 7)
+                      ? ` · opened ${date(issue.createdAt)}`
+                      : ""}
                   </span>
                 </p>
                 <p className="text-ink-3 num mt-1.5 text-xs sm:hidden">

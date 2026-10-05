@@ -284,7 +284,9 @@ export default async function GsocPage({
       <ScrollToList id="organisations" page={page} />
       <p id="organisations" className="mt-6 text-sm" aria-live="polite">
         <span className="num font-medium">{ranked.length}</span>{" "}
-        <span className="text-ink-2">organisations</span>
+        <span className="text-ink-2">
+          {ranked.length === 1 ? "organisation" : "organisations"} measured on GitHub
+        </span>
       </p>
 
       <ol className="mt-4 space-y-3">

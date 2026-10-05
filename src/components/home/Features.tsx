@@ -226,7 +226,7 @@ export function Features({
           One place to pick, <em>check and start.</em>
         </h2>
         <p className="text-ink-2 mt-4 max-w-xl text-lg">
-          Every tile shows today&apos;s data. Open one for the full page.
+          Every tile shows the latest figures from the index. Open one for the full page.
         </p>
 
         <ul className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-6">

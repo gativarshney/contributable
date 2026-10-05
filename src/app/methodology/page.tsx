@@ -272,7 +272,9 @@ export default function MethodologyPage() {
           </p>
           <p>
             The reply-time estimate uses the Kaplan-Meier method, the standard way to
-            measure a wait when some of the waiting has not ended yet.
+            measure a wait when some of the waiting has not ended yet. A pull request
+            closed before anyone replied counts as never answered, not dropped, so the
+            shares always match the answered and unanswered counts on each page.
           </p>
         </div>
       </Block>
