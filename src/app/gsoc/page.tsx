@@ -45,13 +45,7 @@ function LogoWall({
     <div className="logo-wall mt-10" aria-hidden="true">
       <div className="logo-wall-track">
         {[...logos, ...logos].map((org, i) => (
-          <OrgLogo
-            key={`${org.slug}-${i}`}
-            src={org.logo}
-            name={org.name}
-            size={48}
-            eager
-          />
+          <OrgLogo key={`${org.slug}-${i}`} src={org.logo} name={org.name} size={48} />
         ))}
       </div>
     </div>
