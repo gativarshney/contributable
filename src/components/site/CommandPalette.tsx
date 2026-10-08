@@ -205,7 +205,7 @@ export function PaletteButton() {
     <button
       type="button"
       onClick={() => document.dispatchEvent(new Event("palette:open"))}
-      className="border-hair-strong text-ink-2 hover:text-ink inline-flex h-9 items-center gap-2 rounded-full border px-3 text-sm transition-colors"
+      className="border-hair-strong text-ink-2 hover:text-ink inline-flex h-9 shrink-0 items-center gap-2 rounded-full border px-3 text-sm transition-colors"
       aria-label="Search and jump to a page"
     >
       <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
@@ -217,7 +217,7 @@ export function PaletteButton() {
           strokeLinecap="round"
         />
       </svg>
-      <kbd className="num hidden text-xs sm:inline">Ctrl K</kbd>
+      <kbd className="num hidden text-xs whitespace-nowrap sm:inline">Ctrl K</kbd>
     </button>
   );
 }

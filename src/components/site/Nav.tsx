@@ -55,7 +55,7 @@ const pageOf = (pathname: string) =>
 export function HeaderNav() {
   const current = pageOf(usePathname());
   return (
-    <ul className="border-hair bg-bg-2/60 hidden items-center gap-0.5 rounded-full border p-1 backdrop-blur-xl lg:flex">
+    <ul className="border-hair-strong bg-bg-2/90 hidden items-center gap-0.5 rounded-full border p-1 shadow-[inset_0_1px_0_var(--hair),0_10px_30px_-14px_rgb(0_0_0/0.55)] backdrop-blur-xl lg:flex">
       {PAGES.map((page) => (
         <li key={page.href}>
           <Link
