@@ -1,0 +1,24 @@
+{
+  "v": 2,
+  "generatedAt": "2026-10-10T21:59:01.530Z",
+  "universe": 1580,
+  "indexed": 1575,
+  "fresh2d": 1574,
+  "fresh7d": 1575,
+  "oldestUpdatedAt": "2026-10-06T06:18:52.097Z",
+  "lastRun": {
+    "startedAt": "2026-10-10T21:58:52.900Z",
+    "finishedAt": "2026-10-10T21:59:01.530Z",
+    "refreshed": 5,
+    "failed": 0,
+    "pointsSpent": 22,
+    "stoppedBy": "done"
+  },
+  "failures": [
+    {
+      "id": "brl-cad/brlcad",
+      "reason": "not-found",
+      "at": "2026-10-10T05:38:06.426Z"
+    }
+  ]
+}
