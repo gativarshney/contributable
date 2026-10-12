@@ -62,17 +62,17 @@ const pageOf = (pathname: string) =>
 export function HeaderNav() {
   const current = pageOf(usePathname());
   return (
-    <ul className="border-hair-strong bg-bg-2/90 hidden items-center gap-0.5 rounded-full border p-1 shadow-[inset_0_1px_0_var(--hair),0_10px_30px_-14px_rgb(0_0_0/0.55)] backdrop-blur-xl lg:flex">
+    <ul className="border-hair-strong from-bg-2 to-bg-2/80 hidden items-center gap-0.5 rounded-full border bg-gradient-to-b p-1 shadow-[inset_0_1px_0_rgb(255_255_255/0.06),0_10px_30px_-14px_rgb(0_0_0/0.55)] backdrop-blur-xl lg:flex">
       {PAGES.map((page) => (
         <li key={page.href}>
           <Link
             href={page.href}
             aria-current={current === page ? "page" : undefined}
             title={page.label === "GSoC" ? "Google Summer of Code" : undefined}
-            className={`inline-flex h-9 items-center rounded-full px-3 text-sm whitespace-nowrap transition-colors duration-200 2xl:px-4 ${
+            className={`inline-flex h-9 items-center rounded-full px-3 text-sm whitespace-nowrap transition-[color,background-color,box-shadow] duration-200 2xl:px-4 ${
               current === page
-                ? "bg-bg-3 text-ink shadow-[inset_0_0_0_1px_var(--hair-strong)]"
-                : "text-ink-2 hover:text-ink"
+                ? "text-ink bg-[var(--seg-active)] font-medium shadow-[0_1px_3px_rgb(0_0_0/0.22),0_0_0_1px_var(--hair-strong),inset_0_1px_0_rgb(255_255_255/0.08)]"
+                : "text-ink-2 hover:text-ink hover:bg-[var(--seg-hover)]"
             }`}
           >
             {page.label}
