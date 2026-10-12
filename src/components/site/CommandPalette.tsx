@@ -217,7 +217,9 @@ export function PaletteButton() {
           strokeLinecap="round"
         />
       </svg>
-      <kbd className="num hidden text-xs whitespace-nowrap sm:inline">Ctrl K</kbd>
+      <kbd className="num hidden text-xs whitespace-nowrap sm:inline lg:hidden xl:inline">
+        Ctrl K
+      </kbd>
     </button>
   );
 }

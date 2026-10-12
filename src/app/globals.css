@@ -516,7 +516,7 @@ body {
   bottom: 0;
   z-index: 40;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   border-top: 1px solid var(--hair-strong);
   background: color-mix(in oklch, var(--bg) 88%, transparent);
   backdrop-filter: blur(16px);

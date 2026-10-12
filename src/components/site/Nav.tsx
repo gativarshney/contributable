@@ -12,8 +12,15 @@ export const PAGES = [
     href: "/explore",
     label: "Explore",
     short: "Explore",
-    paths: ["/explore", "/match", "/compare", "/saved"],
+    paths: ["/explore", "/compare", "/saved"],
     icon: "M10.5 3a7.5 7.5 0 1 0 4.7 13.3L20 21l1-1-4.7-4.8A7.5 7.5 0 0 0 10.5 3z",
+  },
+  {
+    href: "/match",
+    label: "Help me choose",
+    short: "Choose",
+    paths: ["/match"],
+    icon: "M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z",
   },
   {
     href: "/gsoc",
@@ -62,7 +69,7 @@ export function HeaderNav() {
             href={page.href}
             aria-current={current === page ? "page" : undefined}
             title={page.label === "GSoC" ? "Google Summer of Code" : undefined}
-            className={`inline-flex h-9 items-center rounded-full px-3.5 text-sm whitespace-nowrap transition-colors duration-200 lg:px-4 ${
+            className={`inline-flex h-9 items-center rounded-full px-3 text-sm whitespace-nowrap transition-colors duration-200 2xl:px-4 ${
               current === page
                 ? "bg-bg-3 text-ink shadow-[inset_0_0_0_1px_var(--hair-strong)]"
                 : "text-ink-2 hover:text-ink"
