@@ -10,6 +10,9 @@
   --hair: oklch(19% 0.01 240 / 0.1);
   --hair-strong: oklch(19% 0.01 240 / 0.2);
   --accent: oklch(46% 0.085 195);
+  /* The menu, styled like a segmented control: the active page sits on a raised key. */
+  --seg-active: oklch(100% 0 0);
+  --seg-hover: oklch(19% 0.01 240 / 0.05);
   --accent-ink: oklch(98% 0.01 195);
   --accent-soft: oklch(93% 0.03 195);
   --series-2: oklch(60% 0.11 62);
@@ -30,6 +33,8 @@
   --hair: oklch(94% 0 0 / 0.08);
   --hair-strong: oklch(94% 0 0 / 0.16);
   --accent: oklch(82% 0.1 190);
+  --seg-active: oklch(27% 0.008 240);
+  --seg-hover: oklch(94% 0 0 / 0.05);
   --accent-ink: oklch(16% 0.02 190);
   --accent-soft: oklch(26% 0.04 195);
   --series-2: oklch(79% 0.1 72);

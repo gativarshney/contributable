@@ -23,7 +23,7 @@ export function SiteHeader() {
               <span className="bg-hair-strong h-4 w-px" aria-hidden="true" />
               <span>
                 <span className="text-ink-3">by </span>
-                <span className="text-ink-2 group-hover:text-ink font-medium transition-colors">
+                <span className="text-accent font-semibold transition-opacity group-hover:opacity-80">
                   Gati Varshney
                 </span>
               </span>
