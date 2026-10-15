@@ -98,7 +98,7 @@ function inAgeRange(
   return age >= minDays * DAY_MS && age < maxDays * DAY_MS;
 }
 
-function mergeOutcome(pulls: readonly PullSummary[]): MergeOutcome {
+export function mergeOutcome(pulls: readonly PullSummary[]): MergeOutcome {
   const merged = pulls.filter((p) => p.mergedAt !== null);
   const closedUnmerged = pulls.filter((p) => p.mergedAt === null && p.closedAt !== null);
   const open = pulls.filter((p) => p.closedAt === null);
@@ -131,7 +131,7 @@ interface Awaiting {
  * "still waiting" up to now, even when it was closed: closed unanswered counts as never
  * answered rather than being dropped, so the shares match the counts on the page.
  */
-function responseTiming(items: readonly Awaiting[], now: number): ResponseTiming {
+export function responseTiming(items: readonly Awaiting[], now: number): ResponseTiming {
   const observations: Observation[] = items.map((item) => {
     if (item.firstResponseAt !== null) {
       return {
