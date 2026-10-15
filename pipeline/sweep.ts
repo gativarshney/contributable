@@ -8,6 +8,7 @@
  *   index.json               one row per repository, for search and rankings
  *   issues.json              starter issues that are truly available
  *   status.json              freshness, coverage and the last run
+ *   seasons/<id>.json        reply and merge figures for an application season, kept
  *
  * Paths are lower case so a URL in any casing finds its file.
  */
@@ -30,6 +31,12 @@ import {
   type UniverseRepo,
 } from "../src/core/published";
 import { repoState, type RepoState } from "../src/core/schema";
+import {
+  computeSeason,
+  rememberSeason,
+  SEASON,
+  type SeasonsFile,
+} from "../src/core/season";
 import { trend, weeklySeries } from "../src/core/trends";
 import { discoverUniverse, MAX_REPOS_PER_ACCOUNT } from "./universe/discover";
 import type { GsocOrg } from "./universe/gsoc";
@@ -353,12 +360,45 @@ async function main() {
     await rm(pathOf("repos", id), { force: true });
     await rm(pathOf("state", id), { force: true });
   }
+  // Application season figures come from stored history while it still holds those
+  // months, and are kept once it no longer does. Only repositories read since the last
+  // run are recomputed.
+  const seasonsPath = join(DATA_DIR, "seasons", `${SEASON.id}.json`);
+  const seasons: SeasonsFile = (await readJson<SeasonsFile>(seasonsPath)) ?? {
+    v: PUBLISHED_VERSION,
+    season: SEASON,
+    generatedAt: finishedAt.toISOString(),
+    repos: {},
+  };
+  const kept: SeasonsFile["repos"] = {};
+  for (const detail of details) {
+    const id = idOf(detail).toLowerCase();
+    const previous = seasons.repos[id];
+    if (previous && previous.syncedAt === detail.updatedAt) {
+      kept[id] = previous;
+      continue;
+    }
+    const state = await readState(id);
+    if (!state) continue;
+    kept[id] = rememberSeason(
+      previous,
+      detail.updatedAt,
+      computeSeason(state, finishedAt),
+    );
+  }
+  seasons.repos = kept;
+  seasons.generatedAt = finishedAt.toISOString();
+  await writeAtomic(seasonsPath, JSON.stringify(seasons));
+
   const rows: IndexRow[] = details
     .map((detail) => ({
       ...detail,
       programs: inUniverse.get(idOf(detail).toLowerCase())!.programs,
     }))
-    .map(toIndexRow)
+    .map((detail) => ({
+      ...toIndexRow(detail),
+      season: seasons.repos[idOf(detail).toLowerCase()]?.figures ?? null,
+    }))
     .sort((a, b) => a.id.localeCompare(b.id));
   const issues: AvailableIssue[] = details
     .flatMap(availableIssues)
