@@ -201,7 +201,7 @@ export function Features({
     )[0];
 
   return (
-    <section id="inside" className="relative scroll-mt-20 pt-6 pb-20 md:pt-10 md:pb-28">
+    <section id="inside" className="relative scroll-mt-20 pt-6 pb-14 md:pt-10 md:pb-16">
       <div className="shell reveal">
         <Link
           href="/gsoc"
