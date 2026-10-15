@@ -1,5 +1,6 @@
 import type { RepoMetrics } from "./metrics";
 import type { RepoFacts } from "./schema";
+import type { SeasonFigures } from "./season";
 import type { Trend, TrendFlag, WeekPoint } from "./trends";
 
 /** Bumped when a published file changes shape. Readers ignore versions they do not know. */
@@ -81,6 +82,12 @@ export interface IndexRow {
   spark: number[];
   /** Core replies by hour of day in UTC, scaled 0 to 9; null when withheld. */
   hours: number[] | null;
+  /**
+   * The same reply and merge figures for the GSoC application season (see core/season).
+   * Null when the stored history cannot vouch for those months; absent in files
+   * published before the figures existed.
+   */
+  season?: SeasonFigures | null;
 }
 
 export interface AvailableIssue {
