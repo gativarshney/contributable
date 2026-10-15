@@ -181,7 +181,7 @@ export function Story({ rows }: { rows: readonly IndexRow[] }) {
   if (!pair) return null;
 
   return (
-    <section className="border-hair border-t py-20 md:py-28">
+    <section className="border-hair border-t pt-12 pb-16 md:pt-14 md:pb-20">
       <div className="shell reveal">
         <p className="eyebrow">Why it matters</p>
         <h2 className="display mt-5 max-w-3xl text-[clamp(2rem,4.6vw,3.25rem)]">
@@ -218,7 +218,7 @@ export function FourThings({ rows }: { rows: readonly IndexRow[] }) {
   const issues = rows.reduce((sum, r) => sum + r.available, 0);
 
   return (
-    <section className="border-hair border-t py-20 md:py-28">
+    <section className="border-hair border-t pt-12 pb-16 md:pt-14 md:pb-20">
       <div className="shell reveal">
         <p className="eyebrow">What you get</p>
         <h2 className="display mt-5 max-w-3xl text-[clamp(2rem,4.6vw,3.25rem)]">
