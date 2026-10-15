@@ -8,11 +8,13 @@ import {
   MERGED_INFO,
   REPLY_48H_INFO,
   REPLY_7D_INFO,
+  SEASON_INFO,
   STARTER_INFO,
 } from "@/components/site/InfoTip";
+import { SEASON } from "@/core/season";
 import { getIndex } from "@/lib/data";
 import { date, percent } from "@/lib/format";
-import { GSOC_ORGS, MIN_ORG_SAMPLE, orgStats } from "@/lib/gsoc/orgs";
+import { GSOC_ORGS, MIN_ORG_SAMPLE, orgStats, seasonRows } from "@/lib/gsoc/orgs";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -60,6 +62,9 @@ export default async function OrgPage({ params }: Props) {
   if (!org) notFound();
   const index = await getIndex();
   const stats = orgStats(org, index.rows);
+  // The same figures for the application season, from the repositories that have them.
+  const season = orgStats(org, seasonRows(index.rows));
+  const seasonMeasured = stats.repos.filter((r) => r.season).length;
   // Rows with no figure at all go below the table instead of filling it with n/a.
   const hasFigure = (r: (typeof stats.repos)[number]) =>
     r.replyHours !== null || r.mergeRate !== null;
@@ -180,6 +185,41 @@ export default async function OrgPage({ params }: Props) {
             Each figure pools the organisation&apos;s measured repositories, weighted by
             their number of outside pull requests. n/a means fewer than {MIN_ORG_SAMPLE}.
           </p>
+
+          {seasonMeasured > 0 ? (
+            <section className="mt-10" aria-labelledby="season">
+              <h2 id="season" className="font-display text-2xl">
+                During the {SEASON.year} application season
+              </h2>
+              <p className="text-ink-2 mt-2 max-w-2xl text-sm">
+                Outside pull requests opened {SEASON.dates}, when GSoC {SEASON.year}{" "}
+                applicants were contributing. {seasonMeasured} of {stats.repos.length}{" "}
+                {stats.repos.length === 1 ? "repository has" : "repositories have"}{" "}
+                complete history for those months.
+              </p>
+              <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                <Figure
+                  label="Replied within 7 days"
+                  info={SEASON_INFO}
+                  value={na(season.within7d)}
+                  sample={`${season.replyN} outside PRs`}
+                />
+                <Figure
+                  label="Replied within 48 hours"
+                  info={SEASON_INFO}
+                  value={na(season.within48h)}
+                  sample={`${season.replyN} outside PRs`}
+                />
+                <Figure
+                  label="Outside PRs merged"
+                  info={SEASON_INFO}
+                  infoAlign="right"
+                  value={na(season.mergeRate)}
+                  sample={`${season.decided} decided`}
+                />
+              </div>
+            </section>
+          ) : null}
 
           <h2 className="font-display mt-12 text-2xl">Repositories</h2>
           <p className="text-ink-2 mt-2 mb-5 max-w-2xl text-sm">

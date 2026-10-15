@@ -72,6 +72,10 @@ const definitions = [
     "Pull requests opened 30 to 120 days ago. Newer ones have not had time to be answered or merged, so including them would make every project look worse than it is.",
   ],
   [
+    "Application season",
+    "The same reply and merge figures for outside pull requests opened 1 February to 30 April, the months when Google Summer of Code applicants are contributing. They come from the stored year of history while it still holds those months and are kept afterwards. A repository whose first read stopped before reaching February, which happens on the very busiest ones, shows n/a rather than a figure built on part of the picture.",
+  ],
+  [
     "Outside merge rate",
     "Merged, divided by merged plus closed without merging, for outside pull requests in the cohort. Pull requests still open are counted separately and shown next to it.",
   ],
