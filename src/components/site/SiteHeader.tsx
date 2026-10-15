@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { PaletteButton } from "./CommandPalette";
 import { Logo } from "./Logo";
 import { Menu } from "./Menu";
 import { HeaderNav, TabBar } from "./Nav";
 import { SavedLink } from "./Saved";
-import { Star } from "./StarNudge";
+import { GitHubMark } from "./GitHubMark";
 import { REPO_URL } from "@/lib/site";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -37,7 +36,6 @@ export function SiteHeader() {
           <nav aria-label="Primary" className="contents">
             <HeaderNav />
             <div className="flex items-center gap-1.5 justify-self-end sm:gap-2">
-              <PaletteButton />
               <SavedLink />
               <ThemeToggle />
               <a
@@ -47,10 +45,14 @@ export function SiteHeader() {
                 aria-label="Star Contributable on GitHub"
                 title="Star on GitHub"
                 // Phones have the toast, the home card and the footer; the bar is full.
-                className="border-hair-strong bg-bg-2/70 hover:border-accent/70 hover:bg-accent-soft/40 hidden h-9 shrink-0 items-center gap-1.5 rounded-full border pr-3.5 pl-3 text-sm font-medium transition-colors sm:inline-flex"
+                // The search button is gone from the bar (Ctrl K and the Menu still open
+                // it), which leaves room for a proper GitHub button.
+                className="border-hair-strong bg-bg-2/70 text-ink hover:border-accent/70 hover:bg-accent-soft/40 hidden h-9 shrink-0 items-center gap-2 rounded-full border px-3.5 text-sm font-medium transition-colors sm:inline-flex"
               >
-                <Star className="text-accent size-4" />
-                Star
+                <GitHubMark className="size-[17px]" />
+                <span>
+                  Star<span className="hidden 2xl:inline"> on GitHub</span>
+                </span>
               </a>
               <Menu />
             </div>
