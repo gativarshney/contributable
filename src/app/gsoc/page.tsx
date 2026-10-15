@@ -9,8 +9,10 @@ import {
   InfoTip,
   MERGED_INFO,
   REPLY_7D_INFO,
+  SEASON_INFO,
   STARTER_INFO,
 } from "@/components/site/InfoTip";
+import { SEASON } from "@/core/season";
 import { getIndex } from "@/lib/data";
 import { count, date, percent } from "@/lib/format";
 import {
@@ -19,6 +21,8 @@ import {
   isRanked,
   RANK_MIN_SAMPLE,
   ORG_SORTS,
+  hasSeason,
+  seasonRows,
   rankOrgs,
   type OrgSort,
   type OrgStats,
@@ -94,12 +98,17 @@ export default async function GsocPage({
   const minYears = Math.min(3, Math.max(1, Number(one(params.years)) || 1));
   const sort = (one(params.sort) in ORG_SORTS ? one(params.sort) : "reply") as OrgSort;
   const category = one(params.category);
+  const window = one(params.window) === "season" ? "season" : "now";
   const activeFilters = [category, year, minYears > 1, sort !== "reply"].filter(
     Boolean,
   ).length;
 
   const index = await getIndex();
-  const all = allOrgStats(index.rows);
+  // The application-season view swaps every repository's figures for that window's.
+  const seasonReady = hasSeason(index.rows);
+  const inSeason = seasonReady && window === "season";
+  const view = inSeason ? seasonRows(index.rows) : index.rows;
+  const all = allOrgStats(view);
   const measurable = all.filter((s) => !s.org.unmappable);
   const categories = [...new Set(all.flatMap((s) => s.org.categories))].sort();
   const ranked = rankOrgs(
@@ -120,6 +129,7 @@ export default async function GsocPage({
     if (category) out.set("category", category);
     if (minYears > 1) out.set("years", String(minYears));
     if (sort !== "reply") out.set("sort", sort);
+    if (inSeason) out.set("window", "season");
     if (target > 1) out.set("page", String(target));
     const text = out.toString();
     // Page links land on the list itself, not the top of the page.
@@ -127,7 +137,18 @@ export default async function GsocPage({
   };
   const withData = measurable.filter((s) => s.repos.length > 0).length;
   // Headline figures across every measured GSoC repository, pooled by sample size.
-  const gsocRows = index.rows.filter((r) => r.gsoc && r.within7d !== null);
+  const windowHref = (key: "now" | "season") => {
+    const out = new URLSearchParams();
+    if (q) out.set("q", q);
+    if (year) out.set("year", String(year));
+    if (category) out.set("category", category);
+    if (minYears > 1) out.set("years", String(minYears));
+    if (sort !== "reply") out.set("sort", sort);
+    if (key === "season") out.set("window", "season");
+    const text = out.toString();
+    return `/gsoc${text ? `?${text}` : ""}`;
+  };
+  const gsocRows = view.filter((r) => r.gsoc && r.within7d !== null);
   const replySample = gsocRows.reduce((sum, r) => sum + r.replyN, 0);
   const answered7d = replySample
     ? gsocRows.reduce((sum, r) => sum + r.within7d! * r.replyN, 0) / replySample
@@ -164,6 +185,9 @@ export default async function GsocPage({
           days, across all of the organisation&apos;s measured repositories. Ties go to
           the higher outside merge rate. An organisation needs at least {RANK_MIN_SAMPLE}{" "}
           outside pull requests to take a place; smaller ones follow, unranked.
+          {inSeason
+            ? ` In this view, those are the pull requests opened ${SEASON.dates}.`
+            : ""}
         </p>
       </header>
 
@@ -176,7 +200,9 @@ export default async function GsocPage({
               [
                 percent(answered7d),
                 "answered in 7 days",
-                `of ${count(replySample)} outside PRs, all organisations`,
+                inSeason
+                  ? `of ${count(replySample)} outside PRs, ${SEASON.dates}`
+                  : `of ${count(replySample)} outside PRs, all organisations`,
               ],
               [count(freeIssues), "free first issues", "unclaimed right now"],
             ] as const
@@ -241,10 +267,68 @@ export default async function GsocPage({
 
       <GsocTimeline />
 
+      {seasonReady ? (
+        <section
+          aria-labelledby="season-toggle"
+          className="border-accent/40 bg-accent-soft/20 mt-10 rounded-2xl border p-5 md:p-6"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-4">
+            <div className="max-w-2xl min-w-0">
+              <p className="eyebrow !text-accent flex items-center gap-2">
+                <span className="bg-accent text-accent-ink rounded-full px-2 py-0.5 text-[10px] tracking-wider">
+                  New
+                </span>
+                Pick the months
+              </p>
+              <h2 id="season-toggle" className="font-display mt-2 text-xl md:text-2xl">
+                How did they treat newcomers <em>during last application season?</em>
+              </h2>
+              <p className="text-ink-2 mt-2 text-sm">
+                {inSeason
+                  ? `Showing outside pull requests opened ${SEASON.dates}, when GSoC ${SEASON.year} applicants were contributing. Organisations whose stored history for those months is incomplete show n/a.`
+                  : "Showing pull requests opened 30 to 120 days ago. Switch to the months when GSoC 2026 applicants were contributing, which is what your own season will look like."}
+              </p>
+            </div>
+            <div
+              role="group"
+              aria-label="Which months to measure"
+              className="border-hair-strong bg-bg-2/90 inline-flex shrink-0 items-center gap-0.5 rounded-full border p-1"
+            >
+              {(
+                [
+                  ["now", "Recent months", "Recent"],
+                  ["season", SEASON.label, `Season ${SEASON.year}`],
+                ] as const
+              ).map(([key, label, short]) => {
+                const active = (inSeason ? "season" : "now") === key;
+                return (
+                  <Link
+                    key={key}
+                    href={windowHref(key)}
+                    // The panel stays where it is; only the figures below it change.
+                    scroll={false}
+                    aria-current={active ? "page" : undefined}
+                    className={`inline-flex h-10 items-center rounded-full px-4 text-sm whitespace-nowrap transition-colors ${
+                      active
+                        ? "text-ink bg-[var(--seg-active)] font-medium shadow-[0_1px_3px_rgb(0_0_0/0.22),0_0_0_1px_var(--hair-strong)]"
+                        : "text-ink-2 hover:text-ink hover:bg-[var(--seg-hover)]"
+                    }`}
+                  >
+                    <span className="sm:hidden">{short}</span>
+                    <span className="max-sm:hidden">{label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       <FilterForm
         action="/gsoc"
-        className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_auto_auto_auto_auto]"
+        className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_auto_auto_auto_auto]"
       >
+        {inSeason ? <input type="hidden" name="window" value="season" /> : null}
         <label className="block">
           <span className="text-ink-2 mb-1.5 block text-xs">
             Organisation or technology
@@ -374,7 +458,10 @@ export default async function GsocPage({
                   <div>
                     <dt className="text-ink-3 flex items-center justify-end gap-1 text-xs sm:whitespace-nowrap">
                       Reply in 7 days
-                      <InfoTip text={REPLY_7D_INFO} align="right" />
+                      <InfoTip
+                        text={inSeason ? SEASON_INFO : REPLY_7D_INFO}
+                        align="right"
+                      />
                     </dt>
                     <dd className="num text-xl font-medium">
                       {stats.within7d === null ? (

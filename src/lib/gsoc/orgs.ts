@@ -152,6 +152,29 @@ export function rankOrgs(stats: OrgStats[], sort: OrgSort = "reply"): OrgStats[]
   });
 }
 
+/**
+ * The index as it looked during the application season: each row's reply and merge
+ * figures swapped for that window's, so rankings and organisation figures can be
+ * built by the same code. Issue counts stay current; they describe today.
+ */
+export function seasonRows(rows: readonly IndexRow[]): IndexRow[] {
+  return rows.map((row) => {
+    const s = row.season ?? null;
+    return {
+      ...row,
+      replyHours: s?.replyHours ?? null,
+      within48h: s?.within48h ?? null,
+      within7d: s?.within7d ?? null,
+      replyN: s?.replyN ?? 0,
+      mergeRate: s?.mergeRate ?? null,
+      decided: s?.decided ?? 0,
+    };
+  });
+}
+
+/** Whether any row carries season figures yet; the toggle is pointless before then. */
+export const hasSeason = (rows: readonly IndexRow[]) => rows.some((row) => row.season);
+
 export function allOrgStats(rows: readonly IndexRow[]): OrgStats[] {
   return GSOC_ORGS.map((org) => orgStats(org, rows));
 }

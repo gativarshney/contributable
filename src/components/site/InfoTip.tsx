@@ -11,6 +11,9 @@ export const REPLY_48H_INFO =
 export const MERGED_INFO =
   "Share of pull requests from outside contributors that were merged, out of those the project has decided on (merged or closed). Ones still open are left out. Pull requests opened 30 to 120 days ago.";
 
+export const SEASON_INFO =
+  "Outside pull requests opened 1 Feb to 30 Apr 2026, the months when Google Summer of Code 2026 applicants were contributing, measured by the same rules as the rolling figures. n/a means the stored history for those months is incomplete or holds too few pull requests.";
+
 export const STARTER_INFO =
   "Issues labelled for beginners that are really free: open, unassigned, no linked pull request, nobody claimed them in the last 14 days, and updated in the last 60 days.";
 
