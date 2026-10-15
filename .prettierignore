@@ -3,3 +3,6 @@ node_modules
 coverage
 package-lock.json
 next-env.d.ts
+
+# Google Search Console ownership file: must stay byte-for-byte as issued.
+public/google*.html
