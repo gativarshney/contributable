@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { GsocMark } from "@/components/data/GsocMark";
+import { REPO_URL } from "@/lib/site";
 import { Logo } from "./Logo";
+import { Star } from "./StarNudge";
 
 const ICONS = {
   github:
@@ -21,7 +23,7 @@ const SOCIAL: { label: string; href: string; icon: keyof typeof ICONS }[] = [
   { label: "Portfolio", href: "https://gativarshney.github.io/", icon: "portfolio" },
 ];
 
-const REPO = "https://github.com/gativarshney/contributable";
+const REPO = REPO_URL;
 
 /** The same three sections as the header, plus the pages about the project itself. */
 const COLUMNS: { title: string; links: [label: string, href: string][] }[] = [
@@ -129,6 +131,15 @@ export function SiteFooter() {
             <p className="text-ink-2 mt-4 max-w-xs text-sm">
               Pick the project that answers newcomers, not the most famous one.
             </p>
+            <a
+              href={REPO_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="border-hair-strong text-ink-2 hover:border-accent/60 hover:text-ink mt-5 inline-flex h-9 items-center gap-2 rounded-full border px-4 text-sm whitespace-nowrap transition-colors"
+            >
+              <Star className="text-accent size-4" />
+              Star on GitHub
+            </a>
           </div>
           <nav
             aria-label="Footer"

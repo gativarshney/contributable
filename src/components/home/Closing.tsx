@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { count } from "@/lib/format";
+import { Star } from "@/components/site/StarNudge";
+import { REPO_URL } from "@/lib/site";
 
 const DOORS = [
   {
@@ -35,9 +36,9 @@ const DOORS = [
 ] as const;
 
 /** The last thing on the home page: you have seen how it works, now go and use it. */
-export function Closing({ repos, issues }: { repos: number; issues: number }) {
+export function Closing() {
   return (
-    <section className="relative scroll-mt-20 py-20 md:py-28">
+    <section className="border-hair relative scroll-mt-20 border-t pt-12 pb-20 md:pt-14 md:pb-24">
       <div className="shell">
         <div className="mx-auto max-w-2xl text-center">
           <p className="eyebrow">Now it&apos;s yours</p>
@@ -45,8 +46,7 @@ export function Closing({ repos, issues }: { repos: number; issues: number }) {
             You&apos;ve seen how it works. <em>Now use it.</em>
           </h2>
           <p className="text-ink-2 mt-4 text-lg text-balance">
-            {count(repos)} repositories and {count(issues)} free first issues, measured
-            and waiting. Free, no sign-in, nothing to install.
+            Free, no sign-in, nothing to install.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link href="/explore" className="btn">
@@ -76,6 +76,26 @@ export function Closing({ repos, issues }: { repos: number; issues: number }) {
             </li>
           ))}
         </ul>
+
+        <div className="border-accent/40 bg-accent-soft/20 mt-10 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 rounded-2xl border p-5 md:p-6">
+          <div className="flex min-w-0 items-center gap-4">
+            <span
+              className="bg-accent-soft text-accent grid size-10 shrink-0 place-items-center rounded-xl"
+              aria-hidden="true"
+            >
+              <Star className="size-5" />
+            </span>
+            <div className="min-w-0">
+              <p className="font-medium">Contributable is open source</p>
+              <p className="text-ink-2 mt-0.5 text-sm">
+                Star it on GitHub so it&apos;s one click away next time.
+              </p>
+            </div>
+          </div>
+          <a href={REPO_URL} target="_blank" rel="noreferrer" className="btn shrink-0">
+            Star on GitHub
+          </a>
+        </div>
       </div>
     </section>
   );

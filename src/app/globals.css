@@ -239,6 +239,10 @@ body {
   mask-composite: intersect;
 }
 
+.star-nudge {
+  animation: rise 0.35s var(--ease-out) both;
+}
+
 @keyframes rise {
   from {
     opacity: 0;
@@ -287,6 +291,9 @@ body {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .star-nudge {
+    animation: none;
   }
   .reveal {
     opacity: 1;

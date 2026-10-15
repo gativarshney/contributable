@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { CommandPalette } from "@/components/site/CommandPalette";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
+import { StarNudge } from "@/components/site/StarNudge";
 import { SITE_IMAGE } from "@/lib/site-image";
 import "./globals.css";
 
@@ -93,6 +94,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </main>
         <SiteFooter />
         <CommandPalette />
+        <StarNudge />
         <Analytics />
       </body>
     </html>
