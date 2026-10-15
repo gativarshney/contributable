@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { GsocMark } from "@/components/data/GsocMark";
+import { Closing } from "@/components/home/Closing";
 import { Features } from "@/components/home/Features";
 import { Field } from "@/components/home/Field";
 import { Story } from "@/components/home/Story";
@@ -75,6 +76,8 @@ export default async function HomePage() {
       <Features rows={index.rows} issues={issues} />
 
       <Story rows={index.rows} />
+
+      <Closing repos={index.rows.length} issues={issues.length} />
 
       {index.rows.length > 0 ? (
         <p className="shell text-ink-3 border-hair border-t py-8 text-xs">
