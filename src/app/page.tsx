@@ -77,7 +77,7 @@ export default async function HomePage() {
 
       <Story rows={index.rows} />
 
-      <Closing repos={index.rows.length} issues={issues.length} />
+      <Closing />
 
       {index.rows.length > 0 ? (
         <p className="shell text-ink-3 border-hair border-t py-8 text-xs">
