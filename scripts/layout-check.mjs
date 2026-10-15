@@ -10,7 +10,7 @@ import { join } from "node:path";
 
 const BASE = process.env.BASE_URL ?? "http://localhost:3210";
 const CHROME = process.env.CHROME_PATH ?? "google-chrome";
-const WIDTHS = [360, 375, 414, 768, 1024, 1280];
+const WIDTHS = [360, 375, 414, 640, 768, 1024, 1280, 1536];
 const PAGES = [
   "/",
   "/explore",
