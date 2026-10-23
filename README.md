@@ -31,7 +31,7 @@ Contributable measures both and lets you search by them.
 | `/explore`         | Search and filter the index, as cards or a dense table, with shareable URLs    |
 | `/repo/owner/name` | First steps, figures with evidence, 52-week trend, starter issues, reply hours |
 | `/check`           | Paste any public repository and see what to expect before a first pull request |
-| `/gsoc`            | GSoC organisations ranked by a stated rule, with the next programme's timeline |
+| `/gsoc`            | Organisations ranked by a stated rule, next timeline and last season's figures |
 | `/gsoc/slug`       | One organisation: pooled figures and the repository to start with              |
 | `/issues`          | Starter issues that are actually available, across the index                   |
 | `/start`           | Your first pull request in five steps, for people new to open source           |
@@ -129,6 +129,8 @@ Every published file is on the
 | `GET /api/v1/repos`                 | The index; same filters and sorting as Explore |
 | `GET /api/v1/repos/{owner}/{name}`  | Everything on one repo page                    |
 | `GET /api/v1/status`                | Freshness and coverage                         |
+| `GET /api/v1/orgs`                  | Every GSoC organisation as name and slug       |
+| `GET /api/v1/saved?ids=`            | Index rows for a list of repositories          |
 | `GET /badge/{owner}/{name}?metric=` | README badge, `reply` or `merge`               |
 | `GET /feed/repo/{owner}/{name}`     | Atom feed of a repository's available issues   |
 | `GET /feed/issues?lang=&fw=&q=`     | Atom feed for a saved issue search             |
@@ -148,7 +150,8 @@ npm run dev
 ```
 
 Open http://localhost:3000. Requires Node.js 20.9 or newer. The site reads the published
-data branch, so no token is needed to run it.
+data branch, so no token is needed to run it. Measuring a repository that is not in the
+index (the check page) calls GitHub directly; set `GITHUB_TOKEN` to raise that limit.
 
 To run the job yourself:
 
@@ -165,11 +168,13 @@ npm run format:check
 npm run lint
 npm run typecheck
 npm test
+npm run layout
 ```
 
-CI runs those and a production build on every push. The tests cover the survival
-estimate, merge and reply metrics, starter issue states, trends, the explore query,
-the GSoC ranking rule, matching and repository discovery.
+CI runs those and a production build on every push. The layout check opens every page
+at eight widths, from 360 to 1536 pixels, and fails if anything reaches past the screen.
+The tests cover the survival estimate, merge and reply metrics, starter issue states,
+trends, the explore query, the GSoC ranking rule, matching and repository discovery.
 
 ## Contributing
 
@@ -185,8 +190,9 @@ student and
 contributor with The Linux Foundation. Contributable is an independent
 project and is not affiliated with GitHub or Google.
 
-[GitHub](https://github.com/gativarshney) ·
-[LinkedIn](https://www.linkedin.com/in/gativarshney/)
+[LinkedIn](https://www.linkedin.com/in/gativarshney/) ·
+[Portfolio](https://gativarshney.github.io/) ·
+[GitHub](https://github.com/gativarshney)
 
 ## Licence
 
