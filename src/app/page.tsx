@@ -39,33 +39,26 @@ export default async function HomePage() {
   return (
     <>
       <Field chips={chips} examples={EXAMPLES}>
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          <Link
-            href="/gsoc"
-            className="gsoc-pill border-hair-strong bg-bg-2/70 hover:border-accent inline-flex items-center gap-2.5 rounded-full border py-1 pr-4 pl-1.5 text-[13px] backdrop-blur transition-colors"
-          >
-            <GsocMark size={26} />
-            <span className="font-medium">Google Summer of Code</span>
-            <span className="text-ink-2 hidden sm:inline">
-              2027 timeline and {count(GSOC_ORGS.length)} organisations
-            </span>
-            <span aria-hidden="true">→</span>
-          </Link>
-          <Link
-            href="/start"
-            className="border-hair-strong text-ink-2 hover:text-ink bg-bg-2/60 inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] transition-colors"
-          >
-            <span className="bg-accent size-1.5 rounded-full" aria-hidden="true" />
-            New to open source? Start here
-          </Link>
-        </div>
-        <h1 className="display mt-5 max-w-4xl text-[clamp(2.4rem,min(6.6vw,8.6svh),4.75rem)]">
+        {/* One announcement, and only where the tab bar is not already showing GSoC
+            a thumb away: on a phone the headline comes first. */}
+        <Link
+          href="/gsoc"
+          className="gsoc-pill border-hair-strong bg-bg-2/70 hover:border-accent hidden items-center gap-2.5 rounded-full border py-1 pr-4 pl-1.5 text-[13px] backdrop-blur transition-colors lg:inline-flex"
+        >
+          <GsocMark size={26} />
+          <span className="font-medium">Google Summer of Code</span>
+          <span className="text-ink-2">
+            2027 timeline and {count(GSOC_ORGS.length)} organisations
+          </span>
+          <span aria-hidden="true">→</span>
+        </Link>
+        <h1 className="display mt-2 max-w-4xl text-[clamp(2.4rem,min(6.6vw,8.6svh),4.75rem)] lg:mt-5">
           Find a project that <em>answers newcomers.</em>
         </h1>
         <p className="text-ink-2 mt-4 max-w-xl text-balance sm:mt-5 sm:text-lg">
           See how fast a project replies to a first pull request and how often it merges
           one.
-          {/* The pill above already names the programme; phones keep the line short. */}
+          {/* Phones keep the line short; the tab bar already names the programme. */}
           <span className="max-sm:hidden">
             {" "}
             Search every Google Summer of Code organisation, or check any repository.
