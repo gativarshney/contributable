@@ -18,13 +18,25 @@ const DATA_BASE =
 /** How long a page may serve a copy before checking for a newer snapshot. */
 export const DATA_REVALIDATE_SECONDS = 900;
 
+/**
+ * The index and the issue list are read by almost every page, and the index is over a
+ * megabyte. A server instance keeps the parsed copy and reuses it while the fetched text
+ * is unchanged, so it parses once per snapshot instead of once per request. Callers
+ * treat the result as read-only. Per-repository files are too many to keep.
+ */
+const SHARED = new Set(["index.json", "issues.json"]);
+const parsed = new Map<string, { text: string; body: unknown }>();
+
 async function read<T extends { v?: number }>(path: string): Promise<T | null> {
   try {
     const response = await fetch(`${DATA_BASE}/${path}`, {
       next: { revalidate: DATA_REVALIDATE_SECONDS },
     });
     if (!response.ok) return null;
-    const body = (await response.json()) as T;
+    const text = await response.text();
+    const last = parsed.get(path);
+    const body = (last?.text === text ? last.body : JSON.parse(text)) as T;
+    if (SHARED.has(path)) parsed.set(path, { text, body });
     return body.v === PUBLISHED_VERSION ? body : null;
   } catch {
     return null;

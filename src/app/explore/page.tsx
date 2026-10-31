@@ -21,6 +21,7 @@ export const metadata: Metadata = {
   title: "Explore",
   description:
     "Search open source repositories by language, first reply time, outside merge rate and available starter issues.",
+  alternates: { canonical: "/explore" },
 };
 
 const REPLY_OPTIONS = [
