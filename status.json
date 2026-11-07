@@ -1,0 +1,18 @@
+{
+  "v": 2,
+  "generatedAt": "2026-11-07T13:32:53.055Z",
+  "universe": 1589,
+  "indexed": 1585,
+  "fresh2d": 1584,
+  "fresh7d": 1585,
+  "oldestUpdatedAt": "2026-11-01T13:09:48.314Z",
+  "lastRun": {
+    "startedAt": "2026-11-07T13:32:45.098Z",
+    "finishedAt": "2026-11-07T13:32:53.055Z",
+    "refreshed": 5,
+    "failed": 0,
+    "pointsSpent": 22,
+    "stoppedBy": "done"
+  },
+  "failures": []
+}
