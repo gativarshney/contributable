@@ -1,0 +1,24 @@
+{
+  "v": 2,
+  "generatedAt": "2026-11-28T20:33:17.244Z",
+  "universe": 1587,
+  "indexed": 1583,
+  "fresh2d": 1580,
+  "fresh7d": 1582,
+  "oldestUpdatedAt": "2026-11-01T13:09:48.314Z",
+  "lastRun": {
+    "startedAt": "2026-11-28T20:33:06.184Z",
+    "finishedAt": "2026-11-28T20:33:17.244Z",
+    "refreshed": 7,
+    "failed": 0,
+    "pointsSpent": 29,
+    "stoppedBy": "done"
+  },
+  "failures": [
+    {
+      "id": "openclimatefix/quartz-api",
+      "reason": "not-found",
+      "at": "2026-11-28T08:25:39.563Z"
+    }
+  ]
+}
